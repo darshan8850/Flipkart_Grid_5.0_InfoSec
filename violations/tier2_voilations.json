@@ -7,7 +7,7 @@
           "min_length": 12,
           "max_length": 20,
           "require_uppercase": true,
-          "require_lowercase": true,
+          "require_lowercase": false,
           "require_digit": true,
           "require_special_char": true
         },
@@ -19,7 +19,7 @@
           "require_special_char"
         ]
       },
-      "two_factor_authentication": true,
+      "two_factor_authentication": false,
       "password_expiration_period": "60 days",
       "multi_factor_authentication": false,
       "account_lockout_policy": {
@@ -623,7 +623,7 @@
         "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
-      "data_privacy_policy": true,
+      "data_privacy_policy": false,
       "secure_file_uploads": true,
       "secure_file_uploads_policies": {
         "properties": {
@@ -652,7 +652,7 @@
           "min_length": 12,
           "max_length": 20,
           "require_uppercase": true,
-          "require_lowercase": true,
+          "require_lowercase": false,
           "require_digit": true,
           "require_special_char": true
         },
@@ -690,7 +690,7 @@
           "malware_scan": true,
           "audit_logging": true,
           "encryption": {
-            "in_transit": true,
+            "in_transit": false,
             "at_rest": true
           }
         }
@@ -741,13 +741,13 @@
         "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
-      "data_privacy_policy": true,
+      "data_privacy_policy": false,
       "secure_file_uploads": true,
       "secure_file_uploads_policies": {
         "properties": {
           "secure_file_name": "",
           "malware_scan": true,
-          "audit_logging": true,
+          "audit_logging": false,
           "encryption": {
             "in_transit": true,
             "at_rest": true
@@ -771,7 +771,7 @@
           "max_length": 20,
           "require_uppercase": true,
           "require_lowercase": true,
-          "require_digit": true,
+          "require_digit": false,
           "require_special_char": true
         },
         "required": [
@@ -782,7 +782,7 @@
           "require_special_char"
         ]
       },
-      "two_factor_authentication": true,
+      "two_factor_authentication": false,
       "password_expiration_period": "60 days",
       "multi_factor_authentication": false,
       "account_lockout_policy": {
@@ -842,7 +842,7 @@
       "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
-          "max_failed_attempts": 5,
+          "max_failed_attempts": 1,
           "lockout_duration": "2 hours",
           "notification_emails": {
             "email_to_notify": [
@@ -867,7 +867,7 @@
           }
         }
       },
-      "ssl_encryption_required": true,
+      "ssl_encryption_required": false,
       "permissions": ["read", "write", "create"],
       "explicite_allowed_resources": [
         "sales.txt",
@@ -884,7 +884,7 @@
           "max_length": 20,
           "require_uppercase": true,
           "require_lowercase": true,
-          "require_digit": true,
+          "require_digit": false,
           "require_special_char": true
         },
         "required": [
@@ -901,7 +901,7 @@
       "account_lockout_policy": {
         "properties": {
           "max_failed_attempts": 5,
-          "lockout_duration": "2 hours",
+          "lockout_duration": "10 hours",
           "notification_emails": {
             "email_to_notify": [
               "^[A-Za-z0-9._%+-]+.admin@org.com$",
@@ -913,7 +913,7 @@
         "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
-      "data_privacy_policy": true,
+      "data_privacy_policy": false,
       "secure_file_uploads": true,
       "secure_file_uploads_policies": {
         "properties": {

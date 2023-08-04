@@ -63,24 +63,17 @@
           "max_length": 15,
           "require_uppercase": true,
           "require_lowercase": true,
-          "require_digit": true,
+          "require_digit": false,  
           "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
+          "required": ["min_length", "max_length", "require_uppercase", "require_digit", "require_lowercase", "require_special_char"]
         }
       },
-      "two_factor_authentication": false,
+      "two_factor_authentication": true,
       "password_expiration_period": "90 days",
       "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
-          "max_failed_attempts": 5,
+          "max_failed_attempts": 6,  
           "lockout_duration": "48 hours",
           "notification_emails": {
             "email_to_notify": [
@@ -92,7 +85,7 @@
         "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
-      "data_privacy_policy": false,
+      "data_privacy_policy": true,
       "secure_file_uploads": false,
       "secure_file_uploads_policies": {
         "properties": {
@@ -105,7 +98,7 @@
           }
         }
       },
-      "ssl_encryption_required": true,
+      "ssl_encryption_required": false,
       "permissions": ["read"],
       "explicite_allowed_resources": ["product_info.txt", "id_info.txt"],
       "other_resources": false

@@ -64,7 +64,7 @@
           "min_length": 8,
           "max_length": 30,
           "require_uppercase": true,
-          "require_lowercase": false,
+          "require_lowercase": true,
           "require_digit": true,
           "require_special_char": true,
           "required": [
@@ -77,9 +77,9 @@
           ]
         }
       },
-      "two_factor_authentication": true,
+      "two_factor_authentication": false,
       "password_expiration_period": "30 days",
-      "multi_factor_authentication": true,
+      "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
           "max_failed_attempts": 3,
@@ -105,23 +105,23 @@
           }
         }
       },
-      "ssl_encryption_required": false,
+      "ssl_encryption_required": true,
       "permissions": ["read", "write", "delete", "create"],
       "explicite_allowed_resources": [
         "sensitive_data.txt",
         "sales.txt",
         "reports.txt"
       ],
-      "other_resources": true
+      "other_resources": false
     },
     {
       "type": "Tier 1",
       "password_policies": {
         "properties": {
           "min_length": 8,
-          "max_length": 30,
+          "max_length": 5,
           "require_uppercase": true,
-          "require_lowercase": false,
+          "require_lowercase": true,
           "require_digit": true,
           "require_special_char": true,
           "required": [
@@ -134,9 +134,9 @@
           ]
         }
       },
-      "two_factor_authentication": true,
+      "two_factor_authentication": false,
       "password_expiration_period": "30 days",
-      "multi_factor_authentication": true,
+      "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
           "max_failed_attempts": 3,
@@ -148,7 +148,7 @@
         "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
-      "data_privacy_policy": false,
+      "data_privacy_policy": true,
       "secure_file_uploads": true,
       "secure_file_uploads_policies": {
         "properties": {
@@ -169,203 +169,101 @@
         "sales.txt",
         "reports.txt"
       ],
-      "other_resources": true
+      "other_resources": false
     },
     {
       "type": "Tier 1",
       "password_policies": {
         "properties": {
-          "min_length": 4,
-          "max_length": 10,
-          "require_uppercase": true,
+          "min_length": 8,
+          "max_length": 30,
+          "require_uppercase": false,
           "require_lowercase": false,
+          "require_digit": true,
+          "require_special_char": true,
+          "required": [
+            "min_length",
+            "max_length",
+            "require_uppercase",
+            "require_digit",
+            "require_lowercase",
+            "require_special_char"
+          ]
+        }
+      },
+      "two_factor_authentication": false,
+      "password_expiration_period": "30 days",
+      "multi_factor_authentication": false,
+      "account_lockout_policy": {
+        "properties": {
+          "max_failed_attempts": 3,
+          "lockout_duration": "24 hours",
+          "notification_emails": {
+            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
+          }
+        },
+        "required": ["max_failed_attempts", "lockout_duration"]
+      },
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "sandboxing": true,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": true
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "delete", "create"],
+      "explicite_allowed_resources": [
+        "sensitive_data.txt",
+        "sales.txt",
+        "reports.txt"
+      ],
+      "other_resources": false
+    },
+    {
+      "type": "Tier 1",
+      "password_policies": {
+        "properties": {
+          "min_length": 8,
+          "max_length": 30,
+          "require_uppercase": true,
+          "require_lowercase": true,
           "require_digit": false,
           "require_special_char": false,
           "required": [
             "min_length",
             "max_length",
-            "",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
-      "two_factor_authentication": true,
-      "password_expiration_period": "80 days",
-      "multi_factor_authentication": true,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 3,
-          "lockout_duration": "75 hours",
-          "notification_emails": {
-            "email_to_notify": "^[A-Za-z0-9._%+-]+.@org.com$"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
-      "security_monitoring": true,
-      "data_privacy_policy": true,
-      "secure_file_uploads": true,
-      "secure_file_uploads_policies": {
-        "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
-          "malware_scan": true,
-          "audit_logging": false,
-          "sandboxing": true,
-          "encryption": {
-            "in_transit": true,
-            "at_rest": true
-          }
-        }
-      },
-      "ssl_encryption_required": false,
-      "permissions": ["read", "write", "", "create"],
-      "explicite_allowed_resources": ["sensitive_data.txt", "sales.txt"],
-      "other_resources": true
-    },
-    {
-      "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 30,
-          "require_uppercase": true,
-          "require_lowercase": false,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "",
             "require_uppercase",
             "require_digit",
-            "",
+            "require_lowercase",
             "require_special_char"
           ]
         }
       },
       "two_factor_authentication": false,
-      "password_expiration_period": "80 days",
-      "multi_factor_authentication": true,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 3,
-          "lockout_duration": "24 hours",
-          "notification_emails": {
-            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
-      "security_monitoring": true,
-      "data_privacy_policy": false,
-      "secure_file_uploads": true,
-      "secure_file_uploads_policies": {
-        "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
-          "malware_scan": true,
-          "audit_logging": true,
-          "sandboxing": true,
-          "encryption": {
-            "in_transit": true,
-            "at_rest": false
-          }
-        }
-      },
-      "ssl_encryption_required": true,
-      "permissions": ["read", "", "delete", "create"],
-      "explicite_allowed_resources": ["", "sales.txt", ""],
-      "other_resources": true
-    },
-    {
-      "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 30,
-          "require_uppercase": true,
-          "require_lowercase": false,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
-      "two_factor_authentication": true,
-      "password_expiration_period": "Never",
-      "multi_factor_authentication": true,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 3,
-          "lockout_duration": "24 hours",
-          "notification_emails": {
-            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
-      "security_monitoring": true,
-      "data_privacy_policy": true,
-      "secure_file_uploads": false,
-      "secure_file_uploads_policies": {
-        "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
-          "malware_scan": true,
-          "audit_logging": true,
-          "sandboxing": true,
-          "encryption": {
-            "in_transit": true,
-            "at_rest": true
-          }
-        }
-      },
-      "ssl_encryption_required": true,
-      "permissions": ["read", "", "delete", "create"],
-      "explicite_allowed_resources": [
-        "sensitive_data.txt",
-        "sales.txt",
-        "reports.txt"
-      ],
-      "other_resources": false
-    },
-    {
-      "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 10,
-          "require_uppercase": true,
-          "require_lowercase": false,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            ""
-          ]
-        }
-      },
-      "two_factor_authentication": true,
       "password_expiration_period": "30 days",
       "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
-          "max_failed_attempts": 3
+          "max_failed_attempts": 3,
+          "lockout_duration": "24 hours",
+          "notification_emails": {
+            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
+          }
         },
-        "required": ["max_failed_attempts", ""]
+        "required": ["max_failed_attempts", "lockout_duration"]
       },
-      "security_monitoring": false,
+      "security_monitoring": true,
       "data_privacy_policy": true,
-      "secure_file_uploads": false,
+      "secure_file_uploads": true,
       "secure_file_uploads_policies": {
         "properties": {
           "secure_file_name": "^[A-Za-z0-9._%+-]",
@@ -385,74 +283,17 @@
         "sales.txt",
         "reports.txt"
       ],
-      "other_resources": true
-    },
-    {
-      "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 15,
-          "require_uppercase": true,
-          "require_lowercase": false,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
-      "two_factor_authentication": true,
-      "password_expiration_period": "30 days",
-      "multi_factor_authentication": false,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 10,
-          "lockout_duration": "24 hours",
-          "notification_emails": {
-            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
-      "security_monitoring": true,
-      "data_privacy_policy": true,
-      "secure_file_uploads": true,
-      "secure_file_uploads_policies": {
-        "properties": {
-          "secure_file_name": "file",
-          "malware_scan": true,
-          "audit_logging": false,
-          "sandboxing": true,
-          "encryption": {
-            "in_transit": true,
-            "at_rest": true
-          }
-        }
-      },
-      "ssl_encryption_required": true,
-      "permissions": ["read", "", "delete", "create"],
-      "explicite_allowed_resources": [
-        "sensitive_data.txt",
-        "sales.txt",
-        "reports.txt"
-      ],
       "other_resources": false
     },
     {
       "type": "Tier 1",
       "password_policies": {
         "properties": {
-          "min_length": 2,
-          "max_length": 5,
+          "min_length": 8,
+          "max_length": 30,
           "require_uppercase": true,
           "require_lowercase": false,
-          "require_digit": true,
+          "require_digit": false,
           "require_special_char": true,
           "required": [
             "min_length",
@@ -466,16 +307,16 @@
       },
       "two_factor_authentication": false,
       "password_expiration_period": "30 days",
-      "multi_factor_authentication": true,
+      "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
-          "max_failed_attempts": 18,
-          "lockout_duration": "0 hours",
+          "max_failed_attempts": 3,
+          "lockout_duration": "24 hours",
           "notification_emails": {
             "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
           }
         },
-        "required": ["", "lockout_duration"]
+        "required": ["max_failed_attempts", "lockout_duration"]
       },
       "security_monitoring": true,
       "data_privacy_policy": true,
@@ -483,20 +324,121 @@
       "secure_file_uploads_policies": {
         "properties": {
           "secure_file_name": "^[A-Za-z0-9._%+-]",
-          "malware_scan": false,
+          "malware_scan": true,
           "audit_logging": true,
           "sandboxing": true,
           "encryption": {
             "in_transit": true,
-            "at_rest": false
+            "at_rest": true
           }
         }
       },
-      "ssl_encryption_required": false,
-      "permissions": ["", "", "", ""],
-      "explicite_allowed_resources": ["", "", ""],
-      "other_resources": true
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "delete", "create"],
+      "explicite_allowed_resources": [
+        "sensitive_data.txt",
+        "sales.txt",
+        "reports.txt"
+      ],
+      "other_resources": false
     },
+    {
+      "type": "Tier 1",
+      "password_policies": {
+        "properties": {
+          "min_length": 8,
+          "max_length": 30,
+          "require_uppercase": true,
+          "require_lowercase": true,
+          "require_digit": true,
+          "require_special_char": false,
+          "required": [
+            "min_length",
+            "max_length",
+            "require_uppercase",
+            "require_digit",
+            "require_lowercase",
+            "require_special_char"
+          ]
+        }
+      },
+      "two_factor_authentication": false,
+      "password_expiration_period": "30 days",
+      "multi_factor_authentication": false,
+      "account_lockout_policy": {
+        "properties": {
+          "max_failed_attempts": 3,
+          "lockout_duration": "24 hours",
+          "notification_emails": {
+            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
+          }
+        },
+        "required": ["max_failed_attempts", "lockout_duration"]
+      },
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "sandboxing": true,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": true
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "delete", "create"],
+      "explicite_allowed_resources": [
+        "sensitive_data.txt",
+        "sales.txt",
+        "reports.txt"
+      ],
+      "other_resources": false
+    },
+    {
+      "type": "Tier 1",
+      "password_policies": {
+        "min_length": 8,
+        "max_length": 30,
+        "require_uppercase": true,
+        "require_lowercase": false,
+        "require_digit": true,
+        "require_special_char": false,
+        "required": ["min_length", "max_length", "require_uppercase", "require_lowercase", "require_digit", "require_special_char"]
+      },
+      "two_factor_authentication": false,
+      "password_expiration_period": "30 days",
+      "multi_factor_authentication": false,
+      "account_lockout_policy": {
+        "max_failed_attempts": 3,
+        "lockout_duration": "24 hours",
+        "notification_emails": {
+          "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
+        }
+      },
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "secure_file_name": "^[A-Za-z0-9._%+-]",
+        "malware_scan": true,
+        "audit_logging": true,
+        "sandboxing": true,
+        "encryption": {
+          "in_transit": true,
+          "at_rest": true
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "delete", "create"],
+      "explicit_allowed_resources": ["sensitive_data.txt", "sales.txt", "reports.txt"],
+      "other_resources": false
+    }
+    ,
     {
       "type": "Tier 1",
       "password_policies": {
@@ -664,52 +606,11 @@
       "type": "Tier 1",
       "password_policies": {
         "properties": {
-          "min_length": 8,
-          "max_length": 16,
-          "require_uppercase": false,
-          "require_lowercase": true,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
-      "two_factor_authentication": true,
-      "password_expiration_period": "180 days",
-      "multi_factor_authentication": true,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 10,
-          "lockout_duration": "1 day",
-          "notification_emails": {
-            "email_to_notify": "admin@org.com"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
-      "security_monitoring": true,
-      "data_privacy_policy": true,
-      "secure_file_uploads": false,
-      "ssl_encryption_required": true,
-      "permissions": ["read"],
-      "explicite_allowed_resources": ["documents.txt", "images.txt"],
-      "other_resources": true
-    },
-    {
-      "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 12,
-          "max_length": 25,
+          "min_length": 10,
+          "max_length": 20,
           "require_uppercase": true,
           "require_lowercase": true,
-          "require_digit": true,
+          "require_digit": false,
           "require_special_char": true,
           "required": [
             "min_length",
@@ -721,9 +622,8 @@
           ]
         }
       },
-      "two_factor_authentication": true,
-      "password_expiration_period": "90 days",
-      "multi_factor_authentication": true,
+      "password_expiration_period": "100 days",
+      "multi_factor_authentication": false,
       "account_lockout_policy": {
         "properties": {
           "max_failed_attempts": 5,
@@ -732,9 +632,9 @@
             "email_to_notify": "admin@org.com"
           }
         },
-        "required": ["max_failed_attempts", "lockout_duration"]
+        "required": ["", "lockout_duration"]
       },
-      "security_monitoring": true,
+      "security_monitoring": false,
       "data_privacy_policy": true,
       "secure_file_uploads": true,
       "secure_file_uploads_policies": {
@@ -742,7 +642,7 @@
           "secure_file_name": "^[A-Za-z0-9._%+-]",
           "malware_scan": false,
           "audit_logging": true,
-          "sandboxing": true,
+          "sandboxing": false,
           "encryption": {
             "in_transit": true,
             "at_rest": true
@@ -750,8 +650,65 @@
         }
       },
       "ssl_encryption_required": true,
-      "permissions": ["read", "write", "delete"],
+      "permissions": ["read", "", "delete", ""],
       "explicite_allowed_resources": ["documents.txt", "images.txt"],
+      "other_resources": false
+    },
+    {
+      "type": "Tier 1",
+      "password_policies": {
+        "properties": {
+          "min_length": 6,
+          "max_length": 15,
+          "require_uppercase": true,
+          "require_lowercase": false,
+          "require_digit": true,
+          "require_special_char": true,
+          "required": [
+            "min_length",
+            "max_length",
+            "require_uppercase",
+            "require_digit",
+            "require_lowercase",
+            ""
+          ]
+        }
+      },
+      "two_factor_authentication": true,
+      "password_expiration_period": "30 days",
+      "multi_factor_authentication": true,
+      "account_lockout_policy": {
+        "properties": {
+          "max_failed_attempts": 50,
+          "lockout_duration": "0 hours",
+          "notification_emails": {
+            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
+          }
+        },
+        "required": ["max_failed_attempts", "lockout_duration"]
+      },
+      "security_monitoring": true,
+      "data_privacy_policy": false,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "sandboxing": false,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": false
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write"],
+      "explicite_allowed_resources": [
+        "sensitive_data.txt",
+        "sales.txt",
+        "reports.txt"
+      ],
       "other_resources": true
     }
   ]

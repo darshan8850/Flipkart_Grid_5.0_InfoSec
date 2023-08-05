@@ -49,15 +49,55 @@ class data_generation:
         
         dataframe[column_name] = filenames
         return dataframe[column_name]
+    
+    def generate_random_url(self):
+        
+        protocol = ["https"]
+        sub_domain = ["www", "admin", "api"]
+        domain = ["flipkart"]
+        top_level_domain = ["com"]
+
+        folders=["sensitve_data.txt", "sales.txt", "reports.txt", "product_info.txt","sales.txt", "reports.txt", "product_info.txt","product_info.txt", "userId_info.txt"]
+        tier=["tier1", "tier2", "tier3"]
+        codes=["200", "201", "204", "400"]
+        slug = ["about-us", "contact", "services", "blog", "products", "faq", "testimonials", "gallery", "careers", "news"]
+
+        parameters = ["tier1", "tier2", "tier3"]
+        
+        random_protocol = random.choice(protocol)
+        random_sub_domain = random.choice(sub_domain)
+        random_domain = random.choice(domain)
+        random_top_level_domain = random.choice(top_level_domain)
+
+    
+        random_folder_name = random.choice(folders)
+        random_tier = random.choice(tier)
+        random_code = random.choice(codes)
+
+        random_slug = random.choice(slug)
+
+        random_parameter = random.choice(parameters)
+        id=random.randint(1001, 9999)
+
+        url = f"{random_protocol}://{random_sub_domain}.{random_domain}.{random_top_level_domain}/{random_folder_name}/{random_slug}?client_type={random_tier}&client_id={id}"
+
+        return url
 
     def data_fill(self):
         df=pd.read_csv("F:\Flipkart_Grid_5.0_InfoSec\data\data.csv")
         
         df["method"]=self.fill_column_with_random_values(df,"method",["GET","POST","PUT","DELETE"],[0.5,0.3,0.1,0.1])
-        #df["request"]=self.fill_column_with_random_values(df,"request",["/api/v1/","/api/v2/","/api/v3/","/api/v4/","/api/v5/","/api/v6/","/api/v7/","/api/v8/","/api/v9/","/api/v10/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
+        
+        url=[]
+        for _ in range(len(df)):
+           random_url = self.generate_random_url()
+           url.append(random_url)
+        df["request"]=url
+           
+        
         df["status_code"]=self.fill_column_with_random_values(df,"status_code",["200","201","204","400","403","409","429","451"],[0.2,0.15,0.15,0.1,0.1,0.1,0.1,0.1])
         df["size"]=np.random.randint(10,1000,size=len(df))
-        #df["referer"]=self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
+        df["referer"]=self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
         df["user_system_specs"]=self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         df["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee","anonymous"],[0.6,0.1,0.2,0.1])
         

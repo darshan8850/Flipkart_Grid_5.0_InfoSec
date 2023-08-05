@@ -1,0 +1,68 @@
+1. The end of the domain is the most important part to check.
+The domain portion of a URL is what gives you insight into the source of a link. 
+The domain can be found after the http://; in longer links, the domain ends prior to the first /. 
+For example, in the link http://google.com/maps, the domain is google.com.
+
+Seems straightforward, right? Wrong. Scammers will doctor domains to make them seem like something they 
+aren’t. In the example of http://google.com.cust_login.ie, the domain is cust_login.ie, not google.com. 
+And in http://accounts_login.cz/google.com, the domain is accounts_login.cz, not google.com.
+
+In the last two examples, you can see why a user might think they are linking to a Google site as 
+opposed to a malicious site. That is why it’s important to check the space between the http:// and 
+the first / and watch out for things that don’t belong.
+
+2. Hyphens and symbols are common in malicious links.
+Legitimate websites don’t often have hyphens or symbols in their domain names. 
+As with the examples noted in point #1, scammers will use these elements along 
+with known brands to try to trick you. For example, www.google.com isn’t the same 
+as www.google-search.com.
+
+3. Beware of domains that are entirely numbers with hyphens.
+Sometimes you will come across a domain that is shown just as an IP address (e.g., http://101.10.1.101).
+With links like this, you have no way of knowing the real owner of the domain.
+You should not click this type of URL unless you are familiar with the IP address and you know exactly 
+where the link will take you.
+
+4.A shortened URL, such as goo.gl/V4jVrx 
+(This is an example of a shortened link that leads to our website.)
+
+***********
+
+Certainly, here are examples of each parameter or indicator that can help in identifying potentially malicious URLs:
+
+1. **Domain Reputation:**
+   - Good: www.google.com
+   - Bad: www.malicious-site123.com
+
+2. **URL Structure:**
+   - Good: www.example.com/products
+   - Suspicious: www.example.com/long-random-string-of-characters
+
+3. **Redirects:**
+   - Good: www.example.com -> www.example.com/home
+   - Suspicious: www.example.com -> www.malicious-site456.com
+
+4. **SSL Certificate:**
+   - Good: https://www.example.com
+   - Bad: http://www.example.com (without SSL)
+
+5. **IP Address Reputation:**
+   - Good IP: Associated with reputable websites
+   - Bad IP: Associated with multiple phishing sites
+
+6. **Content Analysis:**
+   - Good: A legitimate e-commerce website's product page
+   - Suspicious: A page with a fake login form asking for sensitive information
+
+7. **Blacklists:**
+   - Bad: www.example.com is listed on multiple cybersecurity threat lists.
+
+8. **Typosquatting:**
+   - Legitimate: www.apple.com
+   - Typosquatting: www.aplle.com
+
+9. **Keywords:**
+   - Suspicious: www.verify-your-account.com
+
+10. **Clickbait Techniques:**
+    - Suspicious: www.win-a-free-iphone-now.com

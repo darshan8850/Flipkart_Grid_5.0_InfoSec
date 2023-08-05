@@ -19,7 +19,7 @@ class data_generation:
     def fill_column_with_random_values(self,dataframe, column_name, unique_values, percentages):
         
         randomList = choice(unique_values, len(dataframe),p=percentages)
-        dataframe[column_name] = randomList
+        dataframe.loc[:,column_name] = randomList
         
         return dataframe[column_name]
     
@@ -101,12 +101,7 @@ class data_generation:
         df["user_system_specs"]=self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         df["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee","anonymous"],[0.6,0.1,0.2,0.1])
         
-        columns_to_fill = ["secure_file_uploads","secure_file_uploads_policies__properties__secure_file_name",
-         "secure_file_uploads_policies__properties__malware_scan","secure_file_uploads_policies__properties__audit_logging",
-         "secure_file_uploads_policies__properties__sandboxing","secure_file_uploads_policies__properties__encryption__in_transit",
-         "secure_file_uploads_policies__properties__encryption__at_rest","ssl_encryption_required","permissions","explicite_allowed_resources",
-         "other_resources"]
-        df.loc[df["type"] == "anonymous", columns_to_fill] = df.loc[df["type"] == "anonymous", columns_to_fill].fillna(value="unknown")
+        
         
         df["two_factor_authentication"]=self.fill_column_with_random_values(df,"two_factor_authentication",["true","false"],[0.8,0.2])
         df["multi_factor_authentication"]=self.fill_column_with_random_values(df,"multi_factor_authentication",["true","false"],[0.8,0.2])
@@ -121,9 +116,27 @@ class data_generation:
         df["secure_file_uploads_policies__properties__encryption__at_rest"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__encryption__at_rest",["true","false"],[0.8,0.2])
         df["ssl_encryption_required"]=self.fill_column_with_random_values(df,"ssl_encryption_required",["true","false"],[0.8,0.2])
         df["permissions"]=self.fill_column_with_random_values(df,"permissions",["read", "write", "delete", "create","none"],[0.3,0.2,0.1,0.2,0.2])
-        df["explicite_allowed_resources"]=self.fill_column_with_random_values(df,"explicite_allowed_resources",["sensitive_data.txt","sales.txt","reports.txt"],[0.4,0.3,0.3])
+        
+        customer_df = df[df["type"] == "customer"]
+        customer_df.loc[:,"explicite_allowed_resources"] = self.fill_column_with_random_values(customer_df, "explicite_allowed_resources",["product_info.txt", "userId_info.txt","NULL"], [0.6, 0.3, 0.1])
+        df.update(customer_df)
+        
+        customer_df = df[df["type"] == "admin"]
+        customer_df.loc[:,"explicite_allowed_resources"] = self.fill_column_with_random_values(customer_df, "explicite_allowed_resources",["sensitve_data.txt","sales.txt","reports.txt","product_info.txt","NULL"], [0.25, 0.25, 0.25,0.15,0.1])
+        df.update(customer_df)
+        
+        customer_df = df[df["type"] == "employee"]
+        customer_df.loc[:,"explicite_allowed_resources"] = self.fill_column_with_random_values(customer_df, "explicite_allowed_resources",["sales.txt","reports.txt","product_info.txt","NULL"], [0.3, 0.3, 0.3,0.1])
+        df.update(customer_df)
+        
         df["other_resources"]=self.fill_column_with_random_values(df,"other_resources",["true","false"],[0.7,0.3])
         
+        columns_to_fill = ["secure_file_uploads","secure_file_uploads_policies__properties__secure_file_name",
+         "secure_file_uploads_policies__properties__malware_scan","secure_file_uploads_policies__properties__audit_logging",
+         "secure_file_uploads_policies__properties__sandboxing","secure_file_uploads_policies__properties__encryption__in_transit",
+         "secure_file_uploads_policies__properties__encryption__at_rest","ssl_encryption_required","permissions","explicite_allowed_resources",
+         "other_resources"]
+        df.loc[df["type"] == "anonymous", columns_to_fill] = "NULL"
         
         df.to_csv("F:/Flipkart_Grid_5.0_InfoSec/data/data.csv",index=False)
         

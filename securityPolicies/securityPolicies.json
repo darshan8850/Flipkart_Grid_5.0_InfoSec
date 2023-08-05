@@ -2,37 +2,9 @@
   "users": [
     {
       "type": "Tier 1",
-      "password_policies": {
-        "properties": {
-          "min_length": 15,  
-          "max_length": 30,
-          "require_uppercase": true,
-          "require_lowercase": false,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
+
       "two_factor_authentication": true,
-      "password_expiration_period": "30 days",
       "multi_factor_authentication": true,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 3,
-          "lockout_duration": "24 hours",
-          "notification_emails": {
-            "email_to_notify": "^[A-Za-z0-9._%+-]+.admin@org.com$"
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
       "security_monitoring": true,
       "data_privacy_policy": true,
       "secure_file_uploads": true,
@@ -51,50 +23,18 @@
       "ssl_encryption_required": true,
       "permissions": ["read", "write", "delete", "create"],
       "explicite_allowed_resources": [
-        "sensitive_data.txt",
+        "sensitve_data.txt",
         "sales.txt",
-        "reports.txt"
+        "reports.txt",
+        "product_info.txt"
       ],
-      "other_resources" : true
-    }
-    ,
+      "other_resources": true
+    },
     {
       "type": "Tier 2",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 20,
-          "require_uppercase": true,
-          "require_lowercase": true,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
+
       "two_factor_authentication": true,
-      "password_expiration_period": "60 days",
       "multi_factor_authentication": false,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 5,
-          "lockout_duration": "2 hours",
-          "notification_emails": {
-            "email_to_notify": [
-              "^[A-Za-z0-9._%+-]+.admin@org.com$",
-              "^[A-Za-z0-9._%+-]+.security@org.com$",
-              "^[A-Za-z0-9._%+-]+.emp@org.com$"
-            ]
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
       "security_monitoring": true,
       "data_privacy_policy": true,
       "secure_file_uploads": true,
@@ -116,44 +56,12 @@
         "reports.txt",
         "product_info.txt"
       ],
-      "other_resources" : false
+      "other_resources": false
     },
     {
       "type": "Tier 3",
-      "password_policies": {
-        "properties": {
-          "min_length": 8,
-          "max_length": 15,
-          "require_uppercase": true,
-          "require_lowercase": true,
-          "require_digit": true,
-          "require_special_char": true,
-          "required": [
-            "min_length",
-            "max_length",
-            "require_uppercase",
-            "require_digit",
-            "require_lowercase",
-            "require_special_char"
-          ]
-        }
-      },
+
       "two_factor_authentication": true,
-      "password_expiration_period": "90 days",
-      "multi_factor_authentication": false,
-      "account_lockout_policy": {
-        "properties": {
-          "max_failed_attempts": 5,
-          "lockout_duration": "48 hours",
-          "notification_emails": {
-            "email_to_notify": [
-              "^[A-Za-z0-9._%+-]+.admin@org.com$",
-              "^[A-Za-z0-9._%+-]+.security@org.com$"
-            ]
-          }
-        },
-        "required": ["max_failed_attempts", "lockout_duration"]
-      },
       "security_monitoring": true,
       "data_privacy_policy": true,
       "secure_file_uploads": false,
@@ -170,11 +78,8 @@
       },
       "ssl_encryption_required": true,
       "permissions": ["read"],
-      "explicite_allowed_resources": [
-        "product_info.txt",
-        "id_info.txt"
-      ],
-      "other_resources" : false
+      "explicite_allowed_resources": ["product_info.txt", "userId_info.txt"],
+      "other_resources": false
     }
   ]
 }

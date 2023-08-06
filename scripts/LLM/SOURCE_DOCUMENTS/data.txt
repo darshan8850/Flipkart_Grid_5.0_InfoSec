@@ -1,0 +1,39 @@
+Tier 1 Users:
+
+Two-factor and multi-factor authentication enabled: This means that Tier 1 users must go through an additional authentication step (beyond a password) to access their accounts, enhancing security.
+Security monitoring and data privacy policies in place: Tier 1 users' activities are monitored, and the website has specific policies in place to safeguard user data.
+Secure file uploads: Files uploaded by Tier 1 users are transmitted and stored securely to prevent unauthorized access.
+SSL encryption required: All communications between Tier 1 users and the website must use HTTPS (secure version of HTTP) to ensure data confidentiality and integrity.
+Read, write, delete, and create permissions: Tier 1 users have full access to read, write, delete, and create files and resources on the website.
+Allowed Files: Tier 1 users can access the files named sensitve_data.txt, sales.txt, reports.txt, and product_info.txt.
+Access to other resources: Tier 1 users can access additional resources beyond the specified files.
+Tier 2 Users:
+3
+Two-factor authentication enabled: Tier 2 users must use two-factor authentication to log in to their accounts.
+Security monitoring and data privacy policies in place: The website ensures security monitoring and data privacy for Tier 2 users as well.
+Secure file uploads: Files uploaded by Tier 2 users are transmitted and stored securely.
+SSL encryption required: All communications with Tier 2 users must use HTTPS for encryption.
+Read, write, and create permissions: Tier 2 users can read, write, and create files and resources but do not have delete permissions.
+Allowed Files: Tier 2 users can access files named sales.txt, reports.txt, and product_info.txt only.
+No access to other resources: Tier 2 users are restricted from accessing resources beyond the specified files.
+Tier 3 Users:
+
+Two-factor authentication and security monitoring enabled: Tier 3 users require two-factor authentication and have their activities monitored.
+Data privacy policies: The website enforces data privacy policies for Tier 3 users.
+No secure file uploads: Tier 3 users cannot upload files securely.
+SSL encryption required: All communications with Tier 3 users must use HTTPS.
+Read-only permission: Tier 3 users can only read files and resources; they cannot write, delete, or create files.
+Allowed Files: Tier 3 users can access files named product_info.txt and userId_info.txt only.
+No access to other resources: Tier 3 users are restricted from accessing resources beyond the specified files.
+Violations and Potential Situations:
+The rules provide specific values that must be followed for various aspects of user interactions with the website. Violations could occur in the following situations:
+
+If a user attempts to use HTTP instead of HTTPS, violating the SSL encryption requirement.
+If a user tries to access a subdomain or domain other than the allowed values for their tier.
+If a user attempts to access files that are not allowed for their tier.
+If a user performs actions (e.g., write, delete) that are not permitted for their tier.
+If a user makes requests with incorrect HTTP status codes.
+If a user uses incorrect parameters in their requests.
+If the website does not implement or enforce security controls like two-factor authentication, security monitoring, and secure file uploads.
+If the website does not follow its data privacy policies and procedures.
+Compliance with the specified values for each tier is essential to ensure security, privacy, and proper access control for different levels of users on the website. Deviations from these defined values could result in security vulnerabilities and unauthorized access to sensitive information. Therefore, it's crucial for the website to enforce these policies and ensure ethical user interactions.

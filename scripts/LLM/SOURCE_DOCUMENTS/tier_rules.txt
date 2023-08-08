@@ -1,4 +1,4 @@
-If user is tier 1 or admin and to check his violation and policies following condition should be satisfied: 
+If user type is tier 1 or admin and to check his violation and policies following condition should be satisfied: 
   
   two_factor_authentication must be true,
   multi_factor_authentication must be true,
@@ -18,7 +18,7 @@ product_info.txt
 
   
   
-If user is tier 2 or employee and to check his violation and policies following condition should be satisfied: 
+If user type is tier 2 or employee and to check his violation and policies following condition should be satisfied: 
   
   two_factor_authentication must be true,
   multi_factor_authentication must be false,
@@ -33,11 +33,11 @@ If user is tier 2 or employee and to check his violation and policies following 
   ssl_encryption_required must be true
   permissions should be read or write or create 
   explicite_allowed_resources should be sensitve_data.txt or sales.txt or reports.txt or
-product_info.txt
+product_info.txttypes 
   other_resources should be false
 
 
-If user is tier 3 or customer and to check his violation and policies following condition should be satisfied: 
+If user type is tier 3 or customer and to check his violation and policies following condition should be satisfied: 
   
   two_factor_authentication must be true,
   security_monitoring must be true,

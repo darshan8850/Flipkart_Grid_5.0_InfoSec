@@ -1,9 +1,7 @@
 import React from 'react'
-import { pageCardInfo } from '../data/dataArray'
-import PageCard from './PageCard'
 import InfoCard from './InfoCard'
 import { countInfo } from '../data/dataArray'
-function HomePage() {
+function DashBoard() {
     return (
         <React.Fragment>
             <div id="right-div" class="d-flex flex-column  border-end p-3" style={{ width: '100%' }}>
@@ -26,4 +24,4 @@ function HomePage() {
     )
 }
 
-export default HomePage
+export default DashBoard

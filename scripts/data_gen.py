@@ -84,7 +84,7 @@ class data_generation:
         return url
 
     def data_fill(self):
-        df=pd.read_csv("F:\Flipkart_Grid_5.0_InfoSec\data\data.csv")
+        df=pd.read_csv("data/merge.csv",low_memory=False)
         
         df["method"]=self.fill_column_with_random_values(df,"method",["GET","POST","PUT","DELETE"],[0.5,0.3,0.1,0.1])
         
@@ -99,7 +99,7 @@ class data_generation:
         df["size"]=np.random.randint(10,1000,size=len(df))
         df["referer"]=self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
         df["user_system_specs"]=self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
-        df["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee","anonymous"],[0.6,0.1,0.2,0.1])
+        df["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee"],[0.7,0.1,0.2,])
         
         
         
@@ -138,7 +138,7 @@ class data_generation:
          "other_resources"]
         df.loc[df["type"] == "anonymous", columns_to_fill] = "NULL"
         
-        df.to_csv("F:/Flipkart_Grid_5.0_InfoSec/data/data.csv",index=False)
+        df.to_csv("data/data_main.csv",index=False)
         
         
         

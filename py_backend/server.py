@@ -1,8 +1,6 @@
 from flask import Flask, jsonify, request
-import requests
 from pymongo import MongoClient
 import random
-from bson import ObjectId
 app = Flask(__name__)
 
 # Replace this with your MongoDB connection string
@@ -35,9 +33,9 @@ def get_random_instance_with_prompt():
             }
             
             # Make a POST request to run_localGPT.py
-            response = requests.post('http://localhost:5001/process_query', json=combined_data)
+            # response = requests.post('http://localhost:5001/process_query', json=combined_data)
             
-            return response.text
+            return random_instance
         else:
             return jsonify({"message": "No data found."}), 404
     except Exception as e:

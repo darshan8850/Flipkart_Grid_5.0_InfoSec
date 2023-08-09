@@ -16,13 +16,12 @@ function LogAnalysis() {
   const [log, setLog] = useState({})
   const [showLog, setShowLog] = useState(false);
   function fetchLog() {
-    fetch('/getlog')
+    fetch('/random_instance')
       .then(res => res.json())
       .then(entries => setLog(entries))
     setShowLog(true)
     document.getElementById('start-analysis').disabled = true;
   }
-
 
   return (
     <React.Fragment>

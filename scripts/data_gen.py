@@ -4,6 +4,9 @@ import random
 
 from numpy.random import choice
 
+import warnings
+warnings.filterwarnings("ignore")
+
 class data_generation:
     def __init__(self,store_path):
         self.store_path = store_path

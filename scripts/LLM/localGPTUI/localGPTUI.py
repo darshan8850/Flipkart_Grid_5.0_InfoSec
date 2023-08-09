@@ -3,7 +3,7 @@ import os
 import sys
 import tempfile
 
-import requests
+import request
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
@@ -22,7 +22,7 @@ def home_page():
             print(f"User Prompt: {user_prompt}")
 
             main_prompt_url = "http://localhost:5110/api/prompt_route"
-            response = requests.post(main_prompt_url, data={"user_prompt": user_prompt})
+            response = request.post(main_prompt_url, data={"user_prompt": user_prompt})
             print(response.status_code)  # print HTTP response status code for debugging
             if response.status_code == 200:
                 # print(response.json())  # Print the JSON data from the response
@@ -30,7 +30,7 @@ def home_page():
         elif "documents" in request.files:
             delete_source_url = "http://localhost:5110/api/delete_source"  # URL of the /api/delete_source endpoint
             if request.form.get("action") == "reset":
-                response = requests.get(delete_source_url)
+                response = request.get(delete_source_url)
 
             save_document_url = "http://localhost:5110/api/save_document"
             run_ingest_url = "http://localhost:5110/api/run_ingest"  # URL of the /api/run_ingest endpoint
@@ -41,10 +41,10 @@ def home_page():
                 with tempfile.SpooledTemporaryFile() as f:
                     f.write(file.read())
                     f.seek(0)
-                    response = requests.post(save_document_url, files={"document": (filename, f)})
+                    response = request.post(save_document_url, files={"document": (filename, f)})
                     print(response.status_code)  # print HTTP response status code for debugging
             # Make a GET request to the /api/run_ingest endpoint
-            response = requests.get(run_ingest_url)
+            response = request.get(run_ingest_url)
             print(response.status_code)  # print HTTP response status code for debugging
 
     # Display the form for GET request

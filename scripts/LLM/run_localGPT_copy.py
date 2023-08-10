@@ -29,6 +29,7 @@ from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
 device_type="cpu"
 show_sources="True"
 data=""
+answer=""
 
 
 def load_model(device_type, model_id, model_basename=None):
@@ -255,29 +256,30 @@ Helpful Answer:"""
         chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
     # Interactive questions and answers
-    while True:
-        query = data
-        if query == "exit":
-            break
-        # Get the answer from the chain
-        res = qa(query)
-        answer, docs = res["result"], res["source_documents"]
-
+    query = data
+    res = qa(query)
+    answer, docs = res["result"], res["source_documents"]
+        
         # Print the result
-        print("\n\n> Question:")
-        print(query)
-        print("\n> Answer:")
-        print(answer)
+    print("\n\n> Question:")
+    print(query)
+        #print("\n> Answer:")
+        #print(answer)
 
-        if show_sources:  # this is a flag that you can set to disable showing answers.
+    if show_sources:  # this is a flag that you can set to disable showing answers.
             # # Print the relevant sources used for the answer
-            print("----------------------------------SOURCE DOCUMENTS---------------------------")
-            for document in docs:
-                print("\n> " + document.metadata["source"] + ":")
-                print(document.page_content)
-            print("----------------------------------SOURCE DOCUMENTS---------------------------")
+        print("----------------------------------SOURCE DOCUMENTS---------------------------")
+        for document in docs:
+           print("\n> " + document.metadata["source"] + ":")
+           print(document.page_content)
+        print("----------------------------------SOURCE DOCUMENTS---------------------------")
   
-            
+    return answer        
+
+
+
+
+
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 import random
@@ -314,12 +316,12 @@ def get_random_instance_with_prompt():
             global data
             data=json.dumps(random_instance)
             
-            temp()
+            ans=temp()
             
             # Make a POST request to run_localGPT.py
             # response = requests.post('http://localhost:5001/process_query', json=combined_data)
             
-            return random_instance
+            return ans
         else:
             return jsonify({"message": "No data found."}), 404
     except Exception as e:

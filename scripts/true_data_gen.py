@@ -56,7 +56,13 @@ class true_data_generation:
         return dataframe[column_name]
     
     def data_fill(self,columns):
-        df=pd.DataFrame(index=range(10000),columns=self.columns)
+        data = {'Idx': list(range(1, 10001))}
+        df = pd.DataFrame(data)
+        df_2=pd.DataFrame(columns=self.columns)
+        df=pd.concat([df, df_2], axis=1)
+        print(df.shape)
+        
+        
     
         df.loc["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee"],[0.4,0.3,0.3])
         print()
@@ -64,7 +70,7 @@ class true_data_generation:
         
         customer_df.loc[:,"method"] = self.fill_column_with_random_values(df,"method",["GET","POST"],[0.5,0.5])
         customer_df.loc[:,"status_code"] = self.fill_column_with_random_values(df,"status_code",["200","201","204","400","409","429","451"],[0.15,0.15,0.15,0.15,0.15,0.15,0.1])
-        
+        customer_df.loc[:,"size"] = np.random.randint(10,1000,size=customer_df.shape[0])
         customer_df.loc[:,"referer"] = self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
         customer_df.loc[:,"user_system_specs"] = self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         customer_df.loc[:,"two_factor_authentication"] = self.fill_column_with_random_values(df,"two_factor_authentication",["true"],[1])
@@ -89,7 +95,7 @@ class true_data_generation:
         
         customer_df.loc[:,"method"] = self.fill_column_with_random_values(df,"method",["GET","POST","PUT"],[0.3,0.3,0.4])
         customer_df.loc[:,"status_code"] = self.fill_column_with_random_values(df,"status_code",["200","201","204","400","409","429","451"],[0.15,0.15,0.15,0.15,0.15,0.15,0.1])
-        customer_df.loc[:,"size"] = np.random.randint(10,1000,size=len(df))
+        customer_df.loc[:,"size"] = np.random.randint(10,1000,size=customer_df.shape[0])
         customer_df.loc[:,"referer"] = self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
         customer_df.loc[:,"user_system_specs"] = self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         customer_df.loc[:,"two_factor_authentication"] = self.fill_column_with_random_values(df,"two_factor_authentication",["true"],[1])
@@ -114,7 +120,7 @@ class true_data_generation:
         
         customer_df.loc[:,"method"] = self.fill_column_with_random_values(df,"method",["GET","POST","PUT","DELETE"],[0.3,0.3,0.2,0.2])
         customer_df.loc[:,"status_code"] = self.fill_column_with_random_values(df,"status_code",["200","201","204","400","403","409","429","451"],[0.2,0.15,0.15,0.1,0.1,0.1,0.1,0.1])
-        customer_df.loc[:,"size"] = np.random.randint(10,1000,size=len(df))
+        customer_df.loc[:,"size"] = np.random.randint(10,1000,size=customer_df.shape[0])
         customer_df.loc[:,"referer"] = self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
         customer_df.loc[:,"user_system_specs"] = self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         customer_df.loc[:,"two_factor_authentication"] = self.fill_column_with_random_values(df,"two_factor_authentication",["true"],[1])
@@ -134,8 +140,8 @@ class true_data_generation:
         customer_df.loc[:,"explicite_allowed_resources"] = self.fill_column_with_random_values(customer_df, "explicite_allowed_resources",["product_info.txt", "reports.txt","sales.txt","sensitive_data.txt"], [0.2, 0.3, 0.3,0.2])
         
         df.update(customer_df)
-        print(df.shape)
-        
+       
+        df = df.drop('Idx', axis=1)
         df.to_csv("data/true_data.csv",index=False)
         
 columns=["client_id","date_time","method","request","status_code","size","referer","user_system_specs",	

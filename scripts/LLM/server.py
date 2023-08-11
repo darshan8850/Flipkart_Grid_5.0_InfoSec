@@ -47,24 +47,28 @@ def main_method():
         
         random_instance_response = requests.get('http://127.0.0.1:5000/random_instance')
         temp_response = requests.get('http://127.0.0.1:5000/temp')
-        if random_instance_response.status_code == 200:
-            random_instance_data = random_instance_response.json()
-            print(random_instance_data[0])
-        else:
+        
+        if random_instance_response.status_code != 200:
             return jsonify({"error": "Failed to fetch random instance data"}), random_instance_response.status_code
         
-        if temp_response.status_code == 200:
-            print(temp_response.content)
-            print(temp_response.text)
-            print(temp_response.json)
-        else: 
-           return jsonify({"error": "Failed to fetch temp data"}), temp_response.status_code 
+        if temp_response.status_code != 200:
+            return jsonify({"error": "Failed to fetch temp data"}), temp_response.status_code 
         
+        random_instance_data = random_instance_response.json()
+        temp_data = temp_response.json()
+        # 
+        print(random_instance_data)
+        print(temp_data)
+        combined_data = {"random_instance_data": random_instance_data, "temp_data": temp_data}
+        return jsonify(combined_data)
+    
+            
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    return 'hello world'
+    
+    return 'main method not properly executed'
 
-#flask
+
 @app.route('/random_instance', methods=['GET'])
 def get_random_instance():
     try:
@@ -76,9 +80,9 @@ def get_random_instance():
       random_instance = result_list[0]
       random_instance['_id'] = str(random_instance['_id'])
       global data
-      data=json.dumps(result_list)
+      data=json.dumps(random_instance)
       logging.info('random_instance')    
-      return data
+      return jsonify(random_instance)
     except Exception as e:
       return jsonify({"error": str(e)}), 500
 
@@ -251,9 +255,10 @@ just say that you don't know, don't try to make up an answer.{context} {history}
         chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
     logging.info(f" 259 - qa instance made")
-    res = qa(data+"what are the violations ?")
+    res = qa(data)
+    answer, docs = res["result"], res["source_documents"]
     logging.info(f" 261 - qa analyzed answer")
-    return 'hoo gya return'
+    return jsonify({"answer":answer})
 
 # flask
 if __name__ == '__main__':

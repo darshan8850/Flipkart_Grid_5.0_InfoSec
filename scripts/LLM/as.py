@@ -33,6 +33,7 @@ device_type="cpu"
 show_sources="True"
 data=""
 answer=""
+dbres=""
 
 mongo_connection_string = 'mongodb+srv://mrunal21:mrunal21@cluster0.eugjmpy.mongodb.net'
 prompt = "what are security policy violations in this?"
@@ -264,7 +265,7 @@ Helpful Answer:"""
         chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
     # Interactive questions and answers
-    query = data
+    query = dbres
     flag=1
     while (flag==1):
         logging.info(f" 259 - qa instance made")
@@ -273,13 +274,13 @@ Helpful Answer:"""
         print(res["result"])
         query = "exit"
         logging.info(f" 262 - qa analyzed answer")
-        # global answer
-        # answer = res["result"]
-        # analyzed_data = {
-        #     "data": query,
-        #     "answer": answer
-        # }
-      
+        global answer
+        answer = res["result"]
+        analyzed_data = {
+            "data": query,
+            "answer": answer
+        }
+        print(answer)
     # entry in db
         # result = collection_analyzed.insert_one(analyzed_data)
         # logging.info(result.inserted_id)    
@@ -309,6 +310,11 @@ def get_random_instance_with_prompt():
             return jsonify({"message": "No data found."}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+def tempmethod():
+    global dbres
+    dbres = get_random_instance_with_prompt()
+    temp()
 
 if __name__ == '__main__':
     logging.basicConfig(

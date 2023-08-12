@@ -1,0 +1,15 @@
+{
+  "dummy": {
+    "client": NaN,
+    "type": "customer",
+    "datetime": NaN,
+    "request": "https://admin.flipkart.com/sensitve_data.txt/contact?client_type=tier1&client_id=1340",
+    "size": 533.0,
+    "referer": "https://www.google.com/",
+    "user_agent": NaN,
+    "user_system_specs": "Android",
+    "violated_polices": {
+      "violations": {}
+    }
+  }
+}

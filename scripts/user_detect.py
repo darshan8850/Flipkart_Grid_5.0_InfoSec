@@ -13,10 +13,9 @@ rules= {
       "secure_file_uploads": True,
       "secure_file_uploads_policies": {
         "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
           "malware_scan": True,
           "audit_logging": True,
-          "sandboxing": True,
           "encryption": {
             "in_transit": True,
             "at_rest": True
@@ -43,7 +42,7 @@ rules= {
       "secure_file_uploads": True,
       "secure_file_uploads_policies": {
         "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
           "malware_scan": True,
           "audit_logging": True,
           "encryption": {
@@ -65,12 +64,13 @@ rules= {
       "type": "customer",
 
       "two_factor_authentication": True,
+      "multi_factor_authentication": True,
       "security_monitoring": True,
       "data_privacy_policy": True,
       "secure_file_uploads": False,
       "secure_file_uploads_policies": {
         "properties": {
-          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
           "malware_scan": True,
           "audit_logging": True,
           "encryption": {
@@ -98,39 +98,51 @@ with open(file_name, "w") as json_file:
 old_data=old_data.drop_duplicates()
 
 def check_policy_violation(instance):
-    violations = []
-    i=instance["type"]
-    desired_users = [user for user in rules["users"] if user["type"] is i]
+    violations = {}
+    k=instance["type"]
+    desired_users = [user for user in rules["users"] if user["type"] == k]
+  
     
     # Iterate over the rules for each user type
     for user_rule in desired_users:
-            if "two_factor_authentication" in user_rule and user_rule["two_factor_authentication"] != instance["two_factor_authentication"]:
-                violations.append("two_factor_authentication")
-            if "multi_factor_authentication" in user_rule and user_rule["multi_factor_authentication"] != instance["multi_factor_authentication"]:
-                violations.append("multi_factor_authentication")    
-            if "security_monitoring" in user_rule and user_rule["security_monitoring"] != instance["security_monitoring"]:
-                violations.append("security_monitoring")
-            if "data_privacy_policy" in user_rule and user_rule["data_privacy_policy"] != instance["data_privacy_policy"]:
-                violations.append("data_privacy_policy")
+            if user_rule["two_factor_authentication"] != instance["two_factor_authentication"]:
+                violations["two_factor_authentication"]=instance["two_factor_authentication"]
+            if user_rule["multi_factor_authentication"] != instance["multi_factor_authentication"]:
+                violations["multi_factor_authentication"]=instance["multi_factor_authentication"]    
+            if user_rule["security_monitoring"] != instance["security_monitoring"]:
+                violations["security_monitoring"]=instance["security_monitoring"]
+            if user_rule["data_privacy_policy"] != instance["data_privacy_policy"]:
+                violations["data_privacy_policy"]=instance["data_privacy_policy"]
             
-            fname="secure_file_uploads_policies"
+            fname=r"secure_file_uploads_policies"
+            
             for i in user_rule["secure_file_uploads_policies"]:
                 fname=fname+"_"+i
-                for j in i:
+                for j in user_rule["secure_file_uploads_policies"][i]:
                     fname=fname+"_"+j
-                    if j in user_rule[i] and user_rule[i][j] != instance[fname]:
-                        violations.append(fname)
-               
+                    if(user_rule["secure_file_uploads_policies"][i][j]=="secure_file_name"):
+                      last_exe=instance[fname].split('.')
+                      for k in user_rule["secure_file_uploads_policies"][i][j]:
+                        if k not in last_exe:
+                            violations[fname]=instance[fname]
+                    if(user_rule["secure_file_uploads_policies"][i][j]=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                        violations[fname]=instance[fname]
+                    if(user_rule["secure_file_uploads_policies"][i][j]=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                        violations[fname]=instance[fname]
+                    if(user_rule["secure_file_uploads_policies"][i][j]=="encryption"):
+                      for k in user_rule["secure_file_uploads_policies"][i][j]:
+                        if(user_rule["secure_file_uploads_policies"][i][j][k]!=instance[fname]):
+                            violations[fname]=instance[fname]
     
             if "ssl_encryption_required" in user_rule and user_rule["ssl_encryption_required"] != instance["ssl_encryption_required"]:
-                violations.append("ssl_encryption_required")
+                violations["ssl_encryption_required"]=instance["ssl_encryption_required"]
             
             if "permissions" in user_rule and any(permission not in user_rule["permissions"] for permission in instance["permissions"]):
-                violations.append("permissions")
+                violations["permissions"]=instance["permissions"]
             if "explicite_allowed_resources" in user_rule and any(resource not in user_rule["explicite_allowed_resources"] for resource in instance["explicite_allowed_resources"]):
-                violations.append("explicite_allowed_resources")
-
-    return dict(violations)
+                violations["explicite_allowed_resources"]=instance["explicite_allowed_resources"]
+   
+    return violations
     
 
 for i in range(old_data.shape[0]):
@@ -149,11 +161,10 @@ for i in range(old_data.shape[0]):
     
     violated_polices={}
     violations=check_policy_violation(instance)
-    violated_polices["violations"]=violations
     
-    new_instance["violated_polices"]=violated_polices
-    
-    new_json["dummy"]=new_instance
+    new_instance["violated_polices"]=violations
+    name=f"instance_{i}"
+    new_json[name]=new_instance
     
 output_file_path = "data/new_data.json"  # Replace with your desired file path
 with open(output_file_path, "w") as json_file:

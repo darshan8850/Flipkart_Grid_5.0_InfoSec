@@ -114,7 +114,6 @@ class data_generation:
         df["secure_file_uploads_policies__properties__secure_file_name"]=self.generate_meaningful_filename(df,"secure_file_uploads_policies__properties__secure_file_name")
         df["secure_file_uploads_policies__properties__malware_scan"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__malware_scan",["true","false"],[0.8,0.2])
         df["secure_file_uploads_policies__properties__audit_logging"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__audit_logging",["true","false"],[0.8,0.2])  
-        df["secure_file_uploads_policies__properties__sandboxing"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__sandboxing",["true","false"],[0.8,0.2])    
         df["secure_file_uploads_policies__properties__encryption__in_transit"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__encryption__in_transit",["true","false"],[0.8,0.2])
         df["secure_file_uploads_policies__properties__encryption__at_rest"]=self.fill_column_with_random_values(df,"secure_file_uploads_policies__properties__encryption__at_rest",["true","false"],[0.8,0.2])
         df["ssl_encryption_required"]=self.fill_column_with_random_values(df,"ssl_encryption_required",["true","false"],[0.8,0.2])

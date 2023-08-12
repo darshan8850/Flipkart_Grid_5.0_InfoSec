@@ -124,9 +124,9 @@ def check_policy_violation(instance):
 
                     if(j=="secure_file_name"):
                       last_exe=instance[fname].split('.')
-                      for k in user_rule["secure_file_uploads_policies"][i][j]:
-                        if k not in last_exe:
-                            violations[fname]=instance[fname]
+                      extension="."+last_exe[-1]
+                      if extension not in [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"]:
+                          violations[fname]=instance[fname]
                     if(j=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
                         violations[fname]=instance[fname]
                     if(j=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
@@ -145,7 +145,7 @@ def check_policy_violation(instance):
             
             if "permissions" in user_rule and any(permission not in user_rule["permissions"] for permission in instance["permissions"]):
                 violations["permissions"]=instance["permissions"]
-            if "explicite_allowed_resources" in user_rule and any(resource not in user_rule["explicite_allowed_resources"] for resource in instance["explicite_allowed_resources"]):
+            if "explicite_allowed_resources" in user_rule and instance["explicite_allowed_resources"] not in user_rule["explicite_allowed_resources"]:
                 violations["explicite_allowed_resources"]=instance["explicite_allowed_resources"]
    
     return violations
@@ -156,14 +156,8 @@ for i in range(old_data.shape[0]):
     #print(instance)
     
     new_instance={}
-    new_instance["client"]=instance["client"]
-    new_instance["type"]=instance["type"]
-    new_instance["datetime"]=instance["datetime"]
-    new_instance["request"]=instance["request"]
-    new_instance["size"]=instance["size"]
-    new_instance["referer"]=instance["referer"]
-    new_instance["user_agent"]=instance["user_agent"]
-    new_instance["user_system_specs"]=instance["user_system_specs"]
+    for key, value in instance.items():
+        new_instance[key] = value
     
     violated_polices={}
     violations=check_policy_violation(instance)

@@ -1,0 +1,85 @@
+{
+  "users": [
+    {
+      "type": "Tier 1",
+
+      "two_factor_authentication": true,
+      "multi_factor_authentication": true,
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "sandboxing": true,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": true
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "delete", "create"],
+      "explicite_allowed_resources": [
+        "sensitve_data.txt",
+        "sales.txt",
+        "reports.txt",
+        "product_info.txt"
+      ],
+      "other_resources": true
+    },
+    {
+      "type": "Tier 2",
+
+      "two_factor_authentication": true,
+      "multi_factor_authentication": false,
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": true,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": true
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read", "write", "create"],
+      "explicite_allowed_resources": [
+        "sales.txt",
+        "reports.txt",
+        "product_info.txt"
+      ],
+      "other_resources": false
+    },
+    {
+      "type": "Tier 3",
+
+      "two_factor_authentication": true,
+      "security_monitoring": true,
+      "data_privacy_policy": true,
+      "secure_file_uploads": false,
+      "secure_file_uploads_policies": {
+        "properties": {
+          "secure_file_name": "^[A-Za-z0-9._%+-]",
+          "malware_scan": true,
+          "audit_logging": true,
+          "encryption": {
+            "in_transit": true,
+            "at_rest": true
+          }
+        }
+      },
+      "ssl_encryption_required": true,
+      "permissions": ["read"],
+      "explicite_allowed_resources": ["product_info.txt", "userId_info.txt"],
+      "other_resources": false
+    }
+  ]
+}

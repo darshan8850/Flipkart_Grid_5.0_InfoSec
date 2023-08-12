@@ -89,10 +89,10 @@ rules= {
 
 old_data = pd.read_csv('data/data_main.csv',low_memory=False)
 
-file_name = "scripts/LLM/SOURCE_DOCUMENTS/new_train_data.json"
+# file_name = "scripts/LLM/SOURCE_DOCUMENTS/new_train_data.json"
 new_json = {}
-with open(file_name, "w") as json_file:
-    json.dump(new_json, json_file)
+# with open(file_name, "w") as json_file:
+#     json.dump(new_json, json_file)
     
 # print(old_data.shape)
 old_data=old_data.drop_duplicates()
@@ -101,7 +101,7 @@ def check_policy_violation(instance):
     violations = {}
     k=instance["type"]
     desired_users = [user for user in rules["users"] if user["type"] == k]
-  
+ 
     
     # Iterate over the rules for each user type
     for user_rule in desired_users:
@@ -114,23 +114,29 @@ def check_policy_violation(instance):
             if user_rule["data_privacy_policy"] != instance["data_privacy_policy"]:
                 violations["data_privacy_policy"]=instance["data_privacy_policy"]
             
-            fname=r"secure_file_uploads_policies"
+            
             
             for i in user_rule["secure_file_uploads_policies"]:
-                fname=fname+"_"+i
                 for j in user_rule["secure_file_uploads_policies"][i]:
-                    fname=fname+"_"+j
-                    if(user_rule["secure_file_uploads_policies"][i][j]=="secure_file_name"):
+                    fname="secure_file_uploads_policies"
+                    fname=fname+"__"+i
+                    fname=fname+"__"+j
+
+                    if(j=="secure_file_name"):
                       last_exe=instance[fname].split('.')
                       for k in user_rule["secure_file_uploads_policies"][i][j]:
                         if k not in last_exe:
                             violations[fname]=instance[fname]
-                    if(user_rule["secure_file_uploads_policies"][i][j]=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                    if(j=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
                         violations[fname]=instance[fname]
-                    if(user_rule["secure_file_uploads_policies"][i][j]=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                    if(j=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
                         violations[fname]=instance[fname]
-                    if(user_rule["secure_file_uploads_policies"][i][j]=="encryption"):
+                    if(j=="encryption"):
                       for k in user_rule["secure_file_uploads_policies"][i][j]:
+                        fname="secure_file_uploads_policies"
+                        fname=fname+"__"+i
+                        fname=fname+"__"+j
+                        fname=fname+"__"+k
                         if(user_rule["secure_file_uploads_policies"][i][j][k]!=instance[fname]):
                             violations[fname]=instance[fname]
     

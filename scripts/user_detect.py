@@ -162,7 +162,7 @@ for i in range(old_data.shape[0]):
     violated_polices={}
     violations=check_policy_violation(instance)
     
-    new_instance["violated_polices"]=violations
+    new_instance["violated_policies"]=violations
     name=f"instance_{i}"
     new_json[name]=new_instance
     
@@ -176,3 +176,20 @@ print(f"JSON data saved to {output_file_path}")
     
 
 
+def detect_user(instance):
+    new_instance={}
+    for key, value in instance.items():
+        new_instance[key] = value
+    
+    violated_polices={}
+    violations=check_policy_violation(instance)
+    
+    new_instance["violated_policies"]=violations
+    name=f"instance"
+    new_json[name]=new_instance
+    
+    return new_json
+    
+
+
+  

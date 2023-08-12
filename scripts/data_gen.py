@@ -98,10 +98,10 @@ class data_generation:
         df["request"]=url
            
         
-        df["status_code"]=self.fill_column_with_random_values(df,"status_code",["200","201","204","400","403","409","429","451"],[0.2,0.15,0.15,0.1,0.1,0.1,0.1,0.1])
+        df["status"]=self.fill_column_with_random_values(df,"status",["200","201","204","400","403","409","429","451"],[0.2,0.15,0.15,0.1,0.1,0.1,0.1,0.1])
         df["size"]=np.random.randint(10,1000,size=len(df))
         df["referer"]=self.fill_column_with_random_values(df,"referer",["https://www.google.com/","https://www.facebook.com/","https://www.youtube.com/","https://www.amazon.com/","https://www.wikipedia.org/","https://www.twitter.com/","https://www.instagram.com/","https://www.reddit.com/","https://www.yahoo.com/","https://www.ebay.com/"],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
-        df["user_system_specs"]=self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
+        #df["user_system_specs"]=self.fill_column_with_random_values(df,"user_system_specs",["Windows","Mac","Linux","Android","iOS"],[0.2,0.2,0.2,0.2,0.2])
         df["type"]=self.fill_column_with_random_values(df,"type",["customer","admin","employee"],[0.7,0.1,0.2,])
         
         
@@ -132,10 +132,10 @@ class data_generation:
         df.update(customer_df)
         
         df["other_resources"]=self.fill_column_with_random_values(df,"other_resources",["true","false"],[0.7,0.3])
-        df["label"]=self.fill_column_with_random_values(df,"label",["violated"],[1])
+        #df["label"]=self.fill_column_with_random_values(df,"label",["violated"],[1])
         columns_to_fill = ["secure_file_uploads","secure_file_uploads_policies__properties__secure_file_name",
          "secure_file_uploads_policies__properties__malware_scan","secure_file_uploads_policies__properties__audit_logging",
-         "secure_file_uploads_policies__properties__sandboxing","secure_file_uploads_policies__properties__encryption__in_transit",
+         "secure_file_uploads_policies__properties__encryption__in_transit",
          "secure_file_uploads_policies__properties__encryption__at_rest","ssl_encryption_required","permissions","explicite_allowed_resources",
          "other_resources"]
         df.loc[df["type"] == "anonymous", columns_to_fill] = "NULL"
@@ -147,7 +147,7 @@ class data_generation:
         
 
 
-columns=["client_id","date_time","method","request","status_code","size","referer","user_system_specs",	
+columns=["client_id","date_time","method","request","status","size","referer",	
          "type","two_factor_authentication","multi_factor_authentication","security_monitoring","data_privacy_policy",
          "secure_file_uploads","secure_file_uploads_policies__properties__secure_file_name",
          "secure_file_uploads_policies__properties__malware_scan","secure_file_uploads_policies__properties__audit_logging","secure_file_uploads_policies__properties__encryption__in_transit",

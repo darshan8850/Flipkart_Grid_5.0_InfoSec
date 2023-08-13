@@ -40,18 +40,14 @@ show_sources="True"
 data=""
 answer=""
 
-
-
 file_path = 'jsons/attacks/security_attacks.json'
 
 with open(file_path, 'r') as json_file:
     security_attacks = json.load(json_file)
     
 # file_path = 'data/new_data.json'
-
 # with open(file_path, 'r') as json_file:
-#     instances = json.load(json_file)
-    
+#     instances = json.load(json_file)    
 # instance=instances['instance_0']
 
 #flask
@@ -140,9 +136,7 @@ rules= {
         "other_resources": False
       }
     ]
-  }
-
-
+}
 
 @app.route('/main_method')
 def main_method():
@@ -171,7 +165,6 @@ def main_method():
     
     return 'main method not properly executed'
 
-
 @app.route('/random_instance', methods=['GET'])
 def get_random_instance():
     try:
@@ -182,12 +175,82 @@ def get_random_instance():
       result_list = list(result)
       random_instance = result_list[0]
       random_instance['_id'] = str(random_instance['_id'])
+
+      instance=detect_user(instance)
+      context=context_gen(instance)
+      rules=rule_gen(instance)
+      question=" "
       global data
       data=json.dumps(random_instance)
       logging.info('random_instance')    
       return jsonify(random_instance)
     except Exception as e:
       return jsonify({"error": str(e)}), 500
+    
+def check_policy_violation(instance):
+    violations = {}
+    k=instance["type"]
+    desired_users = [user for user in rules["users"] if user["type"] == k]
+ 
+    
+    # Iterate over the rules for each user type
+    for user_rule in desired_users:
+            if user_rule["two_factor_authentication"] != instance["two_factor_authentication"]:
+                violations["two_factor_authentication"]=instance["two_factor_authentication"]
+            if user_rule["multi_factor_authentication"] != instance["multi_factor_authentication"]:
+                violations["multi_factor_authentication"]=instance["multi_factor_authentication"]    
+            if user_rule["security_monitoring"] != instance["security_monitoring"]:
+                violations["security_monitoring"]=instance["security_monitoring"]
+            if user_rule["data_privacy_policy"] != instance["data_privacy_policy"]:
+                violations["data_privacy_policy"]=instance["data_privacy_policy"]
+            
+            
+            
+            for i in user_rule["secure_file_uploads_policies"]:
+                for j in user_rule["secure_file_uploads_policies"][i]:
+                    fname="secure_file_uploads_policies"
+                    fname=fname+"__"+i
+                    fname=fname+"__"+j
+
+                    if(j=="secure_file_name"):
+                      last_exe=instance[fname].split('.')
+                      extension="."+last_exe[-1]
+                      if extension not in [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"]:
+                          violations[fname]=instance[fname]
+                    if(j=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                        violations[fname]=instance[fname]
+                    if(j=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
+                        violations[fname]=instance[fname]
+                    if(j=="encryption"):
+                      for k in user_rule["secure_file_uploads_policies"][i][j]:
+                        fname="secure_file_uploads_policies"
+                        fname=fname+"__"+i
+                        fname=fname+"__"+j
+                        fname=fname+"__"+k
+                        if(user_rule["secure_file_uploads_policies"][i][j][k]!=instance[fname]):
+                            violations[fname]=instance[fname]
+    
+            if "ssl_encryption_required" in user_rule and user_rule["ssl_encryption_required"] != instance["ssl_encryption_required"]:
+                violations["ssl_encryption_required"]=instance["ssl_encryption_required"]
+            
+            if "permissions" in user_rule and any(permission not in user_rule["permissions"] for permission in instance["permissions"]):
+                violations["permissions"]=instance["permissions"]
+            if "explicite_allowed_resources" in user_rule and instance["explicite_allowed_resources"] not in user_rule["explicite_allowed_resources"]:
+                violations["explicite_allowed_resources"]=instance["explicite_allowed_resources"]
+   
+    return violations
+
+def detect_user(instance):
+    new_instance={}
+    for key, value in instance.items():
+        new_instance[key] = value
+    
+    violated_polices={}
+    violations=check_policy_violation(instance)
+    
+    new_instance["violated_policies"]=violations
+    
+    return new_instance
 
 def load_model(device_type, model_id, model_basename=None):
     """
@@ -293,8 +356,6 @@ def load_model(device_type, model_id, model_basename=None):
 
     return local_llm
   
-
-
 def context_gen(instance):
 
     explanation_paragraph = (
@@ -305,17 +366,16 @@ def context_gen(instance):
     
     return explanation_paragraph
 
-
 def find_violated_polices(instance):
     violated_policies = instance['violated_policies']
     return violated_policies
+
 def rule_gen(instance):
     keys=find_violated_polices(instance).keys()
     rules={}
     for key in keys:
         rules[key]=security_attacks[key]
     return rules
-
 
 @click.command()
 @click.option(
@@ -387,6 +447,43 @@ just say that you don't know, don't try to make up an answer.{context} {history}
     answer, docs = res["result"], res["source_documents"]
     logging.info(f" 261 - qa analyzed answer")
     return jsonify({"answer":answer})
+
+@app.route('/testing')
+def testing():
+    testData = {
+    "random_instance_data": {
+        "_id": "64d0eb1d797d10ff6acb5d72",
+        "client_id": "46.209.150.50",
+        "data_privacy_policy": "true",
+        "date_time": "22/Jan/2019:12:46:43 +0330",
+        "explicite_allowed_resources": "userId_info.txt",
+        "method": "PUT",
+        "multi_factor_authentication": "false",
+        "other_resources": "false",
+        "permissions": "none",
+        "referer": "https://www.instagram.com/",
+        "request": "https://api.flipkart.com/reports.txt/gallery?client_type=tier3&client_id=8538",
+        "secure_file_uploads": "true",
+        "secure_file_uploads_policies_properties_audit_logging": "false",
+        "secure_file_uploads_policies_propertiesencryption_at_rest": "true",
+        "secure_file_uploads_policies_propertiesencryption_in_transit": "true",
+        "secure_file_uploads_policies_properties_malware_scan": "true",
+        "secure_file_uploads_policies_properties_sandboxing": "true",
+        "secure_file_uploads_policies_properties_secure_file_name": "brave_world.jpeg",
+        "security_monitoring": "true",
+        "size": 452,
+        "ssl_encryption_required": "true",
+        "status_code": 200,
+        "two_factor_authentication": "true",
+        "type": "customer",
+        "user_system_specs": "Linux"
+    },
+    "temp_data": {
+            "answer": " I'm just an AI, I don't have access to external information or systems, so I can't provide you with the exact password policy for Flipkart. Additionally, it is not appropriate or ethical to share or use someone else's password policies without proper authorization. It is important to respect the security and privacy of others' systems and data. If you have any other questions or concerns, feel free to ask!"
+    }
+    }
+    
+    return jsonify(testData)
 
 # flask
 if __name__ == '__main__':

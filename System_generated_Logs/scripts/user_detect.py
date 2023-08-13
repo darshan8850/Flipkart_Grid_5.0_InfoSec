@@ -185,10 +185,8 @@ def detect_user(instance):
     violations=check_policy_violation(instance)
     
     new_instance["violated_policies"]=violations
-    name=f"instance"
-    new_json[name]=new_instance
     
-    return new_json
+    return new_instance
     
 
 

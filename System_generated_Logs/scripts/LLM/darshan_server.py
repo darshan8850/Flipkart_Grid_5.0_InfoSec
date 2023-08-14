@@ -413,21 +413,6 @@ def rule_gen(instance):
     help="Show sources along with answers (Default is False)",
 )
 
-def prompt(ins):
-
-    instance=detect_user(ins)
-    print(instance)
-    context=context_gen(ins)
-    print(context)
-    rules=rule_gen(ins)
-    print(rules)
-    question="Based on context given rules to be followed, what are the security policy violations?"
-    logging.info(f" success - question generated")
-  
-    data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
-    
-    return data_prompt
-    
     
 @app.route('/temp')
 def temp():
@@ -441,8 +426,19 @@ def temp():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Llama-2-7B-Chat-GGML"
-    model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+    #model_id = "TheBloke/Llama-2-7B-Chat-GGML"
+    #model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+    
+    # for GPTQ (quantized) models
+    #model_id = "TheBloke/Nous-Hermes-13B-GPTQ"
+    #model_basename = "nous-hermes-13b-GPTQ-4bit-128g.no-act.order"
+    #model_id = "TheBloke/WizardLM-30B-Uncensored-GPTQ"
+    #model_basename = "WizardLM-30B-Uncensored-GPTQ-4bit.act-order.safetensors" # Requires
+    # ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
+    # model_id = "TheBloke/wizardLM-7B-GPTQ"
+    # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
+    model_id = "TheBloke/llama2_70b_chat_uncensored-GPTQ"
+    model_basename = "gptq_model-4bit--1g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
 just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""
@@ -513,7 +509,6 @@ def testing():
     
     return jsonify(testData)
 
-# flask
 if __name__ == '__main__':
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s", level=logging.INFO

@@ -1,38 +1,39 @@
-import React, { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.css'
-import { pageCardInfo } from './data/dataArray'
-import { Route, Routes } from 'react-router-dom'
-import PageCard from './components/PageCard'
-import DashBoard from './components/DashBoard'
-import LogAnalysis from './components/LogAnalysis'
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { FiSettings } from 'react-icons/fi';
+import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import './App.css';
+
+import { Navbar, Sidebar } from './components/componentIndex'
+import { CAnalysis, CHistory, Dashboard, SysHistory, SysAnalysis } from './pages/pageIndex'
 
 function App() {
+  const activeMenu = true
   return (
-    <React.Fragment>
-
-      <nav class="navbar navbar-expand-lg shadow-sm p-3 position-sticky bg-body-tertiary rounded overflow-hidden">
-        <div class="container-fluid">
-          <a class="navbar-brand">Compliance Monitoring and Enforcement through Log Analysis using LLM ( Infosec Engineering )</a>
+    <BrowserRouter>
+      <div className="flex">
+        <div className='sidebar dark:bg-secondary-dark-bg bg-white'>
+          <Sidebar />
         </div>
-      </nav>
-      <div id="main-div" class="d-flex position-sticky">
-        <div id="left-div" class="d-flex flex-column ms-3 me-3  border-end p-3 " style={{ width: '13%', height: '90vh' }}>
-          {pageCardInfo.map((e, index) => (
-            <PageCard
-              key = {index}
-              tag={e.tag}
-              link={e.link}
-              svg={e.svg} />
-          ))}
+        <div style={{width:'100vw'}}>
+          <Navbar />
+          <div >
+            <Routes>
+              {/* dashboard */}
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/dashboard' element={<Dashboard />} />
+              {/* analysis chatbox */}
+              <Route path='/System_Analysis' element={<SysAnalysis />} />
+              <Route path='/Customer_Analysis' element={<CAnalysis />} />
+              {/* history */}
+              <Route path='/System_History' element={<SysHistory />} />
+              <Route path='/Customer_History' element={<CHistory />} />
+            </Routes>
+          </div>
         </div>
-        <Routes>
-          <Route path="/" element={<DashBoard />} />
-          <Route path="/logAnalysis" element={<LogAnalysis />} />
-        </Routes>
       </div>
-    </React.Fragment>
-
-  );
+    </BrowserRouter>
+  )
 }
 
 export default App

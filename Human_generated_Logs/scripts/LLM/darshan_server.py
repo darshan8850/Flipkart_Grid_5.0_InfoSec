@@ -32,19 +32,19 @@ mongo_connection_string = 'mongodb+srv://mrunal21:mrunal21@cluster0.eugjmpy.mong
 prompt = "what are security policy violations in this?"
 client = MongoClient(mongo_connection_string)
 mongoDB = client['violatedData']
-collection_datasets = mongoDB['datasets']
+collection_datasets = mongoDB['customer']
 collection_analyzed = mongoDB['analyzed']
 
-device_type="cpu"
+device_type="cuda"
 show_sources="True"
 data=""
 query=""
 
 
-file_path = 'Flipkart_Grid_5.0_InfoSec/System_generated_Logs/jsons/attacks/security_attacks.json'
+file_path = 'Flipkart_Grid_5.0_InfoSec/Human_generated_Logs/data/json/log_policies.json'
 
 with open(file_path, 'r') as json_file:
-    security_attacks = json.load(json_file)
+    policies = json.load(json_file)
     
 # file_path = 'data/new_data.json'
 # with open(file_path, 'r') as json_file:
@@ -57,90 +57,6 @@ with open(file_path, 'r') as json_file:
     policy_score = json.load(json_file)
 
 
-rules= {
-    "users": [
-      {
-        "type": "admin",
-        "two_factor_authentication": True,
-        "multi_factor_authentication": True,
-        "security_monitoring": True,
-        "data_privacy_policy": True,
-        "secure_file_uploads": True,
-        "secure_file_uploads_policies": {
-          "properties": {
-            "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
-            "malware_scan": True,
-            "audit_logging": True,
-            "encryption": {
-              "in_transit": True,
-              "at_rest": True
-            }
-          }
-        },
-        "ssl_encryption_required": True,
-        "permissions": ["read", "write", "delete", "create"],
-        "explicite_allowed_resources": [
-          "sensitve_data.txt",
-          "sales.txt",
-          "reports.txt",
-          "product_info.txt"
-        ],
-        "other_resources": True
-      },
-      {
-        "type": "employee",
-  
-        "two_factor_authentication": True,
-        "multi_factor_authentication": False,
-        "security_monitoring": True,
-        "data_privacy_policy": True,
-        "secure_file_uploads": True,
-        "secure_file_uploads_policies": {
-          "properties": {
-            "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
-            "malware_scan": True,
-            "audit_logging": True,
-            "encryption": {
-              "in_transit": True,
-              "at_rest": True
-            }
-          }
-        },
-        "ssl_encryption_required": True,
-        "permissions": ["read", "write", "create"],
-        "explicite_allowed_resources": [
-          "sales.txt",
-          "reports.txt",
-          "product_info.txt"
-        ],
-        "other_resources": False
-      },
-      {
-        "type": "customer",
-  
-        "two_factor_authentication": True,
-        "multi_factor_authentication": True,
-        "security_monitoring": True,
-        "data_privacy_policy": True,
-        "secure_file_uploads": False,
-        "secure_file_uploads_policies": {
-          "properties": {
-            "secure_file_name": [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"],
-            "malware_scan": True,
-            "audit_logging": True,
-            "encryption": {
-              "in_transit": True,
-              "at_rest": True
-            }
-          }
-        },
-        "ssl_encryption_required": True,
-        "permissions": ["read"],
-        "explicite_allowed_resources": ["product_info.txt", "userId_info.txt"],
-        "other_resources": False
-      }
-    ]
-}
 
 @app.route('/main_method')
 def main_method():
@@ -188,70 +104,7 @@ def get_random_instance():
     except Exception as e:
       return jsonify({"error": str(e)}), 500
     
-def check_policy_violation(instance):
-    violations = {}
-    k=instance["type"]
-    desired_users = [user for user in rules["users"] if user["type"] == k]
- 
-    
-    # Iterate over the rules for each user type
-    for user_rule in desired_users:
-            if user_rule["two_factor_authentication"] != instance["two_factor_authentication"]:
-                violations["two_factor_authentication"]=instance["two_factor_authentication"]
-            if user_rule["multi_factor_authentication"] != instance["multi_factor_authentication"]:
-                violations["multi_factor_authentication"]=instance["multi_factor_authentication"]    
-            if user_rule["security_monitoring"] != instance["security_monitoring"]:
-                violations["security_monitoring"]=instance["security_monitoring"]
-            if user_rule["data_privacy_policy"] != instance["data_privacy_policy"]:
-                violations["data_privacy_policy"]=instance["data_privacy_policy"]
-            
-            
-            
-            for i in user_rule["secure_file_uploads_policies"]:
-                for j in user_rule["secure_file_uploads_policies"][i]:
-                    fname="secure_file_uploads_policies"
-                    fname=fname+"__"+i
-                    fname=fname+"__"+j
 
-                    if(j=="secure_file_name"):
-                      last_exe=instance[fname].split('.')
-                      extension="."+last_exe[-1]
-                      if extension not in [".txt", ".csv", ".xlsx", ".pdf",".img",".png",".jpeg",".mp4"]:
-                          violations[fname]=instance[fname]
-                    if(j=="malware_scan" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
-                        violations[fname]=instance[fname]
-                    if(j=="audit_logging" and user_rule["secure_file_uploads_policies"][i][j]!=instance[fname]):
-                        violations[fname]=instance[fname]
-                    if(j=="encryption"):
-                      for k in user_rule["secure_file_uploads_policies"][i][j]:
-                        fname="secure_file_uploads_policies"
-                        fname=fname+"__"+i
-                        fname=fname+"__"+j
-                        fname=fname+"__"+k
-                        if(user_rule["secure_file_uploads_policies"][i][j][k]!=instance[fname]):
-                            violations[fname]=instance[fname]
-    
-            if "ssl_encryption_required" in user_rule and user_rule["ssl_encryption_required"] != instance["ssl_encryption_required"]:
-                violations["ssl_encryption_required"]=instance["ssl_encryption_required"]
-            
-            if "permissions" in user_rule and any(permission not in user_rule["permissions"] for permission in instance["permissions"]):
-                violations["permissions"]=instance["permissions"]
-            if "explicite_allowed_resources" in user_rule and instance["explicite_allowed_resources"] not in user_rule["explicite_allowed_resources"]:
-                violations["explicite_allowed_resources"]=instance["explicite_allowed_resources"]
-   
-    return violations
-
-def detect_user(instance):
-    new_instance={}
-    for key, value in instance.items():
-        new_instance[key] = value
-    
-    violated_polices={}
-    violations=check_policy_violation(instance)
-    
-    new_instance["violated_policies"]=violations
-    
-    return new_instance
 
 def score_calculation(instance):
     instance=detect_user(instance)
@@ -373,29 +226,6 @@ def load_model(device_type, model_id, model_basename=None):
     logging.info("Local LLM Loaded")
 
     return local_llm
-  
-def context_gen(instance):
-    print(instance)
-    explanation_paragraph = (
-    f"The information displayed in the 'client' field is denoted as '{instance['client_id']}' and the timestamp is indicated by 'datetime' as '{instance['date_time']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_system_specs']}'."
-    f"Categorized as '{instance['type']}', this instance's two-factor authentication is {'enabled' if instance['two_factor_authentication'] else 'disabled'}, and multi-factor authentication is {'enabled' if instance['multi_factor_authentication'] else 'disabled'}. The utilization of 'security_monitoring' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}, along with a data privacy policy that is {'enabled' if instance['data_privacy_policy'] else 'disabled'}. The setting for 'secure_file_uploads' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}. The specified 'secure_file_name' is '{instance['secure_file_uploads_policies__properties__secure_file_name']}' and the malware scan feature is {'enabled' if instance['secure_file_uploads_policies__properties__malware_scan'] else 'disabled'}. The option for 'audit_logging' is {'enabled' if instance['secure_file_uploads_policies__properties__audit_logging'] else 'disabled'}."
-    f"The status of 'Encryption in transit' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__in_transit'] else 'disabled'}, and 'encryption at rest' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__at_rest'] else 'disabled'}. Additionally, 'SSL encryption' is {'enabled' if instance['ssl_encryption_required'] else 'disabled'}. The permissions are listed as '{instance['permissions']}' and the explicitly allowed resources are '{instance['explicite_allowed_resources']}'. The availability of 'other_resources' is {'enabled' if instance['other_resources'] else 'disabled'}. The HTTP 'status_code' '{instance['status_code']}' reflects the specific status of the HTTP request."
-    f"Notably, the 'violated_polices' section highlights that '{instance['violated_policies']}' policies were breached.")
-    
-    return explanation_paragraph
-
-def find_violated_polices(instance):
-    violated_policies = instance['violated_policies']
-    return violated_policies
-
-def rule_gen(instance):
-    keys=find_violated_polices(instance).keys()
-    rules={}
-    for key in keys:
-        rules[key]=security_attacks[key]
-    print(rules)
-    rules=json.dumps(rules)
-    return rules
 
 @click.command()
 @click.option(
@@ -457,7 +287,7 @@ def temp():
     # ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
     # model_id = "TheBloke/wizardLM-7B-GPTQ"
     # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
-    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_id = "TheBloke/EverythingLM-13B-16K-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
@@ -476,58 +306,21 @@ just say that you don't know, don't try to make up an answer.{context} {history}
     )
     logging.info(f" 259 - qa instance made")
     query=data
-    instance=detect_user(query)
-    # print(instance)
-    context=context_gen(instance)
-    # print(context)
-    rules=rule_gen(instance)
-    question="Based on context given rules to be followed, what are the security policy violations?"
+   
+    context=json.dumps(query)
+   
+    rules=json.dumps(policies)
+
+    question="Based on context given policies to be followed, what are the policy violations?"
     logging.info(f" success - question generated")
   
-    data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
-   
+    data_prompt='Context: '+context+'\n'+'History: '+rules+'\n'+'Question: '+question+'\n'
+    print(data_prompt)
     res = qa(data_prompt)
     answer, docs = res["result"], res["source_documents"]
     logging.info(f" 261 - qa analyzed answer")
     print(f"*********************{answer}")
     return jsonify({"answer":answer})
-
-@app.route('/testing')
-def testing():
-    testData = {
-    "random_instance_data": {
-        "_id": "64d0eb1d797d10ff6acb5d72",
-        "client_id": "46.209.150.50",
-        "data_privacy_policy": "true",
-        "date_time": "22/Jan/2019:12:46:43 +0330",
-        "explicite_allowed_resources": "userId_info.txt",
-        "method": "PUT",
-        "multi_factor_authentication": "false",
-        "other_resources": "false",
-        "permissions": "none",
-        "referer": "https://www.instagram.com/",
-        "request": "https://api.flipkart.com/reports.txt/gallery?client_type=tier3&client_id=8538",
-        "secure_file_uploads": "true",
-        "secure_file_uploads_policies_properties_audit_logging": "false",
-        "secure_file_uploads_policies_propertiesencryption_at_rest": "true",
-        "secure_file_uploads_policies_propertiesencryption_in_transit": "true",
-        "secure_file_uploads_policies_properties_malware_scan": "true",
-        "secure_file_uploads_policies_properties_sandboxing": "true",
-        "secure_file_uploads_policies_properties_secure_file_name": "brave_world.jpeg",
-        "security_monitoring": "true",
-        "size": 452,
-        "ssl_encryption_required": "true",
-        "status_code": 200,
-        "two_factor_authentication": "true",
-        "type": "customer",
-        "user_system_specs": "Linux"
-    },
-    "temp_data": {
-            "answer": " I'm just an AI, I don't have access to external information or systems, so I can't provide you with the exact password policy for Flipkart. Additionally, it is not appropriate or ethical to share or use someone else's password policies without proper authorization. It is important to respect the security and privacy of others' systems and data. If you have any other questions or concerns, feel free to ask!"
-    }
-    }
-    
-    return jsonify(testData)
 
 if __name__ == '__main__':
     logging.basicConfig(

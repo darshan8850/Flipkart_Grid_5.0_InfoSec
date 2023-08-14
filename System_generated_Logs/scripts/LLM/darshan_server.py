@@ -139,6 +139,80 @@ rules= {
     ]
 }
 
+policy_score={
+    "policies": [
+      {
+        "name": "admin",
+        "properties": {
+          "two_factor_authentication": 9,
+          "multi_factor_authentication": 9,
+          "security_monitoring": 10,
+          "data_privacy_policy": 10,
+          "secure_file_uploads": 8,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 7,
+            "malware_scan": 8,
+            "audit_logging": 9,
+            "sandboxing": 8,
+            "encryption": {
+              "in_transit": 10,
+              "at_rest": 9
+            }
+          },
+          "ssl_encryption_required": 8,
+          "permissions": 9,
+          "explicite_allowed_resources": 7,
+          "other_resources": 6
+        }
+      },
+      {
+        "name": "employee",
+        "properties": {
+          "two_factor_authentication": 8,
+          "multi_factor_authentication": 5,
+          "security_monitoring": 7,
+          "data_privacy_policy": 7,
+          "secure_file_uploads": 6,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 5,
+            "malware_scan": 6,
+            "audit_logging": 6,
+            "encryption": {
+              "in_transit": 8,
+              "at_rest": 7
+            }
+          },
+          "ssl_encryption_required": 7,
+          "permissions": 6,
+          "explicite_allowed_resources": 5,
+          "other_resources": 3
+        }
+      },
+      {
+        "name": "customer",
+        "properties": {
+          "two_factor_authentication": 7,
+          "security_monitoring": 6,
+          "data_privacy_policy": 5,
+          "secure_file_uploads": 3,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 4,
+            "malware_scan": 6,
+            "audit_logging": 5,
+            "encryption": {
+              "in_transit": 7,
+              "at_rest": 7
+            }
+          },
+          "ssl_encryption_required": 5,
+          "permissions": 4,
+          "explicite_allowed_resources": 4,
+          "other_resources": 3
+        }
+      }
+    ]
+  }
+
 @app.route('/main_method')
 def main_method():
     try:
@@ -189,10 +263,11 @@ def check_policy_violation(instance):
     violations = {}
     k=instance["type"]
     desired_users = [user for user in rules["users"] if user["type"] == k]
- 
+
     
     # Iterate over the rules for each user type
     for user_rule in desired_users:
+            
             if user_rule["two_factor_authentication"] != instance["two_factor_authentication"]:
                 violations["two_factor_authentication"]=instance["two_factor_authentication"]
             if user_rule["multi_factor_authentication"] != instance["multi_factor_authentication"]:
@@ -249,6 +324,22 @@ def detect_user(instance):
     new_instance["violated_policies"]=violations
     
     return new_instance
+
+def score_calculation(instance):
+    instance = detect_user(instance)
+
+    violated_policies = instance['violated_policies']
+    score = 0
+
+    user_type = instance['type']
+    l=len(violated_policies)
+    for policy in policy_score['policies']:
+        if policy['name'] == user_type:
+            for violation in violated_policies:
+                if violation in policy['properties']:
+                    score += policy['properties'][violation]
+
+    return score/l
 
 def load_model(device_type, model_id, model_basename=None):
     """
@@ -456,6 +547,7 @@ just say that you don't know, don't try to make up an answer.{context} {history}
     )
     logging.info(f" 259 - qa instance made")
     query=data
+    sverity_score=score_calculation(query)
     instance=detect_user(query)
     # print(instance)
     context=context_gen(instance)

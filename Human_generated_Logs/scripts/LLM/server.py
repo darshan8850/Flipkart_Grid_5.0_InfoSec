@@ -32,7 +32,7 @@ mongo_connection_string = 'mongodb+srv://mrunal21:mrunal21@cluster0.eugjmpy.mong
 prompt = "what are security policy violations in this?"
 client = MongoClient(mongo_connection_string)
 mongoDB = client['violatedData']
-collection_datasets = mongoDB['datasets']
+collection_datasets = mongoDB['customer']
 collection_analyzed = mongoDB['analyzed']
 
 device_type="cpu"

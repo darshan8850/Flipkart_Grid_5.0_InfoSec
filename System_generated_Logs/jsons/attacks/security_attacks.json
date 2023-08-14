@@ -60,14 +60,14 @@
       "Insider_Threats": "Malicious insiders misuse access and tamper with logs.",
       "Retention_Policy_Violation": "Failure to retain logs as per policy leads to data gaps."
     },
-    "secure_file_uploads_policies__properties__encryption_in_transit": {
+    "secure_file_uploads_policies__properties__encryption__in_transit": {
       "Data_Interception": "Attackers intercept unencrypted data, leading to data theft.",
       "Data_Exposure": "Unauthorized access to unencrypted storage exposes data.",
       "Key_Theft": "Attackers steal encryption keys to decrypt data.",
       "Misconfigured_Encryption": "Improper encryption settings lead to data leakage.",
       "Weak_Encryption": "Use of weak encryption algorithms facilitates decryption."
     },
-    "secure_file_uploads_policies__properties__encryption_at_rest": {
+    "secure_file_uploads_policies__properties__encryption__at_rest": {
       "Data_Interception": "Attackers intercept unencrypted data, leading to data theft.",
       "Data_Exposure": "Unauthorized access to unencrypted storage exposes data.",
       "Key_Theft": "Attackers steal encryption keys to decrypt data.",

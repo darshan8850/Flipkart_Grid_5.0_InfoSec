@@ -51,7 +51,10 @@ with open(file_path, 'r') as json_file:
 #     instances = json.load(json_file)    
 # instance=instances['instance_0']
 
-#flask
+file_path = 'Flipkart_Grid_5.0_InfoSec/System_generated_Logs/jsons/scores/severity.json'
+
+with open(file_path, 'r') as json_file:
+    policy_score = json.load(json_file)
 
 
 rules= {
@@ -249,6 +252,23 @@ def detect_user(instance):
     new_instance["violated_policies"]=violations
     
     return new_instance
+
+def score_calculation(instance):
+    instance=detect_user(instance)
+    tier=instance['type']
+    violated_policies=instance['violated_policies']
+    score=0
+    for i in policy_score["policies"]:
+        if(i["name"]==tier):
+            policy_score_list=i
+    
+    
+    for key in violated_policies.keys():
+        if key in policy_score_list.keys():
+            score+=policy_score_list[key]
+    return score
+        
+        
 
 def load_model(device_type, model_id, model_basename=None):
     """

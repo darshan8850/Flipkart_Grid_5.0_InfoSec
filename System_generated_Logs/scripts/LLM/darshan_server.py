@@ -437,8 +437,8 @@ def temp():
     # ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
     # model_id = "TheBloke/wizardLM-7B-GPTQ"
     # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
-    model_id = "TheBloke/llama2_70b_chat_uncensored-GPTQ"
-    model_basename = "gptq_model-4bit--1g.safetensors"
+    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
 just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""

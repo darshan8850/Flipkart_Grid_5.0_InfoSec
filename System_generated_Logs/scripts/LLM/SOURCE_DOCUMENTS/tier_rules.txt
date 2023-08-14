@@ -1,0 +1,60 @@
+If user type is tier 1 or admin and to check his violation and policies following condition should be satisfied: 
+  
+  two_factor_authentication must be true,
+  multi_factor_authentication must be true,
+  security_monitoring must be true,
+  data_privacy_policy must be true,
+  secure_file_uploads must be true,
+  secure_file_uploads_policies_properties_secure_file_name must have extension .txt or .csv or .xlsx or .pdf or .img or .png or .jpeg or .mp4
+  secure_file_uploads_policies_properties_malware_scan must be true
+  secure_file_uploads_policies_properties_audit_logging must be true
+  secure_file_uploads_policies_properties_encrytion_in_transit must be true
+  secure_file_uploads_policies_properties_encryption_at_rest must be true 
+  ssl_encryption_required must be true
+  permissions should be read or write or create or delete
+  explicite_allowed_resources should be sensitve_data.txt or sales.txt or reports.txt or product_info.txt
+  other_resources should be true
+
+  
+  
+If user type is tier 2 or employee and to check his violation and policies following condition should be satisfied: 
+  
+  two_factor_authentication must be true,
+  multi_factor_authentication must be false,
+  security_monitoring must be true,
+  data_privacy_policy must be true,
+  secure_file_uploads must be true,
+  secure_file_uploads_policies_properties_secure_file_name must have extension .txt or .csv or .xlsx or .pdf or .img or .png or .jpeg or .mp4
+  secure_file_uploads_policies_properties_malware_scan must be true
+  secure_file_uploads_policies_properties_audit_logging must be true
+  secure_file_uploads_policies_properties_encrytion_in_transit must be true
+  secure_file_uploads_policies_properties_encryption_at_rest must be true 
+  ssl_encryption_required must be true
+  permissions should be read or write or create 
+  explicite_allowed_resources should be sensitive_data.txt or sales.txt or reports.txt or product_info.txt
+  other_resources should be false
+
+
+If user type is tier 3 or customer and to check his violation and policies following condition should be satisfied: 
+  
+  two_factor_authentication must be true,
+  security_monitoring must be true,
+  data_privacy_policy must be true,
+  secure_file_uploads must be false,
+  secure_file_uploads_policies_properties_secure_file_name must have extension .txt or .csv or .xlsx or .pdf or .img or .png or .jpeg or .mp4
+  secure_file_uploads_policies_properties_malware_scan must be true
+  secure_file_uploads_policies_properties_audit_logging must be true
+  secure_file_uploads_policies_properties_encrytion_in_transit must be true
+  secure_file_uploads_policies_properties_encryption_at_rest must be true 
+  ssl_encryption_required must be true
+  permissions should be read only
+  explicite_allowed_resources should be product_info.txt or user_Id_info.txt
+  other_resources should be false
+
+  
+  
+  
+
+  
+  
+  

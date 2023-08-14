@@ -38,9 +38,10 @@ collection_analyzed = mongoDB['analyzed']
 device_type="cpu"
 show_sources="True"
 data=""
-answer=""
+query=""
 
-file_path = 'jsons/attacks/security_attacks.json'
+
+file_path = 'Flipkart_Grid_5.0_InfoSec/System_generated_Logs/jsons/attacks/security_attacks.json'
 
 with open(file_path, 'r') as json_file:
     security_attacks = json.load(json_file)
@@ -148,14 +149,16 @@ def main_method():
         if random_instance_response.status_code != 200:
             return jsonify({"error": "Failed to fetch random instance data"}), random_instance_response.status_code
         
+        
+        
         if temp_response.status_code != 200:
             return jsonify({"error": "Failed to fetch temp data"}), temp_response.status_code 
         
         random_instance_data = random_instance_response.json()
         temp_data = temp_response.json()
    
-        print(random_instance_data)
-        print(temp_data)
+        # print(random_instance_data)
+        # print(temp_data)
         combined_data = {"random_instance_data": random_instance_data, "temp_data": temp_data}
         return jsonify(combined_data)
     
@@ -175,13 +178,8 @@ def get_random_instance():
       result_list = list(result)
       random_instance = result_list[0]
       random_instance['_id'] = str(random_instance['_id'])
-
-      instance=detect_user(instance)
-      context=context_gen(instance)
-      rules=rule_gen(instance)
-      question=" "
       global data
-      data=json.dumps(random_instance)
+      data=random_instance
       logging.info('random_instance')    
       return jsonify(random_instance)
     except Exception as e:
@@ -277,7 +275,7 @@ def load_model(device_type, model_id, model_basename=None):
         if ".ggml" in model_basename:
             logging.info("Using Llamacpp for GGML quantized models")
             model_path = hf_hub_download(repo_id=model_id, filename=model_basename)
-            max_ctx_size = 2048
+            max_ctx_size = 4000
             kwargs = {
                 "model_path": model_path,
                 "n_ctx": max_ctx_size,
@@ -344,7 +342,7 @@ def load_model(device_type, model_id, model_basename=None):
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_length=2048,
+        max_length=4000,
         temperature=0,
         top_p=0.95,
         repetition_penalty=1.15,
@@ -357,11 +355,11 @@ def load_model(device_type, model_id, model_basename=None):
     return local_llm
   
 def context_gen(instance):
-
+    print(instance)
     explanation_paragraph = (
-    f"The information displayed in the 'client' field is denoted as '{instance['client']}' and the timestamp is indicated by 'datetime' as '{instance['datetime']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_agent']}'."
+    f"The information displayed in the 'client' field is denoted as '{instance['client_id']}' and the timestamp is indicated by 'datetime' as '{instance['date_time']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_system_specs']}'."
     f"Categorized as '{instance['type']}', this instance's two-factor authentication is {'enabled' if instance['two_factor_authentication'] else 'disabled'}, and multi-factor authentication is {'enabled' if instance['multi_factor_authentication'] else 'disabled'}. The utilization of 'security_monitoring' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}, along with a data privacy policy that is {'enabled' if instance['data_privacy_policy'] else 'disabled'}. The setting for 'secure_file_uploads' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}. The specified 'secure_file_name' is '{instance['secure_file_uploads_policies__properties__secure_file_name']}' and the malware scan feature is {'enabled' if instance['secure_file_uploads_policies__properties__malware_scan'] else 'disabled'}. The option for 'audit_logging' is {'enabled' if instance['secure_file_uploads_policies__properties__audit_logging'] else 'disabled'}."
-    f"The status of 'Encryption in transit' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__in_transit'] else 'disabled'}, and 'encryption at rest' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__at_rest'] else 'disabled'}. Additionally, 'SSL encryption' is {'enabled' if instance['ssl_encryption_required'] else 'disabled'}. The permissions are listed as '{instance['permissions']}' and the explicitly allowed resources are '{instance['explicite_allowed_resources']}'. The availability of 'other_resources' is {'enabled' if instance['other_resources'] else 'disabled'}. The HTTP 'status_code' '{instance['status']}' reflects the specific status of the HTTP request."
+    f"The status of 'Encryption in transit' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__in_transit'] else 'disabled'}, and 'encryption at rest' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__at_rest'] else 'disabled'}. Additionally, 'SSL encryption' is {'enabled' if instance['ssl_encryption_required'] else 'disabled'}. The permissions are listed as '{instance['permissions']}' and the explicitly allowed resources are '{instance['explicite_allowed_resources']}'. The availability of 'other_resources' is {'enabled' if instance['other_resources'] else 'disabled'}. The HTTP 'status_code' '{instance['status_code']}' reflects the specific status of the HTTP request."
     f"Notably, the 'violated_polices' section highlights that '{instance['violated_policies']}' policies were breached.")
     
     return explanation_paragraph
@@ -375,6 +373,8 @@ def rule_gen(instance):
     rules={}
     for key in keys:
         rules[key]=security_attacks[key]
+    print(rules)
+    rules=json.dumps(rules)
     return rules
 
 @click.command()
@@ -413,6 +413,7 @@ def rule_gen(instance):
     help="Show sources along with answers (Default is False)",
 )
 
+    
 @app.route('/temp')
 def temp():
     logging.info(f"Running on: {device_type}")
@@ -425,8 +426,19 @@ def temp():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Llama-2-7B-Chat-GGML"
-    model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+    #model_id = "TheBloke/Llama-2-7B-Chat-GGML"
+    #model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+    
+    # for GPTQ (quantized) models
+    #model_id = "TheBloke/Nous-Hermes-13B-GPTQ"
+    #model_basename = "nous-hermes-13b-GPTQ-4bit-128g.no-act.order"
+    #model_id = "TheBloke/WizardLM-30B-Uncensored-GPTQ"
+    #model_basename = "WizardLM-30B-Uncensored-GPTQ-4bit.act-order.safetensors" # Requires
+    # ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
+    # model_id = "TheBloke/wizardLM-7B-GPTQ"
+    # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
+    model_id = "TheBloke/llama2_70b_chat_uncensored-GPTQ"
+    model_basename = "gptq_model-4bit--1g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
 just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""
@@ -443,9 +455,21 @@ just say that you don't know, don't try to make up an answer.{context} {history}
         chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
     logging.info(f" 259 - qa instance made")
-    res = qa(data)
+    query=data
+    instance=detect_user(query)
+    # print(instance)
+    context=context_gen(instance)
+    # print(context)
+    rules=rule_gen(instance)
+    question="Based on context given rules to be followed, what are the security policy violations?"
+    logging.info(f" success - question generated")
+  
+    data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
+   
+    res = qa(data_prompt)
     answer, docs = res["result"], res["source_documents"]
     logging.info(f" 261 - qa analyzed answer")
+    print(f"*********************{answer}")
     return jsonify({"answer":answer})
 
 @app.route('/testing')
@@ -485,7 +509,6 @@ def testing():
     
     return jsonify(testData)
 
-# flask
 if __name__ == '__main__':
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s", level=logging.INFO

@@ -1,0 +1,74 @@
+{
+    "policies": [
+      {
+        "name": "Tier 1",
+        "properties": {
+          "two_factor_authentication": 9,
+          "multi_factor_authentication": 9,
+          "security_monitoring": 10,
+          "data_privacy_policy": 10,
+          "secure_file_uploads": 8,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 7,
+            "malware_scan": 8,
+            "audit_logging": 9,
+            "sandboxing": 8,
+            "encryption": {
+              "in_transit": 10,
+              "at_rest": 9
+            }
+          },
+          "ssl_encryption_required": 8,
+          "permissions": 9,
+          "explicite_allowed_resources": 7,
+          "other_resources": 6
+        }
+      },
+      {
+        "name": "Tier 2",
+        "properties": {
+          "two_factor_authentication": 8,
+          "multi_factor_authentication": 5,
+          "security_monitoring": 7,
+          "data_privacy_policy": 7,
+          "secure_file_uploads": 6,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 5,
+            "malware_scan": 6,
+            "audit_logging": 6,
+            "encryption": {
+              "in_transit": 8,
+              "at_rest": 7
+            }
+          },
+          "ssl_encryption_required": 7,
+          "permissions": 6,
+          "explicite_allowed_resources": 5,
+          "other_resources": 3
+        }
+      },
+      {
+        "name": "Tier 3",
+        "properties": {
+          "two_factor_authentication": 7,
+          "security_monitoring": 6,
+          "data_privacy_policy": 5,
+          "secure_file_uploads": 3,
+          "secure_file_uploads_policies": {
+            "secure_file_name": 4,
+            "malware_scan": 6,
+            "audit_logging": 5,
+            "encryption": {
+              "in_transit": 7,
+              "at_rest": 7
+            }
+          },
+          "ssl_encryption_required": 5,
+          "permissions": 4,
+          "explicite_allowed_resources": 4,
+          "other_resources": 3
+        }
+      }
+    ]
+  }
+  

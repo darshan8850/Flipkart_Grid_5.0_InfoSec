@@ -42,7 +42,7 @@ mongo_connection_string = 'mongodb+srv://mrunal21:mrunal21@cluster0.eugjmpy.mong
 client = MongoClient(mongo_connection_string)
 mongoDB = client['violatedData']
 collection_datasets = mongoDB['datasets']
-collection_analyzed = mongoDB['analyzed']
+collection_customer = mongoDB['customer']
 
 rules= {
     "users": [
@@ -211,6 +211,7 @@ file_path = './System_generated_Logs/jsons/attacks/security_attacks.json'
 with open(file_path, 'r') as json_file:
     security_attacks = json.load(json_file)
 
+# For System Logs
 #step 1 - get random instance
 @app.route('/random_instance', methods=['GET'])
 def get_random_instance():
@@ -543,6 +544,21 @@ def fetch_llm_response():
     answer, docs = res["result"], res["source_documents"]
     logging.info(f"QA analyzed answer")
     return jsonify({"answer":answer})
+
+# For Customer
+# step 1 - fetch customer-cr details 
+@app.route('/customer_random_instance') 
+def customer_random_instace(): 
+  try:
+      pipeline = [
+        {"$sample": {"size": 1}}
+      ]
+      result_list = list(collection_customer.aggregate(pipeline))
+      random_instance = result_list[0]
+      random_instance['_id'] = str(random_instance['_id'])
+      return jsonify(random_instance)
+  except Exception as e: 
+    return jsonify({"error in customer random instance": str(e)}), 500  
 
 # testing
 @app.route('/test', methods=['POST'])

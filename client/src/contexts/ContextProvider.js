@@ -6,6 +6,12 @@ export const ContextProvider = ({ children }) => {
   const currentColor = '#047bd5';
   const activeMenu = true
 
+  const [answer, setAnswer] = useState()
+  const [showAnswer, setShowAnswer] = useState(false)
+
+  const [moreInfo, setMoreInfo] = useState()
+  const [showMoreInfo, setShowMoreInfo] = useState(false)
+
   const [log, setLog] = useState({})
   const [showLog, setShowLog] = useState(false)
 
@@ -16,22 +22,16 @@ export const ContextProvider = ({ children }) => {
 
   const [showAlert, setShowAlert] = useState(false)
 
-  const [answer, setAnswer] = useState()
-  const [showAnswer, setShowAnswer] = useState(false)
+  const [customerLog, setCustomerLog] = useState({})
+  const [showCustomerLog, setShowCustomerLog] = useState(false)
 
-  const [secMeasures, setSecMeasures] = useState()
-  const [showSecMeasures, setShowSecMeasures] = useState(false)
-
-  const [lastLogs, setLastLogs] = useState([])
-  const [showLastLog, setShowLastLog] = useState(false)
-
-  const [flag, setFlag] = useState(false)
+  const [showButtons, setShowButtons] = useState(false)
 
 
-  // workflow - 1
+  // workflow - 1 ( For system generated log )
   function fetchLog() {
     setShowAnswer(false)
-    setShowSecMeasures(false)
+    setMoreInfo(false)
     fetch('/random_instance')
       .then((res) => res.json())
       .then((entries) => {
@@ -61,7 +61,6 @@ export const ContextProvider = ({ children }) => {
   }
 
   function getPromptAndRes(entries) {
-    console.log(typeof (entries))
     fetch('/create_prompt', {
       method: 'POST',
       headers: {
@@ -81,7 +80,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function fetchLlmResponse(prompt) {
-    fetch('/fetch_llm_response', {
+    fetch('/test', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -93,21 +92,18 @@ export const ContextProvider = ({ children }) => {
         setShowAlert(false)
         setAnswer(analyzedAns.answer)
         setShowAnswer(true)
+        setShowButtons(true)
       })
       .catch((e) => {
         console.error("fetch LLM Response - " + e)
       })
   }
 
-  // work flow - 2
-  function blockInstance() {
-  
-  }
-
   function knowMore() {
+    setShowAlert(true)
     if (answer) {
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/fetch_llm_response', {
+      fetch('/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
@@ -116,10 +112,9 @@ export const ContextProvider = ({ children }) => {
       })
         .then((res) => res.json())
         .then((analyzedAns) => {
-          console.log(prompt)
-          console.log(analyzedAns)
-          setSecMeasures(analyzedAns.answer)
-          setShowSecMeasures(true)
+          setMoreInfo(analyzedAns.answer)
+          setShowMoreInfo(true)
+          setShowAlert(false)
         })
         .catch((e) => {
           console.error("fetch LLM Response - " + e)
@@ -127,21 +122,40 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  // workflow - 2 ( For customer log)
+  function fetchCustomerLog() {
+    setShowAnswer(false)
+    setShowMoreInfo(false)
+    fetch('/customer_random_instance')
+      .then((res) => res.json())
+      .then((entries) => {
+        setCustomerLog(entries)
+        setShowCustomerLog(true)
+        getCustomerPromptAndRes(entries)
+      })
+  }
+
+  function getCustomerPromptAndRes(entries) {
+    let prompt = `convo: ${entries.log_transcript} \n 
+    rules: ${entries.log_rules} \n question: Is there any violations 
+    in the given convo for rules mentioned ?`
+    fetchLlmResponse(prompt)
+  }
+
   return (
     <StateContext.Provider value={{
       currentColor, activeMenu,
       showModal, setShowModal,
       log, showLog,
-      lastLogs, showLastLog,
-      showSecMeasures, setShowSecMeasures,
       severityScore, setSeverityScore,
       showSeveritySore, setShowSeveritySore,
       showAlert, setShowAlert,
       answer, setAnswer,
       showAnswer, knowMore,
-      secMeasures, setSecMeasures,
-      flag, setFlag,
-      fetchLog
+      moreInfo, setMoreInfo,
+      showMoreInfo, setShowMoreInfo,
+      fetchLog,
+      fetchCustomerLog, showCustomerLog , customerLog, showButtons, setShowButtons
     }}>
       {children}
     </StateContext.Provider>

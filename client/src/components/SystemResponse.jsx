@@ -3,13 +3,11 @@ import Button from 'react-bootstrap/Button'
 import { DetailsModal, ProgressBar } from './componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
-import Badge from 'react-bootstrap/Badge'
 
-const Response = () => {
+const SystemResponse = () => {
   const {
     showModal,
     setShowModal,
-    showSecMeasures,
     log,
     severityScore,
     showSeveritySore,
@@ -17,7 +15,9 @@ const Response = () => {
     showAnswer,
     fetchLog,
     knowMore,
-    secMeasures,
+    moreInfo,
+    showMoreInfo
+    
   } = useStateContext()
 
   const col_class = 'col-2 border text-primary text-center p-1'
@@ -28,8 +28,8 @@ const Response = () => {
       <div className=" rounded bg-body-tertiary p-4 m-3" id="response-div">
         <span className="fs-5">Instance</span>
         {showSeveritySore && (
-          <>
-            <div id="progress-bar" className="d-flex gap-3 pt-2">
+          <div className='d-flex justify-content-between'>
+            <div id="progress-bar" className="d-flex gap-3 pt-2 w-50">
               <p>Severity Score</p>
               {severityScore}{' '}
               <ProgressBar
@@ -37,7 +37,15 @@ const Response = () => {
                 ariaLabel="Info example"
               />
             </div>
-          </>
+
+            <div>
+              <ButtonGroup size="sm" className="">
+                <Button>Block</Button>
+                <Button onClick={knowMore}>Know More</Button>
+                <Button onClick={fetchLog}>Next</Button>
+              </ButtonGroup>
+            </div>
+          </div>
         )}
 
         <div className=" p-2">
@@ -73,34 +81,24 @@ const Response = () => {
           {showAnswer && (
             <>
               <div class="row">
-                <div class="col-10 text-center border text-primary p-1">
+                <div class="col-12 text-center border text-primary p-1">
                   <span class="fs-6">Analyzed Answer</span>
-                </div>
-                <div class="col-2 text-center border text-primary p-1">
-                  <span class="fs-6">Actions</span>
                 </div>
               </div>
               <div className="row">
-                <div class="col-10 border p-4">{answer}</div>
-                <div class="col-2 border p-4">
-                  <ButtonGroup size="sm" className="mt-3">
-                    <Button>Block</Button>
-                    <Button onClick={knowMore}>Know More</Button>
-                    <Button onClick={fetchLog}>Next</Button>
-                  </ButtonGroup>
-                </div>
+                <div class="col-12 border p-4">{answer}</div>
               </div>
             </>
           )}
-          {showSecMeasures && (
+          {showMoreInfo && (
             <>
-              <div class="row mt-3">
+              <div class="row">
                 <div class="col-12 text-center border text-primary p-1">
                   <span class="fs-6">Security Measures</span>
                 </div>
               </div>
               <div className="row">
-                <div class="col-12 border p-4">{secMeasures}</div>
+                <div class="col-12 border p-4">{moreInfo}</div>
               </div>
             </>
           )}
@@ -110,4 +108,4 @@ const Response = () => {
   )
 }
 
-export default Response
+export default SystemResponse

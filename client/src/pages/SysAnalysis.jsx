@@ -1,6 +1,6 @@
 import React from 'react'
 import Alert from 'react-bootstrap/Alert'
-import { Response } from '../components/componentIndex'
+import { SystemResponse } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 
 const SysAnalysis = () => {
@@ -58,7 +58,7 @@ const SysAnalysis = () => {
             className=" m-2 overflow-auto "
             style={{ widht: '90vw', height: '85%' }}
           >
-            {showLog && <Response />}
+            {showLog && <SystemResponse />}
           </div>
         </div>
       </div>

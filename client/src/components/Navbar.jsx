@@ -2,12 +2,14 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <div className="w-full h-12 p-3 dark:bg-secondary-dark-bg max-w-full fixed md:static navbar drop-shadow bg-white">
-      <p>
-        Compliance Monitoring and Enforcement through Log Analysis using Large
-        Language Models ( Infosec Engineering)
-      </p>
-    </div>
+    <nav class="navbar bg-body shadow-sm">
+      <div class="container-fluid ">
+        <h6 className='m-2'>
+          Compliance Monitoring and Enforcement through Log Analysis using Large
+          Language Models ( Infosec Engineering)
+        </h6>
+      </div>
+    </nav>
   )
 }
 

@@ -1,39 +1,150 @@
-import React, { createContext, useContext, useState } from 'react';
-
+import React, { createContext, useContext, useEffect, useState } from 'react';
 const StateContext = createContext();
 
-const initialState = {
-    chat: false,
-    cart: false,
-    userProfile: false,
-    notification: false,
-};
 export const ContextProvider = ({ children }) => {
-    const [screenSize, setScreenSize] = useState(undefined);
-    const [currentColor, setCurrentColor] = useState('#047bd5');
-    const [currentMode, setCurrentMode] = useState('Light');
-    const [themeSettings, setThemeSettings] = useState(false);
-    const [activeMenu, setActiveMenu] = useState(true);
-    const [isClicked, setIsClicked] = useState(initialState);
 
-    const setMode = (e) => {
-        setCurrentMode(e.target.value);
-        localStorage.setItem('themeMode', e.target.value);
-    };
+  const currentColor = '#047bd5';
+  const activeMenu = true
 
-    const setColor = (color) => {
-        setCurrentColor(color);
-        localStorage.setItem('colorMode', color);
-    };
+  const [log, setLog] = useState({})
+  const [showLog, setShowLog] = useState(false)
 
-    const handleClick = (clicked) => setIsClicked({ ...initialState, [clicked]: true });
+  const [severityScore, setSeverityScore] = useState(0)
+  const [showSeveritySore, setShowSeveritySore] = useState(false)
 
-    return (
-        // eslint-disable-next-line react/jsx-no-constructed-context-values
-        <StateContext.Provider value={{ currentColor, currentMode, activeMenu, screenSize, setScreenSize, handleClick, isClicked, initialState, setIsClicked, setActiveMenu, setCurrentColor, setCurrentMode, setMode, setColor, themeSettings, setThemeSettings }}>
-            {children}
-        </StateContext.Provider>
-    );
+  const [showModal, setShowModal] = useState(false)
+
+  const [showAlert, setShowAlert] = useState(false)
+
+  const [answer, setAnswer] = useState()
+  const [showAnswer, setShowAnswer] = useState(false)
+
+  const [secMeasures, setSecMeasures] = useState()
+  const [showSecMeasures, setShowSecMeasures] = useState(false)
+
+  const [lastLogs, setLastLogs] = useState([])
+  const [showLastLog, setShowLastLog] = useState(false)
+
+  const [flag, setFlag] = useState(false)
+
+
+  // workflow - 1
+  function fetchLog() {
+    setShowAnswer(false)
+    setShowSecMeasures(false)
+    fetch('/random_instance')
+      .then((res) => res.json())
+      .then((entries) => {
+        setLog(entries)
+        setShowLog(true)
+        getScore(entries)
+        getPromptAndRes(entries)
+      })
+  }
+
+  function getScore(entries) {
+    fetch('/get_score_calculation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(entries)
+    })
+      .then((res) => res.json())
+      .then((score) => {
+        setSeverityScore(score)
+        setShowSeveritySore(true);
+      })
+      .catch((e) => {
+        console.error("getScore - " + e)
+      })
+  }
+
+  function getPromptAndRes(entries) {
+    console.log(typeof (entries))
+    fetch('/create_prompt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(entries)
+    })
+      .then((res) => res.json())
+      .then((prompt) => {
+        setShowAlert(true)
+        fetchLlmResponse(prompt)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  function fetchLlmResponse(prompt) {
+    fetch('/test', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      body: prompt
+    })
+      .then((res) => res.json())
+      .then((analyzedAns) => {
+        setShowAlert(false)
+        setAnswer(analyzedAns.answer)
+        setShowAnswer(true)
+      })
+      .catch((e) => {
+        console.error("fetch LLM Response - " + e)
+      })
+  }
+
+  // work flow - 2
+  function blockInstance() {
+  
+  }
+
+  function knowMore() {
+    if (answer) {
+      prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
+      fetch('/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+        body: prompt
+      })
+        .then((res) => res.json())
+        .then((analyzedAns) => {
+          console.log(prompt)
+          console.log(analyzedAns)
+          setSecMeasures(analyzedAns.answer)
+          setShowSecMeasures(true)
+        })
+        .catch((e) => {
+          console.error("fetch LLM Response - " + e)
+        })
+    }
+  }
+
+  return (
+    <StateContext.Provider value={{
+      currentColor, activeMenu,
+      showModal, setShowModal,
+      log, showLog,
+      lastLogs, showLastLog,
+      showSecMeasures, setShowSecMeasures,
+      severityScore, setSeverityScore,
+      showSeveritySore, setShowSeveritySore,
+      showAlert, setShowAlert,
+      answer, setAnswer,
+      showAnswer, knowMore,
+      secMeasures, setSecMeasures,
+      flag, setFlag,
+      fetchLog
+    }}>
+      {children}
+    </StateContext.Provider>
+  );
 };
 
 export const useStateContext = () => useContext(StateContext);

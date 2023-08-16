@@ -27,6 +27,14 @@ from transformers import (
 )
 from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
 
+import warnings
+
+# Ignore all warnings (not recommended unless you're sure about it)
+warnings.filterwarnings("ignore")
+
+# Ignore specific category of warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 app = Flask(__name__)
 CORS(app)
@@ -256,6 +264,7 @@ def score_calculation(instance):
 
 #step 2.2
 def detect_user(instance):
+    print(instance)
     new_instance={}
     for key, value in instance.items():
         new_instance[key] = value
@@ -325,6 +334,7 @@ def check_policy_violation(instance):
 @app.route('/create_prompt', methods=['POST'])
 def create_prompt():
     instance = detect_user(request.json)
+    # print(instance)
     context = context_gen(instance)
     rules = rule_gen(instance)
     question="Based on context given rules to be followed, what are the security policy violations?"
@@ -511,7 +521,7 @@ def fetch_llm_response():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_id = "TheBloke/Llama2-22B-Daydreamer-v3-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\

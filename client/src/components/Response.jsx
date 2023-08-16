@@ -51,9 +51,9 @@ const Response = () => {
           </div>
           <div class="row">
             <div class={`${col_info_class}`}>{log._id}</div>
-            <div class={`${col_info_class}`}>{log.client_id}</div>
+            <div class={`${col_info_class}`}>{log.client}</div>
             <div class={`${col_info_class}`}>{log.method}</div>
-            <div class={`${col_info_class}`}>{log.status_code}</div>
+            <div class={`${col_info_class}`}>{log.status}</div>
             <div class={`${col_info_class} overflow-auto`}>{log.request}</div>
             <div class={`${col_info_class}`}>
               <Button

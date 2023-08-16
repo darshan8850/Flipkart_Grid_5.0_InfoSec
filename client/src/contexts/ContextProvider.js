@@ -71,16 +71,17 @@ export const ContextProvider = ({ children }) => {
     })
       .then((res) => res.json())
       .then((prompt) => {
+        console.log(prompt)
         setShowAlert(true)
         fetchLlmResponse(prompt)
       })
       .catch((e) => {
-        console.log(e)
+        console.log("get Prompt And Res - " + e)
       })
   }
 
   function fetchLlmResponse(prompt) {
-    fetch('/test', {
+    fetch('/fetch_llm_response', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -106,7 +107,7 @@ export const ContextProvider = ({ children }) => {
   function knowMore() {
     if (answer) {
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/test', {
+      fetch('/fetch_llm_response', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'

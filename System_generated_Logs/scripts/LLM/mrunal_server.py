@@ -450,7 +450,7 @@ def load_model(device_type, model_id, model_basename=None):
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_length=2048,
+        max_length=4000,
         temperature=0,
         top_p=0.95,
         repetition_penalty=1.15,
@@ -511,8 +511,8 @@ def fetch_llm_response():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Llama-2-7B-Chat-GGML"
-    model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
     just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""

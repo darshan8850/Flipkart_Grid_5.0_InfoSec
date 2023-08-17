@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { customer_rules } from '../data/CentralData';
 
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
 
+  let temp_score = 0;
   const currentColor = '#0d6efd';
   const activeMenu = true
 
@@ -47,7 +48,32 @@ export const ContextProvider = ({ children }) => {
 
   const [graphValues, setGraphValues] = useState([])
   const [graphTag, setGraphTag] = useState([])
+
+  const [showAutoBlock, setShowAutoBlock] = useState(false)
+  const handleShowBlock = () => setShowAutoBlock(true)
+  const handleCloseBlock = () => setShowAutoBlock(false)
+
+  const [autoBlock, setAutoBlock] = useState(false)
+  const [rangeVal, setRangeVal] = useState()
+
+  const [flag, setFlag] = useState(false)
+
+  function setTrue(c) {
+    setAutoBlock(c)
+  }
+
+  function setVal(val) {
+    setRangeVal(val)
+  }
   
+  useEffect(() => {
+    if(flag && autoBlock && severityScore>=rangeVal) {
+      console.log("bada hai sv- " + severityScore + " rg- " + rangeVal) 
+      blockUser()
+      setFlag(false)
+    }
+  },[severityScore, flag])
+
   // workflow - 1 ( For system generated log )
   function fetchLog() {
     setShowAnswer(false)
@@ -117,6 +143,7 @@ export const ContextProvider = ({ children }) => {
         setAnswer(analyzedAns.answer)
         setShowAnswer(true)
         setShowButtons(true)
+        setFlag(true)
       })
       .catch((e) => {
         console.error("fetch LLM Response - " + e)
@@ -257,7 +284,8 @@ export const ContextProvider = ({ children }) => {
       showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
       show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,
       showUpload, setShowUpload, handleShowUpload, handleCloseUpload,
-      setLogInput, setRuleInput, setPromptInput, graphValues, graphTag
+      setLogInput, setRuleInput, setPromptInput, graphValues, graphTag, showAutoBlock, setShowAutoBlock,
+      handleShowBlock, handleCloseBlock, rangeVal, setRangeVal, setTrue, setVal
     }}>
       {children}
     </StateContext.Provider>

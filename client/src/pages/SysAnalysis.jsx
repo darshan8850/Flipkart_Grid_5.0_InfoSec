@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import { SystemResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import SysInputResponse from '../components/SysInputResponse'
 import { useLogInputContext } from '../contexts/LogInputContext'
+import Accordion from 'react-bootstrap/Accordion'
 
 const SysAnalysis = () => {
   const {
@@ -18,10 +19,13 @@ const SysAnalysis = () => {
     showUpload,
     handleShowUpload,
     handleCloseUpload,
+    showAutoBlock,
+    setShowAutoBlock,
+    handleShowBlock,
+    handleCloseBlock,autoBlock, setAutoBlock, rangeVal, setRangeVal, setVal, setTrue
   } = useStateContext()
 
-  const {showInputLog, fetchInputLog} = useLogInputContext()
-
+  const { showInputLog, fetchInputLog } = useLogInputContext()
 
 
   return (
@@ -61,54 +65,103 @@ const SysAnalysis = () => {
             </span>
           </div>
 
-          <div id="button-groups" className="p-4">
-            <button
-              type="button"
-              class="btn btn-primary btn-sm me-3"
-              onClick={fetchLog}
-            >
-              Get Random Instance
-            </button>
+          <div id="button-groups" className="p-4 d-flex">
+            <div>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm me-3"
+                onClick={fetchLog}
+              >
+                Get Random Instance
+              </button>
 
-            <button
-              type="button"
-              class="btn btn-primary me-3 btn-sm"
-              onClick={handleShowUpload}
-            >
-              Upload log files
-            </button>
-            <Modal
-              className="mt-5 mb-5"
-              show={showUpload}
-              onHide={handleCloseUpload}
-            >
-              <Modal.Header closeButton></Modal.Header>
-              <Modal.Body>
-                <UploadFile
-                  title="Upload Files (PDF, CSV, TXT)"
-                  allowedFileTypes={[
-                    'application/pdf',
-                    'text/csv',
-                    'text/plain',
-                  ]}
-                  onSubmit={handleRegularFileSubmit}
-                />
-                <UploadFile
-                  title="Upload Rules"
-                  allowedFileTypes={['text/plain', 'text/csv']}
-                  onSubmit={handleRuleFileSubmit}
-                />
-              </Modal.Body>
-            </Modal>
+              <button
+                type="button"
+                class="btn btn-primary me-3 btn-sm"
+                onClick={handleShowUpload}
+              >
+                Upload log files
+              </button>
+              <Modal
+                className="mt-5 mb-5"
+                show={showUpload}
+                onHide={handleCloseUpload}
+              >
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                  <UploadFile
+                    title="Upload Files (PDF, CSV, TXT)"
+                    allowedFileTypes={[
+                      'application/pdf',
+                      'text/csv',
+                      'text/plain',
+                    ]}
+                    onSubmit={handleRegularFileSubmit}
+                  />
+                  <UploadFile
+                    title="Upload Rules"
+                    allowedFileTypes={['text/plain', 'text/csv']}
+                    onSubmit={handleRuleFileSubmit}
+                  />
+                </Modal.Body>
+              </Modal>
 
-            
-            <button
-              type="button"
-              class="btn btn-primary btn-sm"
-              onClick={fetchInputLog}
-            >
-              Get Input Log
-            </button>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm me-3"
+                onClick={fetchInputLog}
+              >
+                Get Input Log
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-primary btn-sm "
+                onClick={handleShowBlock}
+              >
+                Auto Block
+              </button>
+              <Modal
+                className="mt-5 mb-5 "
+                show={showAutoBlock}
+                onHide={handleCloseBlock}
+              >
+                <Modal.Header closeButton>Auto Block</Modal.Header>
+                <Modal.Body>
+                  <div className="bg-dark-subtle p-5">
+                    <div className="d-flex mb-3">
+                      <input
+                        class="form-check-input me-3"
+                        type="checkbox"
+                        value="false"
+                        id="flexCheckDefault"
+                        onChange={(e) => setTrue(e.target.checked)}
+                      ></input>
+
+                      <label class="form-check-label " for="flexCheckDefault">
+                        Set Auto Blocking
+                      </label>
+                    </div>
+
+                    <div className="d-flex">
+                      <label for="customRange3" class="form-label me-2">
+                        Range
+                      </label>
+                      <input
+                        type="range"
+                        class="form-range "
+                        min="0"
+                        max="10"
+                        step="0.5"
+                        id="customRange3"
+                        defaultValue='0'
+                        onChange={(e) => setVal(e.target.value)}
+                      ></input>
+                    </div>
+                  </div>
+                </Modal.Body>
+              </Modal>
+            </div>
           </div>
         </div>
 
@@ -123,7 +176,7 @@ const SysAnalysis = () => {
             style={{ widht: '90vw', height: '85%' }}
           >
             {showLog && <SystemResponse />}
-            {showInputLog && <SysInputResponse/>}
+            {showInputLog && <SysInputResponse />}
           </div>
         </div>
       </div>

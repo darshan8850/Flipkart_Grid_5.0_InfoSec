@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { customer_rules } from '../data/CentralData';
 
 const StateContext = createContext();

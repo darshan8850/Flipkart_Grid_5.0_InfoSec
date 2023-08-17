@@ -50,7 +50,7 @@ collection_datasets = mongoDB['datasets']
 collection_customer = mongoDB['customer']
 collection_blocked = mongoDB['blockedUsers']
 collection_input = mongoDB['input']
-collection_input2=mongoDB['input2']
+
 rules= {
     "users": [
       {
@@ -607,9 +607,9 @@ def uploadtoDB():
                     print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
                 else:
                     print(f"No data in {filename}")
+
 def run_another_script():
     script_path = "System_generated_Logs/scripts/log_file_input.py"
-    
     try:
         subprocess.run(["python", script_path], check=True)
         print("Other script executed successfully.")
@@ -622,29 +622,14 @@ def upload_rule_file():
     uploaded_rule_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
     uploaded_rule_file.save(file_path)
-    uploadtoDB2()
     return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
-  
-def uploadtoDB2():
-  data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/System_generated_Logs/scripts/uploaded_rules/'
-  if collection_input2.count_documents({}) > 0:
-        collection_input2.delete_many({})
-        print("Collection emptied.")
-  for filename in os.listdir(data_directory):
-        if filename.endswith('.txt'):
-            file_path = os.path.join(data_directory, filename)
-            with open(file_path, 'r') as txt_file:
-                try:
-                    txt_content = txt_file.read().strip()  # Strip whitespace
-                    json_data = json.loads(txt_content)
-                    if isinstance(json_data, dict):
-                        collection_input2.insert_one(json_data)
-                        print(f"Inserted a document from {filename} into MongoDB.")
-                    else:
-                        print(f"Invalid JSON data in {filename}")
-                except json.JSONDecodeError:
-                    print(f"Error decoding JSON data in {filename}")
 
+@app.route('/get_rules', methods=['GET'])
+def get_rules():
+    pth = ''
+    with open(pth, 'r') as f:
+        return f.read()
+  
 # For Customer
 # step 1 - fetch customer-cr details 
 @app.route('/customer_random_instance') 

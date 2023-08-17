@@ -21,9 +21,8 @@ function App() {
           <div >
             <Routes>
               {/* dashboard */}
-              <Route path='/' element={<Dashboard />} />
-              <Route path='/dashboard' element={<Dashboard />} />
               {/* System */}
+              <Route path='/' element={<SysAnalysis />} />
               <Route path='/System_Analysis' element={<SysAnalysis />} />
               <Route path='/System_History' element={<SysHistory />} />
               <Route path='/Blocked_users' element={<SysBlocked />} />

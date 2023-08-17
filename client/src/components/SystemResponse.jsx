@@ -4,7 +4,7 @@ import { DetailsModal, ProgressBar } from './componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Plot from 'react-plotly.js'
-
+import Accordion from 'react-bootstrap/Accordion'
 const SystemResponse = () => {
   const {
     showModal,
@@ -19,7 +19,8 @@ const SystemResponse = () => {
     moreInfo,
     showMoreInfo,
     blockUser,
-    graphValues, graphTag
+    graphValues,
+    graphTag,
   } = useStateContext()
 
   const col_class = 'col-2 border text-primary text-center p-1'
@@ -35,7 +36,7 @@ const SystemResponse = () => {
               <p>Severity Score</p>
               {severityScore}{' '}
               <ProgressBar
-                valueNow={Math.ceil(severityScore)}
+                valueNow={severityScore}
                 ariaLabel="Info example"
               />
             </div>
@@ -49,7 +50,7 @@ const SystemResponse = () => {
             </div>
           </div>
         )}
-        {console.log(graphTag)}
+
         <div className=" p-2">
           <div class="row mt-3 ">
             <div class={col_class}>Object ID</div>
@@ -85,38 +86,60 @@ const SystemResponse = () => {
           {showAnswer && (
             <>
               <div class="row">
-                <div class="col-12 text-center border text-primary p-1">
-                  <span class="fs-6">Analyzed Answer</span>
+                <div class="col-12 text-center border text-primary p-2">
+                  <span class="fs-6">Log Analysis</span>
                 </div>
               </div>
-              <div className="row">
-                <div class="col-12 border p-4">{answer}</div>
-              </div>
-
-              <div className="row">
-                <Plot
-                  data={[
-                    {
-                      type: 'scatterpolar',
-                      r: graphValues,
-                      theta: graphTag,
-                      fill: 'toself',
-                    },
-                  ]}
-                  layout={{ width: 700, height: 700, title: 'A Fancy Plot' }}
-                />
-              </div>
-            </>
-          )}
-          {showMoreInfo && (
-            <>
-              <div class="row">
-                <div class="col-12 text-center border text-primary p-1">
-                  <span class="fs-6">Security Measures</span>
+              <div className="row border p-2">
+                <div className='mb-2'>
+                <Accordion>
+                  <Accordion.Item eventKey="0">
+                    <Accordion.Header className="bg-body-tertiary">
+                      Analyzed Answer
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <div className="row ">
+                        <div class="col-6  p-4">{answer}</div>
+                        <div className="col-6 p-5">
+                          <Plot
+                            data={[
+                              {
+                                type: 'scatterpolar',
+                                r: graphValues,
+                                theta: graphTag,
+                                fill: 'toself',
+                                marker: { color: 'rgb(255, 49, 49)' },
+                              },
+                            ]}
+                            layout={{
+                              width: 600,
+                              height: 600,
+                              title: 'A Fancy Plot',
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="row"></div>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
                 </div>
-              </div>
-              <div className="row">
-                <div class="col-12 border p-4">{moreInfo}</div>
+                
+                <div>
+                {showMoreInfo && (
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header className="bg-body-tertiary">
+                        Know More - ( Security Measures )
+                      </Accordion.Header>
+                      <Accordion.Body>
+                      {moreInfo}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                )}
+                </div>
+                
               </div>
             </>
           )}

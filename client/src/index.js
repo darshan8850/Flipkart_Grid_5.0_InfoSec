@@ -5,12 +5,15 @@ import './index.css';
 import App from './App';
 import { BrowserRouter, Route, Router } from 'react-router-dom'
 import { ContextProvider } from './contexts/ContextProvider';
+import { LogInputContext } from './contexts/LogInputContext'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ContextProvider>
-      <App />
+      <LogInputContext>
+        <App />
+      </LogInputContext>
     </ContextProvider>
   </React.StrictMode>
 );

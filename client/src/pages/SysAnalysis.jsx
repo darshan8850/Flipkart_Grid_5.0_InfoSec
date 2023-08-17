@@ -13,15 +13,11 @@ const SysAnalysis = () => {
     showLog,
     fetchLog,
     showAlert,
-    show,
-    handleClose,
-    handleShow,
     handleRuleFileSubmit,
     handleRegularFileSubmit,
     showUpload,
     handleShowUpload,
     handleCloseUpload,
-    uploadTextData, setLogInput, setRuleInput, setPromptInput,
   } = useStateContext()
 
   const {showInputLog, fetchInputLog} = useLogInputContext()

@@ -1,0 +1,123 @@
+import React, { useState } from 'react';
+
+function UploadFileForm({ title, allowedFileTypes, onSubmit }) {
+  const [file, setFile] = useState('');
+
+  const isValidFileType = (file) => {
+    return allowedFileTypes.includes(file.type);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!file || !isValidFileType(file)) {
+      console.log('Invalid file type. Please select a valid file.');
+      return;
+    }
+
+    onSubmit(file);
+  };
+
+  return (
+    <div
+      style={{
+        border: '1px solid #ccc',
+        padding: '20px',
+        width: '45%',
+        boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>{title}</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Upload File:
+          <input
+            type="file"
+            accept={allowedFileTypes.join(', ')}
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </label>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+  );
+}
+
+export default UploadFileForm;
+import React from 'react';
+import UploadFileForm from './UploadFileForm';
+
+function App() {
+  const handleRegularFileSubmit = async (file) => {
+    await uploadFile(file, '/api/upload');
+  };
+
+  const handleRuleFileSubmit = async (file) => {
+    await uploadFile(file, '/api/upload/rules');
+  };
+
+  const uploadFile = async (file, url) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        padding: '20px',
+      }}
+      className="App"
+    >
+      <h1>File Upload Example</h1>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '20px',
+          marginTop: '20px',
+        }}
+        className="upload-container"
+      >
+        <UploadFileForm
+          title="Upload Files (PDF, CSV, TXT)"
+          allowedFileTypes={['application/pdf', 'text/csv', 'text/plain']}
+          onSubmit={handleRegularFileSubmit}
+        />
+        <UploadFileForm
+          title="Upload Rules (LOG)"
+          allowedFileTypes={['text/plain','text/csv']}
+          onSubmit={handleRuleFileSubmit}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default App;
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App'; // Adjust the path as needed
+
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+  

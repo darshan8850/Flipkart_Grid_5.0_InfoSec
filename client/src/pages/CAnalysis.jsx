@@ -1,11 +1,19 @@
 import React from 'react'
 import Alert from 'react-bootstrap/Alert'
-import { CustomerResponse } from '../components/componentIndex'
+import { CustomerResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
+import Modal from 'react-bootstrap/Modal'
 
 const CAnalysis = () => {
 
   const { showAlert, fetchCustomerLog, showCustomerLog } = useStateContext()
+  const {
+    handleRuleFileSubmit,
+    handleRegularFileSubmit,
+    showUpload,
+    handleShowUpload,
+    handleCloseUpload,
+  } = useStateContext()
 
   return (
     <React.Fragment>
@@ -43,9 +51,32 @@ const CAnalysis = () => {
             >
               Get Random Instance
             </button>
-            <button type="button" class="btn btn-primary btn-sm">
+            <button type="button" class="btn btn-primary btn-sm" onClick={handleShowUpload}>
               Upload Customer-CR log
             </button>
+            <Modal
+              className="mt-5 mb-5"
+              show={showUpload}
+              onHide={handleCloseUpload}
+            >
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>
+                <UploadFile
+                  title="Upload Files (PDF, CSV, TXT)"
+                  allowedFileTypes={[
+                    'application/pdf',
+                    'text/csv',
+                    'text/plain',
+                  ]}
+                  onSubmit={handleRegularFileSubmit}
+                />
+                <UploadFile
+                  title="Upload Rules"
+                  allowedFileTypes={['text/plain', 'text/csv']}
+                  onSubmit={handleRuleFileSubmit}
+                />
+              </Modal.Body>
+            </Modal>
           </div>
         </div>
 

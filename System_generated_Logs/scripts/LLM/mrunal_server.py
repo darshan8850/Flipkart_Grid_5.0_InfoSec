@@ -9,7 +9,10 @@ from pymongo import MongoClient
 from flask_cors import CORS
 from flask import Flask, jsonify, request
 from bson import ObjectId
-
+import subprocess
+from pymongo import MongoClient
+import json
+import csv
 # model
 from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
@@ -577,38 +580,50 @@ def get_blocked_user():
       item['_id'] = str(item['_id'])
     return jsonify(temp_list)
 
-# upload files 
+
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     uploaded_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
     uploaded_file.save(file_path)
+    run_another_script()
+    uploadtoDB()
     return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
     
+def uploadtoDB():
+  data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/database_push/'
+  if collection_input.count_documents({}) > 0:
+        collection_input.delete_many({})
+        print("Collection emptied.")
+  for filename in os.listdir(data_directory):
+        if filename.endswith('.csv'):
+            file_path = os.path.join(data_directory, filename)
+            with open(file_path, 'r') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                json_data = [row for row in csv_reader]
 
+                if json_data:
+                    collection_input.insert_many(json_data)
+                    print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
+                else:
+                    print(f"No data in {filename}")
+def run_another_script():
+    script_path = "System_generated_Logs/scripts/log_file_input.py"
+    
+    try:
+        subprocess.run(["python", script_path], check=True)
+        print("Other script executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing the other script: {e}")
+        
+        
 @app.route('/api/upload/rules', methods=['POST'])
 def upload_rule_file():
     uploaded_rule_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
     uploaded_rule_file.save(file_path)
+    uploadtoDB2()
     return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
-
-
-# get input sys log
-@app.route('/input_random_instance', methods=['GET'])
-def input_random_instance():
-    try:
-      pipeline = [
-        {"$sample": {"size": 1}}
-      ]
-      result_list = list(collection_input.aggregate(pipeline))
-      random_instance = result_list[0]
-      random_instance['_id'] = str(random_instance['_id'])
-      logging.info('random_instance')    
-      return jsonify(random_instance)
-    except Exception as e:
-      return jsonify({"error": str(e)}), 500
-
 
 # For Customer
 # step 1 - fetch customer-cr details 

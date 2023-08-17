@@ -9,7 +9,9 @@ from pymongo import MongoClient
 from flask_cors import CORS
 from flask import Flask, jsonify, request
 from bson import ObjectId
-
+import subprocess
+from pymongo import MongoClient
+import json
 # model
 from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
@@ -46,6 +48,7 @@ mongoDB = client['violatedData']
 collection_datasets = mongoDB['datasets']
 collection_customer = mongoDB['customer']
 collection_blocked = mongoDB['blockedUsers']
+collection_input = mongoDB['input']
 
 rules= {
     "users": [
@@ -582,9 +585,37 @@ def upload_file():
     uploaded_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
     uploaded_file.save(file_path)
+    run_another_script()
+    uploadtoDB()
     return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
     
+def uploadtoDB():
+  data_directory = '/home/ghrceaiml/Darshan/Flipkart_Grid_5.0_InfoSec/database_push/'
 
+# Iterate through files in the directory and push to MongoDB
+  for filename in os.listdir(data_directory):
+    if filename.endswith('.csv'):  # Assuming you are importing JSON files
+        file_path = os.path.join(data_directory, filename)
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            # If data is a list of documents, use insert_many
+            if isinstance(data, list):
+                collection_input.insert_many(data)
+            # If data is a single document, use insert_one
+            elif isinstance(data, dict):
+                collection_input.insert_one(data)
+            else:
+                print(f"Invalid data format in {filename}")
+def run_another_script():
+    script_path = "System_generated_Logs/scripts/log_file_input.py"
+    
+    try:
+        subprocess.run(["python", script_path], check=True)
+        print("Other script executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing the other script: {e}")
+        
+        
 @app.route('/api/upload/rules', methods=['POST'])
 def upload_rule_file():
     uploaded_rule_file = request.files['file']

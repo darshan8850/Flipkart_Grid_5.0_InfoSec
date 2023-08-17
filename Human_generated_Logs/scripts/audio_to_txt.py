@@ -31,4 +31,8 @@ def audio_txt(source_path, des_path):
            
         
 text=audio_txt('Human_generated_Logs/data/audio/sample1.mp3','Human_generated_Logs/data/audio/sample1.wav')
-print(text)
+file_path = "Human_generated_Log/data/input_data/new_audio.txt"
+
+# Open the file in write mode
+with open(file_path, "w") as file:
+    file.write(text)

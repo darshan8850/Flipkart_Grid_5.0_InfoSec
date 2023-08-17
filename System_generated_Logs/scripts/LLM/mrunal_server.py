@@ -607,9 +607,9 @@ def uploadtoDB():
                     print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
                 else:
                     print(f"No data in {filename}")
+
 def run_another_script():
     script_path = "System_generated_Logs/scripts/log_file_input.py"
-    
     try:
         subprocess.run(["python", script_path], check=True)
         print("Other script executed successfully.")
@@ -622,9 +622,14 @@ def upload_rule_file():
     uploaded_rule_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
     uploaded_rule_file.save(file_path)
-    uploadtoDB2()
     return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
 
+@app.route('/get_rules', methods=['GET'])
+def get_rules():
+    pth = ''
+    with open(pth, 'r') as f:
+        return f.read()
+  
 # For Customer
 # step 1 - fetch customer-cr details 
 @app.route('/customer_random_instance') 

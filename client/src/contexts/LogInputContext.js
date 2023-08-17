@@ -26,7 +26,7 @@ export const LogInputContext = ({ children }) => {
                 .then((entry) => {
                     setInputLog(entry)
                     setShowInputLog(true)
-                    //fetch rules
+                    getInputRules() //fetch rules
                     getInputLLMResponse(entry)
                 })
         } catch (e) {
@@ -35,6 +35,14 @@ export const LogInputContext = ({ children }) => {
 
     }
 
+    const getInputRules = () => {
+        fetch('/get_rules')
+        .then((res) => res.json())
+        .then((entry) => {
+            setInputRule(entry)
+        })
+    }
+    
     const getInputLLMResponse = (entry) => {
         try {
             let temp_prompt = entry + "\n rules: " + inputRule +

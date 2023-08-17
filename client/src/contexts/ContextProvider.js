@@ -45,6 +45,9 @@ export const ContextProvider = ({ children }) => {
   const [ruleInput, setRuleInput] = useState()
   const [promptInput, setPromptInput] = useState()
 
+  const [graphValues, setGraphValues] = useState([])
+  const [graphTag, setGraphTag] = useState([])
+  
   // workflow - 1 ( For system generated log )
   function fetchLog() {
     setShowAnswer(false)
@@ -71,8 +74,10 @@ export const ContextProvider = ({ children }) => {
       body: JSON.stringify(entries)
     })
       .then((res) => res.json())
-      .then((score) => {
-        setSeverityScore(score)
+      .then((entry) => {
+        setSeverityScore(entry.score)
+        setGraphValues(entry.graph_list)
+        setGraphTag(entry.violated_policies)
         setShowSeverityScore(true);
       })
       .catch((e) => {
@@ -99,7 +104,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function fetchLlmResponse(prompt) {
-    fetch('/fetch_llm_response', {
+    fetch('/test', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -122,7 +127,7 @@ export const ContextProvider = ({ children }) => {
     if (answer) {
       setShowAlert(true)
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/fetch_llm_response', {
+      fetch('/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
@@ -252,7 +257,7 @@ export const ContextProvider = ({ children }) => {
       showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
       show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,
       showUpload, setShowUpload, handleShowUpload, handleCloseUpload,
-      setLogInput, setRuleInput, setPromptInput
+      setLogInput, setRuleInput, setPromptInput, graphValues, graphTag
     }}>
       {children}
     </StateContext.Provider>

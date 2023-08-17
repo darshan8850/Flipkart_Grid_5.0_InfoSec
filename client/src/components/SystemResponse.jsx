@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button'
 import { DetailsModal, ProgressBar } from './componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Plot from 'react-plotly.js'
 
 const SystemResponse = () => {
   const {
@@ -18,6 +19,7 @@ const SystemResponse = () => {
     moreInfo,
     showMoreInfo,
     blockUser,
+    graphValues, graphTag
   } = useStateContext()
 
   const col_class = 'col-2 border text-primary text-center p-1'
@@ -47,9 +49,8 @@ const SystemResponse = () => {
             </div>
           </div>
         )}
-
+        {console.log(graphTag)}
         <div className=" p-2">
-          
           <div class="row mt-3 ">
             <div class={col_class}>Object ID</div>
             <div class={col_class}>Client ID</div>
@@ -58,7 +59,7 @@ const SystemResponse = () => {
             <div class={col_class}>Request</div>
             <div class={col_class}>Full details </div>
           </div>
-          
+
           <div class="row">
             <div class={`${col_info_class}`}>{log._id}</div>
             <div class={`${col_info_class}`}>{log.client}</div>
@@ -80,7 +81,7 @@ const SystemResponse = () => {
               />
             </div>
           </div>
-          
+
           {showAnswer && (
             <>
               <div class="row">
@@ -90,6 +91,20 @@ const SystemResponse = () => {
               </div>
               <div className="row">
                 <div class="col-12 border p-4">{answer}</div>
+              </div>
+
+              <div className="row">
+                <Plot
+                  data={[
+                    {
+                      type: 'scatterpolar',
+                      r: graphValues,
+                      theta: graphTag,
+                      fill: 'toself',
+                    },
+                  ]}
+                  layout={{ width: 700, height: 700, title: 'A Fancy Plot' }}
+                />
               </div>
             </>
           )}

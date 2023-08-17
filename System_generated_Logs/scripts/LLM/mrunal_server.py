@@ -248,27 +248,24 @@ def get_random_instance():
 @app.route('/get_score_calculation', methods=['POST'])
 def get_score_calculation():
     data_gsc = request.json
-    score = score_calculation(data_gsc)
-    score = (score)
-    if(score*10 <= 25):
-        return jsonify(score)
-    elif score*10 > 25 and score <= 50:
-        return jsonify(50)
-    elif score*10 > 50 and score <= 75:
-        return jsonify(75)
-    else:
-        return jsonify(score)
+    score,graph_list, violated_policies = score_calculation(data_gsc)
+    temp_data = {
+        "score":score,
+        "graph_list" : graph_list,
+        "violated_policies":violated_policies
+    }
+    return jsonify(temp_data)
 
 # step 2.1 
 def score_calculation(instance):
     instance = detect_user(instance)
-
+    graph_list=[]
     violated_policies = instance['violated_policies']
+    violated_tags = list(violated_policies.keys())
+    print(violated_tags)
     score = 0
-
     user_type = instance['type']
     l=len(violated_policies)
-
     if(l == 0):
         return 100
 
@@ -277,12 +274,12 @@ def score_calculation(instance):
             for violation in violated_policies:
                 if violation in policy['properties']:
                     score += policy['properties'][violation]
+                    graph_list.append(policy['properties'][violation])
     
-    return score/l
+    return score/l,graph_list, violated_tags
 
 #step 2.2
 def detect_user(instance):
-    print(instance)
     new_instance={}
     for key, value in instance.items():
         new_instance[key] = value

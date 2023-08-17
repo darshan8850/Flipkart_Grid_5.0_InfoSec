@@ -88,11 +88,14 @@ class LogAnalysis:
                   df.to_parquet(f'{output_dir}/file_{linenumber}.parquet')
                   parsed_lines.clear()
 
-file = 'log.txt'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Specify the full path to the uploaded file
+file = os.path.join(script_dir, 'D:/recent changes  l clean branch/Flipkart_Grid_5.0_InfoSec/uidata/uploads/log_text.txt')
 output_dir = 'parquets/'
 errors_file = 'errors.txt'
 
-os.mkdir(output_dir)
+#os.mkdir(output_dir)
 log_analysis = LogAnalysis(formats, columns)
 logfile=log_analysis.detect_format(file)
 log_analysis.parse_log_file(logfile, output_dir, errors_file)

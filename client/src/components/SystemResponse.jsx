@@ -137,6 +137,7 @@ const SystemResponse = () => {
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
+                  
                 )}
                 </div>
                 

@@ -1,98 +1,94 @@
 {
-    "two_factor_authentication": {
-      "Phishing_Attacks": "Attackers trick users into providing credentials and 2FA codes through deceptive emails or fake websites.",
-      "Credential_Theft": "Malware or keyloggers capture both password and 2FA code, allowing attackers to bypass 2FA.",
-      "Malware_Infection": "Malicious software intercepts or manipulates 2FA codes on the user's device.",
-      "Social_Engineering": "Attackers manipulate users into revealing 2FA methods or codes through convincing tactics.",
-      "Brute_Force": "Attackers attempt multiple combinations of 2FA codes to gain access."
-    },
-    "multi_factor_authentication": {
-      "Credential_Stuffing": "Attackers use leaked credentials to gain access due to reused passwords and compromised MFA.",
-      "MFA_Token_Interception": "Attackers intercept MFA tokens during transmission or reuse previously intercepted tokens.",
-      "Social_Engineering": "Attackers manipulate users into revealing MFA components through emotional appeals.",
-      "MFA_Bypass": "Attackers exploit vulnerabilities in MFA implementation to bypass the additional factor.",
-      "Backup_Code_Exposure": "Attackers discover or steal MFA backup codes to bypass MFA."
-    },
-    "security_monitoring": {
-      "Intrusion": "Attackers exploit vulnerabilities to gain access and perform malicious activities undetected.",
-      "Malicious_Activities": "Attackers perform unauthorized actions while evading detection by security monitoring.",
-      "Advanced_Persistent_Threats": "Persistent attackers maintain a low-profile presence, extracting data or disrupting operations.",
-      "False_Positives_Negatives": "Ineffective monitoring generates false alarms or misses sophisticated attacks.",
-      "Insider_Threats": "Malicious insiders misuse legitimate access to perform unauthorized actions."
-    },
-
-
-    "data_privacy_policy": {
-      "Data_Breach": "Attackers exploit vulnerabilities or unauthorized access to expose sensitive user data.",
-      "Unsecured_Sharing": "Lack of controls allows users to share sensitive data with unauthorized parties.",
-      "Data_Mining_Profiling": "Improper use of data creates detailed user profiles, invading privacy.",
-      "Non_Compliance_Penalties": "Failure to comply with data privacy laws leads to legal penalties and reputational damage.",
-      "Data_Aggregation": "Unauthorized aggregation of user data violates privacy and reveals personal information."
-    },
-    "secure_file_uploads": {
-      "Malware_Injection": "Attackers upload files with malware to infect the system.",
-      "Data_Leakage": "Malicious users upload sensitive data to expose it to unauthorized parties.",
-      "Server_Overload": "Attackers upload large files to overwhelm server resources.",
-      "File_Type_Exploitation": "Uploading files with specific extensions triggers vulnerabilities.",
-      "Data_Tampering": "Malicious users modify files during upload to manipulate data."
-    },
-    
-    "secure_file_uploads_policies__properties__secure_file_name": {
-        "Information_Leakage": "Files with revealing or sensitive names provide attackers with information about their contents.",
-        "Malicious_Naming": "Attackers use deceptive file names to disguise malicious content.",
-        "Path_Traversal": "Inadequate file name validation allows attackers to traverse directory structures and access unintended files.",
-        "Code_Execution": "Certain file names can trigger code execution vulnerabilities, leading to unauthorized actions.",
-        "Policy_Violation": "File names that violate naming conventions and policies can lead to unauthorized access or confusion.",
-        "Insider_Threats": "Malicious insiders manipulate file names to evade detection and perform unauthorized activities."
-        },
-
-    "secure_file_uploads_policies__properties__malware_scan": {
-      "Information_Disclosure": "Unrestricted access to files with sensitive information exposes data.",
-      "Cross_Site_Scripting": "Malicious files trigger cross-site scripting attacks.",
-      "Denial_of_Service": "Files cause resource consumption, leading to a denial of service.",
-      "Phishing": "Attackers upload files impersonating legitimate documents.",
-      "File_Manipulation": "Access to arbitrary file types enables manipulation and exploitation."
-    },
-    "secure_file_uploads_policies__properties__audit_logging": {
-      "Unauthorized_Access": "Attackers gain access without generating audit log entries.",
-      "Log_Manipulation": "Attackers tamper with or delete audit logs to cover their tracks.",
-      "Privilege_Escalation": "Attackers escalate privileges and manipulate audit logs.",
-      "Insider_Threats": "Malicious insiders misuse access and tamper with logs.",
-      "Retention_Policy_Violation": "Failure to retain logs as per policy leads to data gaps."
-    },
-    "secure_file_uploads_policies__properties__encryption__in_transit": {
-      "Data_Interception": "Attackers intercept unencrypted data, leading to data theft.",
-      "Data_Exposure": "Unauthorized access to unencrypted storage exposes data.",
-      "Key_Theft": "Attackers steal encryption keys to decrypt data.",
-      "Misconfigured_Encryption": "Improper encryption settings lead to data leakage.",
-      "Weak_Encryption": "Use of weak encryption algorithms facilitates decryption."
-    },
-    "secure_file_uploads_policies__properties__encryption__at_rest": {
-      "Data_Interception": "Attackers intercept unencrypted data, leading to data theft.",
-      "Data_Exposure": "Unauthorized access to unencrypted storage exposes data.",
-      "Key_Theft": "Attackers steal encryption keys to decrypt data.",
-      "Misconfigured_Encryption": "Improper encryption settings lead to data leakage.",
-      "Weak_Encryption": "Use of weak encryption algorithms facilitates decryption."
-    },
-    "ssl_encryption_required": {
-      "Man_in_the_Middle_Attacks": "Attackers intercept SSL-encrypted communications to capture sensitive data.",
-      "SSL_TLS_Vulnerabilities": "Exploiting SSL/TLS vulnerabilities compromises the encrypted connection.",
-      "Expired_Invalid_Certificates": "Use of expired or invalid SSL certificates enables impersonation.",
-      "Certificate_Mismanagement": "Poor SSL certificate management leads to unauthorized issuance.",
-      "Cipher_Suite_Weakness": "Weak cipher suites are exploited to decrypt traffic."
-    },
-    "permissions": {
-      "Unauthorized_Access": "Attackers gain unauthorized access to resources.",
-      "Privilege_Escalation": "Attackers exploit vulnerabilities to escalate privileges.",
-      "Insider_Threats": "Malicious insiders misuse legitimate access.",
-      "Broken_Access_Control": "Misconfigurations allow unauthorized access to resources.",
-      "Credential_Theft": "Attackers steal credentials to gain access."
-    },
-    "explicite_allowed_resources": {
-      "Access_Violation": "Attackers gain unauthorized access to disallowed resources.",
-      "Data_Exposure": "Unauthorized access to disallowed resources exposes sensitive data.",
-      "Resource_Misconfiguration": "Misconfigured access controls allow unintended access.",
-      "Policy_Bypass": "Attackers bypass policy enforcement mechanisms.",
-      "Insider_Threats": "Malicious insiders intentionally access disallowed resources."
-    }
+  "two_factor_authentication": {
+    "Phishing_Attacks": "Attackers trick users through deceptive emails or fake websites.",
+    "Credential_Theft": "Malware captures both password and 2FA code.",
+    "Malware_Infection": "Malicious software intercepts 2FA codes.",
+    "Social_Engineering": "Attackers manipulate users to reveal 2FA methods.",
+    "Brute_Force": "Attackers attempt multiple 2FA code combinations."
+  },
+  "multi_factor_authentication": {
+    "Credential_Stuffing": "Attackers use leaked credentials due to reused passwords.",
+    "MFA_Token_Interception": "Attackers intercept or reuse MFA tokens.",
+    "Social_Engineering": "Attackers manipulate users emotionally.",
+    "MFA_Bypass": "Attackers exploit MFA vulnerabilities.",
+    "Backup_Code_Exposure": "Attackers steal MFA backup codes."
+  },
+  "security_monitoring": {
+    "Intrusion": "Attackers exploit vulnerabilities undetected.",
+    "Malicious_Activities": "Attackers evade security monitoring.",
+    "Advanced_Persistent_Threats": "Persistent attackers extract data discreetly.",
+    "False_Positives_Negatives": "Ineffective monitoring generates false alarms or misses attacks.",
+    "Insider_Threats": "Malicious insiders misuse access."
+  },
+  "data_privacy_policy": {
+    "Data_Breach": "Attackers exploit vulnerabilities to expose sensitive data.",
+    "Unsecured_Sharing": "Users share sensitive data with unauthorized parties.",
+    "Data_Mining_Profiling": "Improper data use invades privacy.",
+    "Non_Compliance_Penalties": "Non-compliance leads to penalties and damage.",
+    "Data_Aggregation": "Unauthorized aggregation violates privacy."
+  },
+  "secure_file_uploads": {
+    "Malware_Injection": "Attackers upload files with malware.",
+    "Data_Leakage": "Malicious users expose sensitive data.",
+    "Server_Overload": "Attackers overwhelm servers with large files.",
+    "File_Type_Exploitation": "Specific file types trigger vulnerabilities.",
+    "Data_Tampering": "Malicious users modify files during upload."
+  },
+  "secure_file_uploads_policies__properties__secure_file_name": {
+    "Information_Leakage": "Files reveal contents to attackers.",
+    "Malicious_Naming": "Attackers use deceptive names for malicious content.",
+    "Path_Traversal": "Inadequate validation allows traversal.",
+    "Code_Execution": "Certain names trigger code execution.",
+    "Policy_Violation": "Violating naming conventions leads to access.",
+    "Insider_Threats": "Malicious insiders manipulate names."
+  },
+  "secure_file_uploads_policies__properties__malware_scan": {
+    "Information_Disclosure": "Unrestricted access exposes sensitive data.",
+    "Cross_Site_Scripting": "Malicious files trigger attacks.",
+    "Denial_of_Service": "Files cause resource consumption.",
+    "Phishing": "Attackers impersonate legitimate documents.",
+    "File_Manipulation": "Access enables manipulation."
+  },
+  "secure_file_uploads_policies__properties__audit_logging": {
+    "Unauthorized_Access": "Attackers access without logging.",
+    "Log_Manipulation": "Attackers tamper with logs.",
+    "Privilege_Escalation": "Attackers escalate privileges and tamper logs.",
+    "Insider_Threats": "Malicious insiders tamper with logs.",
+    "Retention_Policy_Violation": "Failure to retain logs leads to gaps."
+  },
+  "secure_file_uploads_policies__properties__encryption__in_transit": {
+    "Data_Interception": "Attackers intercept unencrypted data.",
+    "Data_Exposure": "Unauthorized access exposes data.",
+    "Key_Theft": "Attackers steal encryption keys.",
+    "Misconfigured_Encryption": "Improper settings lead to leakage.",
+    "Weak_Encryption": "Weak algorithms facilitate decryption."
+  },
+  "secure_file_uploads_policies__properties__encryption__at_rest": {
+    "Data_Interception": "Attackers intercept unencrypted data.",
+    "Data_Exposure": "Unauthorized access exposes data.",
+    "Key_Theft": "Attackers steal encryption keys.",
+    "Misconfigured_Encryption": "Improper settings lead to leakage.",
+    "Weak_Encryption": "Weak algorithms facilitate decryption."
+  },
+  "ssl_encryption_required": {
+    "Man_in_the_Middle_Attacks": "Attackers intercept encrypted communications.",
+    "SSL_TLS_Vulnerabilities": "Exploiting vulnerabilities compromises connections.",
+    "Expired_Invalid_Certificates": "Use of expired or invalid certificates enables impersonation.",
+    "Certificate_Mismanagement": "Poor certificate management leads to issuance.",
+    "Cipher_Suite_Weakness": "Weak cipher suites are exploited."
+  },
+  "permissions": {
+    "Unauthorized_Access": "Attackers gain unauthorized access.",
+    "Privilege_Escalation": "Attackers exploit vulnerabilities for privileges.",
+    "Insider_Threats": "Malicious insiders misuse access.",
+    "Broken_Access_Control": "Misconfigurations allow unauthorized access.",
+    "Credential_Theft": "Attackers steal credentials."
+  },
+  "explicite_allowed_resources": {
+    "Access_Violation": "Attackers gain unauthorized access.",
+    "Data_Exposure": "Unauthorized access exposes data.",
+    "Resource_Misconfiguration": "Misconfigured controls allow unintended access.",
+    "Policy_Bypass": "Attackers bypass policy enforcement.",
+    "Insider_Threats": "Malicious insiders intentionally access."
   }
+}

@@ -338,7 +338,7 @@ def create_prompt():
     # print(instance)
     context = context_gen(instance)
     rules = rule_gen(instance)
-    question="Based on context given rules to be followed, what are the security policy violations?"
+    question="Based on context given rules to be followed, list down the violated policies and with their level of violation between 1 to 10."
     data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
     return jsonify(data_prompt)
 
@@ -522,7 +522,7 @@ def fetch_llm_response():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Llama2-22B-Daydreamer-v3-GPTQ"
+    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\

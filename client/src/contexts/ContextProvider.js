@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import {customer_rules} from '../data/dummy.js'
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
@@ -80,7 +81,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function fetchLlmResponse(prompt) {
-    fetch('/test', {
+    fetch('/fetch_llm_response', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -103,7 +104,7 @@ export const ContextProvider = ({ children }) => {
     setShowAlert(true)
     if (answer) {
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/test', {
+      fetch('/fetch_llm_response', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
@@ -129,6 +130,7 @@ export const ContextProvider = ({ children }) => {
     fetch('/customer_random_instance')
       .then((res) => res.json())
       .then((entries) => {
+        entries.log_rules = JSON.stringify(customer_rules)
         setCustomerLog(entries)
         setShowCustomerLog(true)
         getCustomerPromptAndRes(entries)
@@ -137,8 +139,8 @@ export const ContextProvider = ({ children }) => {
 
   function getCustomerPromptAndRes(entries) {
     let prompt = `convo: ${entries.log_transcript} \n 
-    rules: ${entries.log_rules} \n question: Is there any violations 
-    in the given convo for rules mentioned ?`
+    rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
+    in the given conversation for above rules mentioned ?`
     fetchLlmResponse(prompt)
   }
 

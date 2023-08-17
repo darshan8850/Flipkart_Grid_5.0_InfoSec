@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const SysHistory = () => {
+const SysHistory = () => {  
   return (
-    <div>SysHistory</div>
+    <React.Fragment>
+      history
+    </React.Fragment>
   )
 }
 

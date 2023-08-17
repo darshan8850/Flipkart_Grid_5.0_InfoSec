@@ -4,9 +4,11 @@ import requests
 import click
 import torch
 import math
+import os
 from pymongo import MongoClient
 from flask_cors import CORS
 from flask import Flask, jsonify, request
+from bson import ObjectId
 
 # model
 from auto_gptq import AutoGPTQForCausalLM
@@ -43,6 +45,7 @@ client = MongoClient(mongo_connection_string)
 mongoDB = client['violatedData']
 collection_datasets = mongoDB['datasets']
 collection_customer = mongoDB['customer']
+collection_blocked = mongoDB['blockedUsers']
 
 rules= {
     "users": [
@@ -205,6 +208,20 @@ policy_score={
 
 device_type="cpu"
 show_sources="True"
+
+UPLOAD_FOLDER = 'uidata/uploads'
+UPLOAD_FOLDER_RULES = 'uidata/uploads/rules'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_RULES'] = UPLOAD_FOLDER_RULES 
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+if not os.path.exists(UPLOAD_FOLDER_RULES):
+    os.makedirs(UPLOAD_FOLDER_RULES)
+
+os.chmod(UPLOAD_FOLDER, 0o755)
+
 
 file_path = './System_generated_Logs/jsons/attacks/security_attacks.json'
 
@@ -544,6 +561,39 @@ def fetch_llm_response():
     answer, docs = res["result"], res["source_documents"]
     logging.info(f"QA analyzed answer")
     return jsonify({"answer":answer})
+
+# for block user feature
+@app.route('/block_user', methods=['POST'])
+def block_user(): 
+    temp_data = request.json
+    collection_blocked.insert_one(temp_data)
+    document_id = ObjectId(temp_data['id'])
+    collection_datasets.delete_one({"_id": (document_id)})
+    return jsonify("user blocked")
+
+# get blocked user
+@app.route('/get_blocked_user', methods=['GET'])
+def get_blocked_user(): 
+    temp_list = list(collection_blocked.find({}))
+    for item in temp_list:
+      item['_id'] = str(item['_id'])
+    return jsonify(temp_list)
+
+# upload files 
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    uploaded_file = request.files['file']
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+    uploaded_file.save(file_path)
+    return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
+    
+
+@app.route('/api/upload/rules', methods=['POST'])
+def upload_rule_file():
+    uploaded_rule_file = request.files['file']
+    file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
+    uploaded_rule_file.save(file_path)
+    return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
 
 # For Customer
 # step 1 - fetch customer-cr details 

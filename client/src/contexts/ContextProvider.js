@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+<<<<<<< Updated upstream
 import {customer_rules} from '../data/dummy.js'
+=======
+
+
+>>>>>>> Stashed changes
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
 
-  const currentColor = '#047bd5';
+  const currentColor = '#0d6efd';
   const activeMenu = true
 
   const [answer, setAnswer] = useState()
@@ -17,22 +22,37 @@ export const ContextProvider = ({ children }) => {
   const [showLog, setShowLog] = useState(false)
 
   const [severityScore, setSeverityScore] = useState(0)
-  const [showSeveritySore, setShowSeveritySore] = useState(false)
+  const [showSeverityScore, setShowSeverityScore] = useState(false)
 
   const [showModal, setShowModal] = useState(false)
 
   const [showAlert, setShowAlert] = useState(false)
 
+  const [history, setHistory] = useState({})
+  const [showHistory, setShowHistory] = useState(false)
   const [customerLog, setCustomerLog] = useState({})
   const [showCustomerLog, setShowCustomerLog] = useState(false)
 
   const [showButtons, setShowButtons] = useState(false)
+  const [showBlockedAlert, setShowBlockedAlert] = useState(false)
 
+
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+
+  const [showUpload, setShowUpload] = useState(false)
+  const handleShowUpload = () => setShowUpload(true)
+  const handleCloseUpload = () => setShowUpload(false)
+
+  const [logInput, setLogInput] = useState()
+  const [ruleInput, setRuleInput] = useState()
+  const [promptInput, setPromptInput] = useState()
 
   // workflow - 1 ( For system generated log )
   function fetchLog() {
     setShowAnswer(false)
-    setMoreInfo(false)
+    setShowMoreInfo(false)
     fetch('/random_instance')
       .then((res) => res.json())
       .then((entries) => {
@@ -40,6 +60,9 @@ export const ContextProvider = ({ children }) => {
         setShowLog(true)
         getScore(entries)
         getPromptAndRes(entries)
+      })
+      .catch((e) => {
+        console.error("fetch log - " + e)
       })
   }
 
@@ -54,7 +77,7 @@ export const ContextProvider = ({ children }) => {
       .then((res) => res.json())
       .then((score) => {
         setSeverityScore(score)
-        setShowSeveritySore(true);
+        setShowSeverityScore(true);
       })
       .catch((e) => {
         console.error("getScore - " + e)
@@ -71,7 +94,6 @@ export const ContextProvider = ({ children }) => {
     })
       .then((res) => res.json())
       .then((prompt) => {
-        console.log(prompt)
         setShowAlert(true)
         fetchLlmResponse(prompt)
       })
@@ -101,8 +123,8 @@ export const ContextProvider = ({ children }) => {
   }
 
   function knowMore() {
-    setShowAlert(true)
     if (answer) {
+      setShowAlert(true)
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
       fetch('/fetch_llm_response', {
         method: 'POST',
@@ -123,6 +145,78 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  function blockUser() {
+    if (log === null) {
+      return "NULL LOG"
+    }
+    const block_user = {
+      "id": log._id,
+      "client": log.client,
+      "method": log.method,
+      "status": log.status,
+      "request": log.request
+    }
+    fetch('/block_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(block_user)
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setShowBlockedAlert(true)
+        setTimeout(() => {
+          setShowBlockedAlert(false)
+          fetchLog()
+        }, 3000);
+      })
+      .catch((e) => {
+        console.error("getScore - " + e)
+      })
+
+  }
+
+  function fetchHistory() {
+    setShowHistory(true)
+    fetch('/get_blocked_user')
+      .then((res) => res.json())
+      .then((entries) => {
+        setHistory(entries)
+      })
+      .catch((e) => {
+        console.error("fetch history - " + e)
+      })
+  }
+
+  // uploads
+  const handleRegularFileSubmit = async (file) => {
+    await uploadFile(file, '/api/upload')
+  }
+
+  const handleRuleFileSubmit = async (file) => {
+    await uploadFile(file, '/api/upload/rules')
+  }
+
+  const uploadFile = async (file, url) => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+
+
   // workflow - 2 ( For customer log)
   function fetchCustomerLog() {
     setShowAnswer(false)
@@ -138,6 +232,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function getCustomerPromptAndRes(entries) {
+    setShowAlert(true)
     let prompt = `convo: ${entries.log_transcript} \n 
     rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
     in the given conversation for above rules mentioned ?`
@@ -150,14 +245,18 @@ export const ContextProvider = ({ children }) => {
       showModal, setShowModal,
       log, showLog,
       severityScore, setSeverityScore,
-      showSeveritySore, setShowSeveritySore,
+      showSeverityScore, setShowSeverityScore,
       showAlert, setShowAlert,
       answer, setAnswer,
       showAnswer, knowMore,
       moreInfo, setMoreInfo,
       showMoreInfo, setShowMoreInfo,
       fetchLog,
-      fetchCustomerLog, showCustomerLog , customerLog, showButtons, setShowButtons
+      fetchCustomerLog, showCustomerLog, customerLog, showButtons, setShowButtons, blockUser,
+      showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
+      show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,
+      showUpload, setShowUpload, handleShowUpload, handleCloseUpload,
+      setLogInput, setRuleInput, setPromptInput, uploadTextData
     }}>
       {children}
     </StateContext.Provider>

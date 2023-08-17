@@ -10,14 +10,14 @@ const SystemResponse = () => {
     setShowModal,
     log,
     severityScore,
-    showSeveritySore,
+    showSeverityScore,
     answer,
     showAnswer,
     fetchLog,
     knowMore,
     moreInfo,
-    showMoreInfo
-    
+    showMoreInfo,
+    blockUser,
   } = useStateContext()
 
   const col_class = 'col-2 border text-primary text-center p-1'
@@ -27,8 +27,8 @@ const SystemResponse = () => {
     <React.Fragment>
       <div className=" rounded bg-body-tertiary p-4 m-3" id="response-div">
         <span className="fs-5">Instance</span>
-        {showSeveritySore && (
-          <div className='d-flex justify-content-between'>
+        {showSeverityScore && (
+          <div className="d-flex justify-content-between">
             <div id="progress-bar" className="d-flex gap-3 pt-2 w-50">
               <p>Severity Score</p>
               {severityScore}{' '}
@@ -40,7 +40,7 @@ const SystemResponse = () => {
 
             <div>
               <ButtonGroup size="sm" className="">
-                <Button>Block</Button>
+                <Button onClick={blockUser}>Block</Button>
                 <Button onClick={knowMore}>Know More</Button>
                 <Button onClick={fetchLog}>Next</Button>
               </ButtonGroup>
@@ -49,6 +49,7 @@ const SystemResponse = () => {
         )}
 
         <div className=" p-2">
+          
           <div class="row mt-3 ">
             <div class={col_class}>Object ID</div>
             <div class={col_class}>Client ID</div>
@@ -57,6 +58,7 @@ const SystemResponse = () => {
             <div class={col_class}>Request</div>
             <div class={col_class}>Full details </div>
           </div>
+          
           <div class="row">
             <div class={`${col_info_class}`}>{log._id}</div>
             <div class={`${col_info_class}`}>{log.client}</div>
@@ -78,6 +80,7 @@ const SystemResponse = () => {
               />
             </div>
           </div>
+          
           {showAnswer && (
             <>
               <div class="row">

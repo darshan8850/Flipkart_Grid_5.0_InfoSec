@@ -338,7 +338,7 @@ def create_prompt():
     # print(instance)
     context = context_gen(instance)
     rules = rule_gen(instance)
-    question="Based on context given rules to be followed, list down the violated policies and with their level of violation between 1 to 10."
+    question="I want answer in single word(Yes or No) are their any security violations in context based on rules? "
     data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
     return jsonify(data_prompt)
 

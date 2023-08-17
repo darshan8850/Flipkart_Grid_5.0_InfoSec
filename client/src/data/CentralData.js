@@ -1,6 +1,6 @@
 import React from 'react';
 import { AiOutlineBarChart } from 'react-icons/ai';
-import { FiPieChart } from 'react-icons/fi';
+import { FiPieChart, FiLink } from 'react-icons/fi';
 import { BsBoxSeam} from 'react-icons/bs';
 
 
@@ -22,10 +22,10 @@ export const links = [
         name: 'System_Analysis',
         icon: <AiOutlineBarChart />,
       },
-      {
-        name: 'System_History',
-        icon: <FiPieChart />,
-      },
+      // {
+      //   name: 'System_History',
+      //   icon: <FiPieChart />,
+      // },
       {
         name: 'Blocked_users',
         icon: <BsBoxSeam />,
@@ -39,10 +39,23 @@ export const links = [
         name: 'Customer_Analysis',
         icon: <AiOutlineBarChart />,
       },
+      // {
+      //   name: 'Customer_History',
+      //   icon: <FiPieChart />,
+      // }
+    ],
+  },
+  {
+    title: 'Documentation',
+    links: [
       {
-        name: 'Customer_History',
-        icon: <FiPieChart />,
-      }
+        name: 'Documentation',
+        icon: <FiLink />,
+      },
+      // {
+      //   name: 'Customer_History',
+      //   icon: <FiPieChart />,
+      // }
     ],
   },
 ];

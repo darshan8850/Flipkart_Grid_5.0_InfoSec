@@ -4,6 +4,8 @@ import { SystemResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import SysInputResponse from '../components/SysInputResponse'
+import { useLogInputContext } from '../contexts/LogInputContext'
 
 const SysAnalysis = () => {
   const {
@@ -22,18 +24,9 @@ const SysAnalysis = () => {
     uploadTextData, setLogInput, setRuleInput, setPromptInput,
   } = useStateContext()
 
+  const {showInputLog, fetchInputLog} = useLogInputContext()
 
-  function manageInput() {
-    // let logInput = document.getElementById("text-log").value
-    // setLogInput(logInput)
-    // let ruleInput = document.getElementById("text-rules").value
-    // setRuleInput(ruleInput)
-    // let promptInput  = document.getElementById("text-prompt").value
-    // setPromptInput(promptInput)
 
-    // uploadTextData()
-   
-  }
 
   return (
     <React.Fragment>
@@ -66,7 +59,7 @@ const SysAnalysis = () => {
           className="p-4 d-flex justify-content-between"
         >
           <div className="flex flex-col">
-            <span className="fs-2 mb-0">System Analysis</span>
+            <span className="fs-2 mb-0">System Log Analysis</span>
             <span>
               System generated logs Analysis using LLM with Sevierity score
             </span>
@@ -112,54 +105,14 @@ const SysAnalysis = () => {
               </Modal.Body>
             </Modal>
 
-            {/* upload text */}
+            
             <button
               type="button"
               class="btn btn-primary btn-sm"
-              onClick={handleShow}
+              onClick={fetchInputLog}
             >
-              Upload Text log
+              Get Input Log
             </button>
-            <Modal className="mt-5 mb-5" show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Text Input</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <p>Required*</p>
-                <div class="input-group-sm mb-4">
-                  <span class="input-group-text mt-1 mb-1">Log*</span>
-                  <textarea
-                    id="text-log"
-                    class="form-control"
-                    aria-label="With textarea"
-                    // onChange={setLogInput(event.target.value)}
-                  ></textarea>
-                </div>
-                <div class="input-group-sm mb-4">
-                  <span class="input-group-text mt-1 mb-1">Rules*</span>
-                  <textarea
-                    id="text-rules"
-                    class="form-control"
-                    aria-label="With textarea"
-                    // onChange={setRuleInput(event.target.value)}
-                  ></textarea>
-                </div>
-                <div class="input-group-sm">
-                  <span class="input-group-text mt-1 mb-1">Prompt*</span>
-                  <textarea
-                    id="text-prompt"
-                    class="form-control"
-                    aria-label="With textarea"
-                    // onChange={setPromptInput(event.target.value)}
-                  ></textarea>
-                </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button className="btn-sm" variant="primary" onClick={manageInput}>
-                  Start Analysis
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </div>
         </div>
 
@@ -174,6 +127,7 @@ const SysAnalysis = () => {
             style={{ widht: '90vw', height: '85%' }}
           >
             {showLog && <SystemResponse />}
+            {showInputLog && <SysInputResponse/>}
           </div>
         </div>
       </div>

@@ -46,6 +46,7 @@ mongoDB = client['violatedData']
 collection_datasets = mongoDB['datasets']
 collection_customer = mongoDB['customer']
 collection_blocked = mongoDB['blockedUsers']
+collection_input = mongoDB['input']
 
 rules= {
     "users": [
@@ -591,6 +592,23 @@ def upload_rule_file():
     file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
     uploaded_rule_file.save(file_path)
     return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
+
+
+# get input sys log
+@app.route('/input_random_instance', methods=['GET'])
+def input_random_instance():
+    try:
+      pipeline = [
+        {"$sample": {"size": 1}}
+      ]
+      result_list = list(collection_input.aggregate(pipeline))
+      random_instance = result_list[0]
+      random_instance['_id'] = str(random_instance['_id'])
+      logging.info('random_instance')    
+      return jsonify(random_instance)
+    except Exception as e:
+      return jsonify({"error": str(e)}), 500
+
 
 # For Customer
 # step 1 - fetch customer-cr details 

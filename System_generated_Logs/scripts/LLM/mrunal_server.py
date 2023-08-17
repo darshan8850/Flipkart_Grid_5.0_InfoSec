@@ -209,8 +209,8 @@ policy_score={
 device_type="cpu"
 show_sources="True"
 
-UPLOAD_FOLDER = 'uidata/uploads'
-UPLOAD_FOLDER_RULES = 'uidata/uploads/rules'
+UPLOAD_FOLDER = 'System_generated_Logs/scripts/uidata/uploads'
+UPLOAD_FOLDER_RULES = 'System_generated_Logs/scripts/uploaded_rules'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_FOLDER_RULES'] = UPLOAD_FOLDER_RULES 
 

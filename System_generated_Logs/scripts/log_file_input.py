@@ -61,6 +61,7 @@ class LogAnalysis:
 
     def parse_log_file(self, logfile, output_dir, errors_file):
       combined_regex = self.formats['txt']
+  
 
       with open(logfile, 'rb') as source_file:
         print("log file opened")
@@ -90,17 +91,30 @@ class LogAnalysis:
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+
 # Specify the full path to the uploaded file
-file = os.path.join(script_dir, 'D:/recent changes  l clean branch/Flipkart_Grid_5.0_InfoSec/uidata/uploads/log_text.txt')
-output_dir = 'parquets/'
-errors_file = 'errors.txt'
+directory_path = os.path.join(script_dir, 'uidata/uploads')
+file_list = os.listdir(directory_path)
+for filename in file_list:
+  file = os.path.join(directory_path, filename)
+_, file_extension =file.rsplit('.', 1)
+if file_extension.lower() == 'csv':
+    file.save(os.path.join(script_dir, 'database_push'))
+    shutil.rmtree(directory_path)
+    
+else:
+    
+  output_dir = 'parquets/'
+  errors_file = 'errors.txt'
 
-#os.mkdir(output_dir)
-log_analysis = LogAnalysis(formats, columns)
-logfile=log_analysis.detect_format(file)
-log_analysis.parse_log_file(logfile, output_dir, errors_file)
+  os.mkdir(output_dir)
+  log_analysis = LogAnalysis(formats, columns)
+  logfile=log_analysis.detect_format(file)
+  log_analysis.parse_log_file(logfile, output_dir, errors_file)
 
 
-logs_df = pd.read_parquet(output_dir)
-logs_df.to_csv('logs2.csv', index=True)
-shutil.rmtree(output_dir)
+  logs_df = pd.read_parquet(output_dir)
+  logs_df.to_csv('database_push/logs2.csv', index=True)
+  shutil.rmtree(output_dir)
+  shutil.rmtree(directory_path)
+  

@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-<<<<<<< Updated upstream
-import {customer_rules} from '../data/dummy.js'
-=======
+import { customer_rules } from '../data/CentralData';
 
-
->>>>>>> Stashed changes
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
@@ -256,7 +252,7 @@ export const ContextProvider = ({ children }) => {
       showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
       show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,
       showUpload, setShowUpload, handleShowUpload, handleCloseUpload,
-      setLogInput, setRuleInput, setPromptInput, uploadTextData
+      setLogInput, setRuleInput, setPromptInput
     }}>
       {children}
     </StateContext.Provider>

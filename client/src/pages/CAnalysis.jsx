@@ -64,9 +64,7 @@ const CAnalysis = () => {
                 <UploadFile
                   title="Upload Files (PDF, CSV, TXT)"
                   allowedFileTypes={[
-                    'application/pdf',
-                    'text/csv',
-                    'text/plain',
+                    'audio/mpeg'
                   ]}
                   onSubmit={handleRegularFileSubmit}
                 />

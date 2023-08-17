@@ -1,5 +1,5 @@
 import speech_recognition as sr
-from os import path
+import os
 from pydub import AudioSegment
 import subprocess
                                                                       
@@ -17,7 +17,7 @@ def audio_txt(source_path, des_path):
 
     r = sr.Recognizer()
 
-    with sr.AudioFile('Human_generated_Logs/data/audio/sample1.wav') as source:
+    with sr.AudioFile(des_path) as source:
        audio_text = r.listen(source)
 
        try:
@@ -29,10 +29,19 @@ def audio_txt(source_path, des_path):
        except sr.RequestError as e:
            print(f"Could not request results from Google Web Speech API; {e}")
            
-        
-text=audio_txt('Human_generated_Logs/data/audio/sample1.mp3','Human_generated_Logs/data/audio/sample1.wav')
-file_path = "Human_generated_Log/data/input_data/new_audio.txt"
+directory_path="Human_generated_Logs/data/audio"
+file_list = os.listdir(directory_path)
+for filename in file_list:
+  file = os.path.join(directory_path, filename) 
+new, file_extension =file.rsplit('.', 1) 
+new_file=new+".wav" 
+    
+text=audio_txt(file,new_file) 
+file_path = "C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/Human_generated_Logs/data/input_data/new_audio.txt"
 
+
+  
 # Open the file in write mode
-with open(file_path, "w") as file:
-    file.write(text)
+with open(file_path, "w") as f:
+    f.write(text)
+    

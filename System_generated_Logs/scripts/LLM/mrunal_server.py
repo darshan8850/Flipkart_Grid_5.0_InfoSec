@@ -3,7 +3,7 @@ import json
 import requests
 import click
 import torch
-import math
+import shutil
 import os
 from pymongo import MongoClient
 from flask_cors import CORS
@@ -50,7 +50,7 @@ collection_datasets = mongoDB['datasets']
 collection_customer = mongoDB['customer']
 collection_blocked = mongoDB['blockedUsers']
 collection_input = mongoDB['input']
-
+collection_input2 = mongoDB['input2']
 rules= {
     "users": [
       {
@@ -215,6 +215,9 @@ show_sources="True"
 
 UPLOAD_FOLDER = 'System_generated_Logs/scripts/uidata/uploads'
 UPLOAD_FOLDER_RULES = 'System_generated_Logs/scripts/uploaded_rules'
+UPLOAD_FOLDER_AUDIO = 'Human_generated_Logs/data/audio'
+app.config['UPLOAD_FOLDER_AUDIO'] = UPLOAD_FOLDER_AUDIO
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_FOLDER_RULES'] = UPLOAD_FOLDER_RULES 
 
@@ -584,11 +587,31 @@ def get_blocked_user():
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     uploaded_file = request.files['file']
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-    uploaded_file.save(file_path)
-    run_another_script()
-    uploadtoDB()
-    return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
+    if uploaded_file.filename.endswith('.mp3'):
+        file_path = os.path.join(app.config['UPLOAD_FOLDER_AUDIO'], uploaded_file.filename)
+        uploaded_file.save(file_path)
+        new,_ =uploaded_file.filename.rsplit('.', 1)
+        new_name=new+".wav"
+        print(new_name)
+        des_path = os.path.join(app.config['UPLOAD_FOLDER_AUDIO'], new_name)
+        run_audio_script(file_path, des_path)
+        with open('Human_generated_Logs/data/input_data/new_audio.txt', 'r') as file:
+          conversation_lines = file.readlines()
+
+        conversation_text = ''.join(conversation_lines)
+
+        shutil.rmtree("Human_generated_Logs/data/audio/")
+        shutil.rmtree("Human_generated_Logs/data/input_data/")
+        os.mkdir("Human_generated_Logs/data/audio/")
+        os.mkdir("Human_generated_Logs/data/input_data/")
+        
+        return json.dumps(conversation_text)
+    else:
+      file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+      uploaded_file.save(file_path)
+      run_another_script()
+      uploadtoDB()
+      return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
     
 def uploadtoDB():
   data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/database_push/'
@@ -607,6 +630,7 @@ def uploadtoDB():
                     print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
                 else:
                     print(f"No data in {filename}")
+                    
 
 def run_another_script():
     script_path = "System_generated_Logs/scripts/log_file_input.py"
@@ -615,6 +639,9 @@ def run_another_script():
         print("Other script executed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error executing the other script: {e}")
+
+def run_audio_script(source_path, des_path):
+    subprocess.run(['python', 'Human_generated_Logs/scripts/audio_to_txt.py', source_path, des_path])
         
         
 @app.route('/api/upload/rules', methods=['POST'])

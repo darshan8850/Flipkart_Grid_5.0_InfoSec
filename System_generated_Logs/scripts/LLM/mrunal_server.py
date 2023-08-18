@@ -614,7 +614,7 @@ def upload_file():
       return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
     
 def uploadtoDB():
-  data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/database_push/'
+  data_directory = 'database_push/'
   if collection_input.count_documents({}) > 0:
         collection_input.delete_many({})
         print("Collection emptied.")

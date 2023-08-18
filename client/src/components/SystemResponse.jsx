@@ -112,14 +112,13 @@ const SystemResponse = () => {
                               },
                             ]}
                             layout={{
-                              width: 600,
+                              width: 500,
                               height: 600,
-                              title: 'A Fancy Plot',
+                              title: 'Security Violation Score',
                             }}
                           />
                         </div>
                       </div>
-                      <div className="row"></div>
                     </Accordion.Body>
                   </Accordion.Item>
                 </Accordion>

@@ -1,22 +1,23 @@
 import React, { useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
 import { useStateContext } from '../contexts/ContextProvider'
+import { useCustomerContext } from '../contexts/CustomerContext'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Accordion from 'react-bootstrap/Accordion'
 
 const CustomerResponse = () => {
-  const col_class = 'col border text-primary text-center p-1'
-  const col_info_class = 'col border text-center p-1'
+  const col_className = 'col border text-primary text-center p-1'
+  const col_info_className = 'col border text-center p-1'
   const {
     answer,
     showAnswer,
-    knowMore,
     moreInfo,
     showMoreInfo,
-    customerLog,
-    fetchCustomerLog,
+
     showButtons,
   } = useStateContext()
+
+  const { fetchCustomerLog, customerLog, customerKnowMore } = useCustomerContext()
 
   return (
     <React.Fragment>
@@ -26,7 +27,7 @@ const CustomerResponse = () => {
           {showButtons && (
             <div>
               <ButtonGroup size="sm" className="">
-                <Button onClick={knowMore}>Know More</Button>
+                <Button onClick={customerKnowMore}>Know More</Button>
                 <Button onClick={fetchCustomerLog}>Next</Button>
               </ButtonGroup>
             </div>
@@ -34,17 +35,19 @@ const CustomerResponse = () => {
         </div>
 
         <div className=" p-2">
-          <div class="row mt-3 ">
-            <div class="col-2 border text-primary text-center p-1">
+          <div className="row mt-3 ">
+            <div className="col-2 border text-primary text-center p-1">
               Object ID
             </div>
-            <div class={col_class}>Customer Log</div>
-            <div class={col_class}>Rules</div>
+            <div className={col_className}>Customer Log</div>
+            <div className={col_className}>Rules</div>
           </div>
 
-          <div class="row">
-            <div class="col-2 border text-center p-1">{customerLog._id}</div>
-            <div class={`${col_info_class}`}>
+          <div className="row">
+            <div className="col-2 border text-center p-1 overflow-auto">
+              {customerLog._id}
+            </div>
+            <div className={`${col_info_className}`}>
               <Accordion>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header className="bg-body-tertiary">
@@ -54,13 +57,20 @@ const CustomerResponse = () => {
                 </Accordion.Item>
               </Accordion>
             </div>
-            <div class={`${col_info_class}`}>
+            <div className={`${col_info_className}`}>
               <Accordion>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header className="bg-body-tertiary">
                     Detailed Customer-CR Rules
                   </Accordion.Header>
-                  <Accordion.Body>{customerLog.log_rules}</Accordion.Body>
+                  <Accordion.Body>
+                    <div className="row text-center border text-primary p-2">
+                      Policies
+                    </div>
+                    {Object.entries(customerLog.log_rules).map((entry) => (
+                      <div className="row border text-justify p-2">{entry}</div>
+                    ))}
+                  </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
             </div>
@@ -68,26 +78,36 @@ const CustomerResponse = () => {
 
           {showAnswer && (
             <>
-              <div class="row">
-                <div class="col-12 text-center border text-primary p-1">
-                  <span class="fs-6">Analyzed Answer</span>
+              <div className="row">
+                <div className="col-12 text-center border text-primary p-2">
+                  <span className="fs-6">Customer Transcript Analysis</span>
                 </div>
               </div>
-              <div className="row">
-                <div class="col-12 border p-4">{answer}</div>
-              </div>
-            </>
-          )}
-
-          {showMoreInfo && (
-            <>
-              <div class="row">
-                <div class="col-12 text-center border text-primary p-1">
-                  <span class="fs-6">Security Measures</span>
+              <div className="row border p-2">
+                <div className="mb-2">
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header className="bg-body-tertiary">
+                        Analyzed Answer
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <div className="row ">
+                          <div className="col overflow-aut">{answer}</div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
                 </div>
-              </div>
-              <div className="row">
-                <div class="col-12 border p-4">{moreInfo}</div>
+                {showMoreInfo && (
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header className="bg-body-tertiary">
+                        Know More - ( Security Measures )
+                      </Accordion.Header>
+                      <Accordion.Body>{moreInfo}</Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                )}
               </div>
             </>
           )}

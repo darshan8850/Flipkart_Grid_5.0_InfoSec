@@ -12,7 +12,7 @@ const SysBlocked = () => {
 
   return (
     <React.Fragment>
-      <div id="sys-heading-div" className="p-4 d-flex justify-content-between">
+      <div id="sys-heading-div" className="p-4 d-flex justify-content-between ">
         <div className="flex flex-col">
           <span className="fs-2 mb-0">System Log Blocked Users</span>
           <span>
@@ -21,7 +21,10 @@ const SysBlocked = () => {
           </span>
         </div>
       </div>
-      <div id="blocked-div" className="p-3 m-3">
+      <div style={{height:'80vh'}} className='overflow-auto p-3'>
+
+      
+      <div id="blocked-div" className="p-3 m-3 ">
         <div className="row border">
           <div className={col_class}>Object ID</div>
           <div className={col_class}>ID</div>
@@ -51,6 +54,7 @@ const SysBlocked = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </React.Fragment>
   )

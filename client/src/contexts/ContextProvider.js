@@ -130,7 +130,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function fetchLlmResponse(prompt) {
-    fetch('/fetch_llm_response', {
+    fetch('/test', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -154,7 +154,7 @@ export const ContextProvider = ({ children }) => {
     if (answer) {
       setShowAlert(true)
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/fetch_llm_response', {
+      fetch('/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
@@ -247,24 +247,24 @@ export const ContextProvider = ({ children }) => {
 
   // workflow - 2 ( For customer log)
   function fetchCustomerLog() {
-    setShowAnswer(false)
-    setShowMoreInfo(false)
-    fetch('/customer_random_instance')
-      .then((res) => res.json())
-      .then((entries) => {
-        entries.log_rules = JSON.stringify(customer_rules)
-        setCustomerLog(entries)
-        setShowCustomerLog(true)
-        getCustomerPromptAndRes(entries)
-      })
+    // setShowAnswer(false)
+    // setShowMoreInfo(false)
+    // fetch('/customer_random_instance')
+    //   .then((res) => res.json())
+    //   .then((entries) => {
+    //     entries.log_rules = JSON.stringify(customer_rules)
+    //     setCustomerLog(entries)
+    //     setShowCustomerLog(true)
+    //     getCustomerPromptAndRes(entries)
+    //   })
   }
 
   function getCustomerPromptAndRes(entries) {
-    setShowAlert(true)
-    let prompt = `convo: ${entries.log_transcript} \n 
-    rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
-    in the given conversation for above rules mentioned ?`
-    fetchLlmResponse(prompt)
+    // setShowAlert(true)
+    // let prompt = `convo: ${entries.log_transcript} \n 
+    // rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
+    // in the given conversation for above rules mentioned ?`
+    // fetchLlmResponse(prompt)
   }
 
   return (
@@ -279,7 +279,7 @@ export const ContextProvider = ({ children }) => {
       showAnswer, knowMore,
       moreInfo, setMoreInfo,
       showMoreInfo, setShowMoreInfo,
-      fetchLog,
+      fetchLog,setShowAnswer,fetchLlmResponse,
       fetchCustomerLog, showCustomerLog, customerLog, showButtons, setShowButtons, blockUser,
       showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
       show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,

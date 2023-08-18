@@ -1,13 +1,14 @@
 import React from 'react'
-import Alert from 'react-bootstrap/Alert'
+import Alert from '@mui/material/Alert'
 import { CustomerResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import Modal from 'react-bootstrap/Modal'
-
+import { useCustomerContext } from '../contexts/CustomerContext'
 const CAnalysis = () => {
 
-  const { showAlert, fetchCustomerLog, showCustomerLog } = useStateContext()
+  const { fetchCustomerLog, showCustomerLog } = useCustomerContext()
   const {
+    showAlert,
     handleRuleFileSubmit,
     handleRegularFileSubmit,
     showUpload,
@@ -23,12 +24,11 @@ const CAnalysis = () => {
         style={{ widht: '90vw', height: '94vh' }}
       >
         {showAlert && (
-          <Alert
-            variant="primary"
+        <Alert
             className=" z-3  position-absolute top-20 start-50 translate-middle"
-            style={{ widht: '10vw', height: '5vh' }}
+            severity="info"
           >
-            <p>Analysing Customer-CR logs ... </p>
+            Analysing Customer - Company Respresentative Logs ...
           </Alert>
         )}
 
@@ -37,9 +37,9 @@ const CAnalysis = () => {
           className="p-4 d-flex justify-content-between"
         >
           <div className="flex flex-col">
-            <span className="fs-2 mb-0">Customer-CR Analysis</span>
+            <span className="fs-2 mb-0">Customer-Customer Representative Analysis</span>
             <span>
-              Customer-CR generated logs Analysis using LLM
+              Customer-Customer Representative generated logs Analysis using LLM
             </span>
           </div>
 
@@ -62,14 +62,14 @@ const CAnalysis = () => {
               <Modal.Header closeButton></Modal.Header>
               <Modal.Body>
                 <UploadFile
-                  title="Upload Files (PDF, CSV, TXT)"
+                  title="Upload Files (AUDIO, MPEG)"
                   allowedFileTypes={[
                     'audio/mpeg'
                   ]}
                   onSubmit={handleRegularFileSubmit}
                 />
                 <UploadFile
-                  title="Upload Rules"
+                  title="Upload Rules (.TXT )"
                   allowedFileTypes={['text/plain', 'text/csv']}
                   onSubmit={handleRuleFileSubmit}
                 />

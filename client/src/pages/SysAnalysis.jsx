@@ -22,11 +22,16 @@ const SysAnalysis = () => {
     showAutoBlock,
     setShowAutoBlock,
     handleShowBlock,
-    handleCloseBlock,autoBlock, setAutoBlock, rangeVal, setRangeVal, setVal, setTrue
+    handleCloseBlock,
+    autoBlock,
+    setAutoBlock,
+    rangeVal,
+    setRangeVal,
+    setVal,
+    setTrue,
   } = useStateContext()
 
   const { showInputLog, fetchInputLog } = useLogInputContext()
-
 
   return (
     <React.Fragment>
@@ -38,10 +43,9 @@ const SysAnalysis = () => {
         {showAlert && (
           <Alert
             className=" z-3  position-absolute top-20 start-50 translate-middle"
-            style={{ widht: '10vw', height: '5vh' }}
             severity="info"
           >
-            Analysing System Logs
+            Analysing System Logs ...
           </Alert>
         )}
 
@@ -61,7 +65,7 @@ const SysAnalysis = () => {
           <div className="flex flex-col">
             <span className="fs-2 mb-0">System Log Analysis</span>
             <span>
-              System generated logs Analysis using LLM with Sevierity score
+              System generated logs Analysis using LLM with severity score
             </span>
           </div>
 
@@ -108,14 +112,6 @@ const SysAnalysis = () => {
 
               <button
                 type="button"
-                class="btn btn-primary btn-sm me-3"
-                onClick={fetchInputLog}
-              >
-                Get Input Log
-              </button>
-
-              <button
-                type="button"
                 class="btn btn-primary btn-sm "
                 onClick={handleShowBlock}
               >
@@ -129,7 +125,25 @@ const SysAnalysis = () => {
                 <Modal.Header closeButton>Auto Block</Modal.Header>
                 <Modal.Body>
                   <div className="bg-dark-subtle p-5">
-                    <div className="d-flex mb-3">
+                   
+                    <div>
+                      <p> Range Val: {rangeVal}</p>
+                    </div>
+                    <div className="d-flex">
+                      
+                      <input
+                        type="range"
+                        class="form-range "
+                        min="0"
+                        max="10"
+                        step="0.5"
+                        id="customRange3"
+                        defaultValue="0"
+                        onChange={(e) => setVal(e.target.value)}
+                      ></input>
+                    </div>
+
+                    <div className="d-flex mt-3">
                       <input
                         class="form-check-input me-3"
                         type="checkbox"
@@ -141,22 +155,6 @@ const SysAnalysis = () => {
                       <label class="form-check-label " for="flexCheckDefault">
                         Set Auto Blocking
                       </label>
-                    </div>
-
-                    <div className="d-flex">
-                      <label for="customRange3" class="form-label me-2">
-                        Range
-                      </label>
-                      <input
-                        type="range"
-                        class="form-range "
-                        min="0"
-                        max="10"
-                        step="0.5"
-                        id="customRange3"
-                        defaultValue='0'
-                        onChange={(e) => setVal(e.target.value)}
-                      ></input>
                     </div>
                   </div>
                 </Modal.Body>

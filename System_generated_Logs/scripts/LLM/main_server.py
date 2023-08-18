@@ -3,10 +3,16 @@ import json
 import requests
 import click
 import torch
+import shutil
+import os
 from pymongo import MongoClient
 from flask_cors import CORS
 from flask import Flask, jsonify, request
-
+from bson import ObjectId
+import subprocess
+from pymongo import MongoClient
+import json
+import csv
 # model
 from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
@@ -26,34 +32,25 @@ from transformers import (
 )
 from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
 
+import warnings
+
+# Ignore all warnings (not recommended unless you're sure about it)
+warnings.filterwarnings("ignore")
+
+# Ignore specific category of warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+
 app = Flask(__name__)
 CORS(app)
 mongo_connection_string = 'mongodb+srv://mrunal21:mrunal21@cluster0.eugjmpy.mongodb.net'
-prompt = "what are security policy violations in this?"
 client = MongoClient(mongo_connection_string)
 mongoDB = client['violatedData']
 collection_datasets = mongoDB['datasets']
-collection_analyzed = mongoDB['analyzed']
-
-device_type="cpu"
-show_sources="True"
-data=""
-query=""
-
-
-file_path = 'Flipkart_Grid_5.0_InfoSec/System_generated_Logs/jsons/attacks/security_attacks.json'
-
-with open(file_path, 'r') as json_file:
-    security_attacks = json.load(json_file)
-    
-# file_path = 'data/new_data.json'
-# with open(file_path, 'r') as json_file:
-#     instances = json.load(json_file)    
-# instance=instances['instance_0']
-
-#flask
-
-
+collection_customer = mongoDB['customer']
+collection_blocked = mongoDB['blockedUsers']
+collection_input = mongoDB['input']
+collection_input2 = mongoDB['input2']
 rules= {
     "users": [
       {
@@ -213,52 +210,94 @@ policy_score={
     ]
   }
 
-@app.route('/main_method')
-def main_method():
-    try:
-        
-        random_instance_response = requests.get('http://127.0.0.1:5000/random_instance')
-        temp_response = requests.get('http://127.0.0.1:5000/temp')
-        
-        if random_instance_response.status_code != 200:
-            return jsonify({"error": "Failed to fetch random instance data"}), random_instance_response.status_code
-        
-        
-        
-        if temp_response.status_code != 200:
-            return jsonify({"error": "Failed to fetch temp data"}), temp_response.status_code 
-        
-        random_instance_data = random_instance_response.json()
-        temp_data = temp_response.json()
-   
-        # print(random_instance_data)
-        # print(temp_data)
-        combined_data = {"random_instance_data": random_instance_data, "temp_data": temp_data}
-        return jsonify(combined_data)
-    
-            
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-    return 'main method not properly executed'
+device_type="cuda"
+show_sources="True"
 
+UPLOAD_FOLDER = 'System_generated_Logs/scripts/uidata/uploads'
+UPLOAD_FOLDER_RULES = 'System_generated_Logs/scripts/uploaded_rules'
+UPLOAD_FOLDER_AUDIO = 'Human_generated_Logs/data/audio'
+app.config['UPLOAD_FOLDER_AUDIO'] = UPLOAD_FOLDER_AUDIO
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_RULES'] = UPLOAD_FOLDER_RULES 
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+if not os.path.exists(UPLOAD_FOLDER_RULES):
+    os.makedirs(UPLOAD_FOLDER_RULES)
+
+os.chmod(UPLOAD_FOLDER, 0o755)
+
+
+file_path = './System_generated_Logs/jsons/attacks/security_attacks.json'
+
+with open(file_path, 'r') as json_file:
+    security_attacks = json.load(json_file)
+
+# For System Logs
+#step 1 - get random instance
 @app.route('/random_instance', methods=['GET'])
 def get_random_instance():
     try:
       pipeline = [
         {"$sample": {"size": 1}}
       ]
-      result = collection_datasets.aggregate(pipeline)
-      result_list = list(result)
+      result_list = list(collection_datasets.aggregate(pipeline))
       random_instance = result_list[0]
       random_instance['_id'] = str(random_instance['_id'])
-      global data
-      data=random_instance
       logging.info('random_instance')    
       return jsonify(random_instance)
     except Exception as e:
-      return jsonify({"error": str(e)}), 500
+      return jsonify({"error": str(e)}), 500   
+
+#step 2 - get severity score
+@app.route('/get_score_calculation', methods=['POST'])
+def get_score_calculation():
+    data_gsc = request.json
+    score,graph_list, violated_policies = score_calculation(data_gsc)
+    temp_data = {
+        "score":score,
+        "graph_list" : graph_list,
+        "violated_policies":violated_policies
+    }
+    return jsonify(temp_data)
+
+# step 2.1 
+def score_calculation(instance):
+    instance = detect_user(instance)
+    graph_list=[]
+    violated_policies = instance['violated_policies']
+    violated_tags = list(violated_policies.keys())
+    print(violated_tags)
+    score = 0
+    user_type = instance['type']
+    l=len(violated_policies)
+    if(l == 0):
+        return 100
+
+    for policy in policy_score['policies']:
+        if policy['name'] == user_type:
+            for violation in violated_policies:
+                if violation in policy['properties']:
+                    score += policy['properties'][violation]
+                    graph_list.append(policy['properties'][violation])
     
+    return score/l,graph_list, violated_tags
+
+#step 2.2
+def detect_user(instance):
+    new_instance={}
+    for key, value in instance.items():
+        new_instance[key] = value
+    
+    violations=check_policy_violation(instance)
+    
+    new_instance["violated_policies"]=violations
+    
+    return new_instance
+
+# step 2.3
 def check_policy_violation(instance):
     violations = {}
     k=instance["type"]
@@ -278,7 +317,7 @@ def check_policy_violation(instance):
                 violations["data_privacy_policy"]=instance["data_privacy_policy"]
             
             
-            
+ 
             for i in user_rule["secure_file_uploads_policies"]:
                 for j in user_rule["secure_file_uploads_policies"][i]:
                     fname="secure_file_uploads_policies"
@@ -313,34 +352,44 @@ def check_policy_violation(instance):
    
     return violations
 
-def detect_user(instance):
-    new_instance={}
-    for key, value in instance.items():
-        new_instance[key] = value
-    
-    violated_polices={}
-    violations=check_policy_violation(instance)
-    
-    new_instance["violated_policies"]=violations
-    
-    return new_instance
+# step 3 - create a prompt
+@app.route('/create_prompt', methods=['POST'])
+def create_prompt():
+    instance = detect_user(request.json)
+    # print(instance)
+    context = context_gen(instance)
+    rules = rule_gen(instance)
+    question=" Answer me that, are there any security violations in context based on rules? "
+    data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
+    return jsonify(data_prompt)
 
-def score_calculation(instance):
-    instance = detect_user(instance)
+# step 3.1 
+def context_gen(instance):
+    # print(instance)
+    explanation_paragraph = (
+    f"The information displayed in the 'client' field is denoted as '{instance['client']}' and the timestamp is indicated by 'datetime' as '{instance['datetime']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_agent']}'."
+    f"Categorized as '{instance['type']}', this instance's two-factor authentication is {'enabled' if instance['two_factor_authentication'] else 'disabled'}, and multi-factor authentication is {'enabled' if instance['multi_factor_authentication'] else 'disabled'}. The utilization of 'security_monitoring' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}, along with a data privacy policy that is {'enabled' if instance['data_privacy_policy'] else 'disabled'}. The setting for 'secure_file_uploads' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}. The specified 'secure_file_name' is '{instance['secure_file_uploads_policies__properties__secure_file_name']}' and the malware scan feature is {'enabled' if instance['secure_file_uploads_policies__properties__malware_scan'] else 'disabled'}. The option for 'audit_logging' is {'enabled' if instance['secure_file_uploads_policies__properties__audit_logging'] else 'disabled'}."
+    f"The status of 'Encryption in transit' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__in_transit'] else 'disabled'}, and 'encryption at rest' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__at_rest'] else 'disabled'}. Additionally, 'SSL encryption' is {'enabled' if instance['ssl_encryption_required'] else 'disabled'}. The permissions are listed as '{instance['permissions']}' and the explicitly allowed resources are '{instance['explicite_allowed_resources']}'. The availability of 'other_resources' is {'enabled' if instance['other_resources'] else 'disabled'}. The HTTP 'status_code' '{instance['status']}' reflects the specific status of the HTTP request."
+    f"Notably, the 'violated_polices' section highlights that '{instance['violated_policies']}' policies were breached.")
+    
+    return explanation_paragraph
 
+#step 3.2 
+def rule_gen(instance):
+    keys=find_violated_polices(instance).keys()
+    rules={}
+    for key in keys:
+        rules[key]=security_attacks[key]
+    # print(rules)
+    rules=json.dumps(rules)
+    return rules
+
+#  step 3.3
+def find_violated_polices(instance):
     violated_policies = instance['violated_policies']
-    score = 0
-
-    user_type = instance['type']
-    l=len(violated_policies)
-    for policy in policy_score['policies']:
-        if policy['name'] == user_type:
-            for violation in violated_policies:
-                if violation in policy['properties']:
-                    score += policy['properties'][violation]
-
-    return score/l
-
+    return violated_policies
+ 
+# step 4.0 
 def load_model(device_type, model_id, model_basename=None):
     """
     Select a model for text generation using the HuggingFace library.
@@ -366,7 +415,7 @@ def load_model(device_type, model_id, model_basename=None):
         if ".ggml" in model_basename:
             logging.info("Using Llamacpp for GGML quantized models")
             model_path = hf_hub_download(repo_id=model_id, filename=model_basename)
-            max_ctx_size = 4000
+            max_ctx_size = 3500
             kwargs = {
                 "model_path": model_path,
                 "n_ctx": max_ctx_size,
@@ -444,29 +493,6 @@ def load_model(device_type, model_id, model_basename=None):
     logging.info("Local LLM Loaded")
 
     return local_llm
-  
-def context_gen(instance):
-    print(instance)
-    explanation_paragraph = (
-    f"The information displayed in the 'client' field is denoted as '{instance['client_id']}' and the timestamp is indicated by 'datetime' as '{instance['date_time']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_system_specs']}'."
-    f"Categorized as '{instance['type']}', this instance's two-factor authentication is {'enabled' if instance['two_factor_authentication'] else 'disabled'}, and multi-factor authentication is {'enabled' if instance['multi_factor_authentication'] else 'disabled'}. The utilization of 'security_monitoring' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}, along with a data privacy policy that is {'enabled' if instance['data_privacy_policy'] else 'disabled'}. The setting for 'secure_file_uploads' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}. The specified 'secure_file_name' is '{instance['secure_file_uploads_policies__properties__secure_file_name']}' and the malware scan feature is {'enabled' if instance['secure_file_uploads_policies__properties__malware_scan'] else 'disabled'}. The option for 'audit_logging' is {'enabled' if instance['secure_file_uploads_policies__properties__audit_logging'] else 'disabled'}."
-    f"The status of 'Encryption in transit' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__in_transit'] else 'disabled'}, and 'encryption at rest' is {'enabled' if instance['secure_file_uploads_policies__properties__encryption__at_rest'] else 'disabled'}. Additionally, 'SSL encryption' is {'enabled' if instance['ssl_encryption_required'] else 'disabled'}. The permissions are listed as '{instance['permissions']}' and the explicitly allowed resources are '{instance['explicite_allowed_resources']}'. The availability of 'other_resources' is {'enabled' if instance['other_resources'] else 'disabled'}. The HTTP 'status_code' '{instance['status_code']}' reflects the specific status of the HTTP request."
-    f"Notably, the 'violated_polices' section highlights that '{instance['violated_policies']}' policies were breached.")
-    
-    return explanation_paragraph
-
-def find_violated_polices(instance):
-    violated_policies = instance['violated_policies']
-    return violated_policies
-
-def rule_gen(instance):
-    keys=find_violated_polices(instance).keys()
-    rules={}
-    for key in keys:
-        rules[key]=security_attacks[key]
-    print(rules)
-    rules=json.dumps(rules)
-    return rules
 
 @click.command()
 @click.option(
@@ -504,9 +530,9 @@ def rule_gen(instance):
     help="Show sources along with answers (Default is False)",
 )
 
-    
-@app.route('/temp')
-def temp():
+# step 4 - LLM
+@app.route('/fetch_llm_response' , methods=['POST'])
+def fetch_llm_response():
     logging.info(f"Running on: {device_type}")
     logging.info(f"Display Source Documents set to: {show_sources}")
     embeddings = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": device_type})
@@ -517,27 +543,16 @@ def temp():
     )
     retriever = db.as_retriever()
     
-    #model_id = "TheBloke/Llama-2-7B-Chat-GGML"
-    #model_basename = "llama-2-7b-chat.ggmlv3.q4_0.bin"
-    
-    # for GPTQ (quantized) models
-    #model_id = "TheBloke/Nous-Hermes-13B-GPTQ"
-    #model_basename = "nous-hermes-13b-GPTQ-4bit-128g.no-act.order"
-    #model_id = "TheBloke/WizardLM-30B-Uncensored-GPTQ"
-    #model_basename = "WizardLM-30B-Uncensored-GPTQ-4bit.act-order.safetensors" # Requires
-    # ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
-    # model_id = "TheBloke/wizardLM-7B-GPTQ"
-    # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
-    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_id = "TheBloke/OpenOrca-Platypus2-13B-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
-just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""
+    just say that you don't know, don't try to make up an answer.{context} {history} Question: {question} Helpful Answer:"""
 
     prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
     memory = ConversationBufferMemory(input_key="question", memory_key="history")
     llm = load_model(device_type, model_id=model_id, model_basename=model_basename)
-    logging.info(f" 246 - load model called")
+    logging.info(f"load model called")
     qa = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
@@ -545,61 +560,131 @@ just say that you don't know, don't try to make up an answer.{context} {history}
         return_source_documents=True,
         chain_type_kwargs={"prompt": prompt, "memory": memory},
     )
-    logging.info(f" 259 - qa instance made")
-    query=data
-    sverity_score=score_calculation(query)
-    instance=detect_user(query)
-    # print(instance)
-    context=context_gen(instance)
-    # print(context)
-    rules=rule_gen(instance)
-    question="Based on context given rules to be followed, what are the security policy violations?"
-    logging.info(f" success - question generated")
-  
-    data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
-   
-    res = qa(data_prompt)
+    logging.info(f"QA instance made")
+    res = qa(request.data.decode('utf-8'))
     answer, docs = res["result"], res["source_documents"]
-    logging.info(f" 261 - qa analyzed answer")
-    print(f"*********************{answer}")
+    logging.info(f"QA analyzed answer")
     return jsonify({"answer":answer})
 
-@app.route('/testing')
-def testing():
-    testData = {
-    "random_instance_data": {
-        "_id": "64d0eb1d797d10ff6acb5d72",
-        "client_id": "46.209.150.50",
-        "data_privacy_policy": "true",
-        "date_time": "22/Jan/2019:12:46:43 +0330",
-        "explicite_allowed_resources": "userId_info.txt",
-        "method": "PUT",
-        "multi_factor_authentication": "false",
-        "other_resources": "false",
-        "permissions": "none",
-        "referer": "https://www.instagram.com/",
-        "request": "https://api.flipkart.com/reports.txt/gallery?client_type=tier3&client_id=8538",
-        "secure_file_uploads": "true",
-        "secure_file_uploads_policies_properties_audit_logging": "false",
-        "secure_file_uploads_policies_propertiesencryption_at_rest": "true",
-        "secure_file_uploads_policies_propertiesencryption_in_transit": "true",
-        "secure_file_uploads_policies_properties_malware_scan": "true",
-        "secure_file_uploads_policies_properties_sandboxing": "true",
-        "secure_file_uploads_policies_properties_secure_file_name": "brave_world.jpeg",
-        "security_monitoring": "true",
-        "size": 452,
-        "ssl_encryption_required": "true",
-        "status_code": 200,
-        "two_factor_authentication": "true",
-        "type": "customer",
-        "user_system_specs": "Linux"
-    },
-    "temp_data": {
-            "answer": " I'm just an AI, I don't have access to external information or systems, so I can't provide you with the exact password policy for Flipkart. Additionally, it is not appropriate or ethical to share or use someone else's password policies without proper authorization. It is important to respect the security and privacy of others' systems and data. If you have any other questions or concerns, feel free to ask!"
-    }
-    }
+# for block user feature
+@app.route('/block_user', methods=['POST'])
+def block_user(): 
+    temp_data = request.json
+    collection_blocked.insert_one(temp_data)
+    document_id = ObjectId(temp_data['id'])
+    collection_datasets.delete_one({"_id": (document_id)})
+    return jsonify("user blocked")
+
+# get blocked user
+@app.route('/get_blocked_user', methods=['GET'])
+def get_blocked_user(): 
+    temp_list = list(collection_blocked.find({}))
+    for item in temp_list:
+      item['_id'] = str(item['_id'])
+    return jsonify(temp_list)
+
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    uploaded_file = request.files['file']
+    if uploaded_file.filename.endswith('.mp3'):
+        file_path = os.path.join(app.config['UPLOAD_FOLDER_AUDIO'], uploaded_file.filename)
+        uploaded_file.save(file_path)
+        new,_ =uploaded_file.filename.rsplit('.', 1)
+        new_name=new+".wav"
+        print(new_name)
+        des_path = os.path.join(app.config['UPLOAD_FOLDER_AUDIO'], new_name)
+        run_audio_script(file_path, des_path)
+        with open('Human_generated_Logs/data/input_data/new_audio.txt', 'r') as file:
+          conversation_lines = file.readlines()
+
+        conversation_text = ''.join(conversation_lines)
+
+        shutil.rmtree("Human_generated_Logs/data/audio/")
+        shutil.rmtree("Human_generated_Logs/data/input_data/")
+        os.mkdir("Human_generated_Logs/data/audio/")
+        os.mkdir("Human_generated_Logs/data/input_data/")
+        
+        return json.dumps(conversation_text)
+    else:
+      file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+      uploaded_file.save(file_path)
+      run_another_script()
+      uploadtoDB()
+      return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
     
-    return jsonify(testData)
+def uploadtoDB():
+  data_directory = 'database_push/'
+  if collection_input.count_documents({}) > 0:
+        collection_input.delete_many({})
+        print("Collection emptied.")
+  for filename in os.listdir(data_directory):
+        if filename.endswith('.csv'):
+            file_path = os.path.join(data_directory, filename)
+            with open(file_path, 'r') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                json_data = [row for row in csv_reader]
+
+                if json_data:
+                    collection_input.insert_many(json_data)
+                    print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
+                else:
+                    print(f"No data in {filename}")
+                    
+
+def run_another_script():
+    script_path = "System_generated_Logs/scripts/log_file_input.py"
+    try:
+        subprocess.run(["python", script_path], check=True)
+        print("Other script executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing the other script: {e}")
+
+def run_audio_script(source_path, des_path):
+    subprocess.run(['python', 'Human_generated_Logs/scripts/audio_to_txt.py', source_path, des_path])
+        
+        
+@app.route('/api/upload/rules', methods=['POST'])
+def upload_rule_file():
+    uploaded_rule_file = request.files['file']
+    file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
+    uploaded_rule_file.save(file_path)
+    return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
+
+@app.route('/get_rules', methods=['GET'])
+def get_rules():
+    directory_path="System_generated_Logs/scripts/uploaded_rules/"
+    file_list = os.listdir(directory_path)
+    for filename in file_list:
+      file = os.path.join(directory_path, filename) 
+    with open(file, 'r') as f:
+        shutil.rmtree("System_generated_Logs/scripts/uploaded_rules/")
+        return f.read()
+    
+    
+    
+# For Customer
+# step 1 - fetch customer-cr details 
+@app.route('/customer_random_instance') 
+def customer_random_instace(): 
+  try:
+      pipeline = [
+        {"$sample": {"size": 1}}
+      ]
+      result_list = list(collection_customer.aggregate(pipeline))
+      random_instance = result_list[0]
+      random_instance['_id'] = str(random_instance['_id'])
+      return jsonify(random_instance)
+  except Exception as e: 
+    return jsonify({"error in customer random instance": str(e)}), 500  
+
+# testing
+@app.route('/test', methods=['POST'])
+def test():
+    temp_data = {
+        "answer": " I'm just an AI, I don't have access to external information or systems, so I can't provide you with the exact password policy for Flipkart. Additionally, it is not appropriate or ethical to share or use someone else's password policies without proper authorization. It is important to respect the security and privacy of others' systems and data. If you have any other questions or concerns, feel free to ask!"
+    }
+    return jsonify(temp_data)
 
 if __name__ == '__main__':
     logging.basicConfig(

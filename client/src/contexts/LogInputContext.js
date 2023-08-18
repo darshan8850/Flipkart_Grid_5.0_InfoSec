@@ -48,7 +48,7 @@ export const LogInputContext = ({ children }) => {
             let temp_prompt = entry + "\n rules: " + inputRule +
                 "\n Question: what are the violation mentioned in accordance to given rules ?"
 
-            fetch('/test', {
+            fetch('/fetch_llm_response', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain'
@@ -72,7 +72,7 @@ export const LogInputContext = ({ children }) => {
             let temp_prompt = answer +
                 '\n Give me indepth security redemption measures for the violated policies. '
             setShowAlert(true)
-            fetch('/test', {
+            fetch('/fetch_llm_response', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain'

@@ -37,7 +37,7 @@ new, file_extension =file.rsplit('.', 1)
 new_file=new+".wav" 
     
 text=audio_txt(file,new_file) 
-file_path = "C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/Human_generated_Logs/data/input_data/new_audio.txt"
+file_path = "Human_generated_Logs/data/input_data/new_audio.txt"
 
 
   

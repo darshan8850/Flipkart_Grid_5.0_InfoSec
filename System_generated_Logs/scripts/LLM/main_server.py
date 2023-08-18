@@ -210,7 +210,7 @@ policy_score={
     ]
   }
 
-device_type="cpu"
+device_type="cuda"
 show_sources="True"
 
 UPLOAD_FOLDER = 'System_generated_Logs/scripts/uidata/uploads'
@@ -359,7 +359,7 @@ def create_prompt():
     # print(instance)
     context = context_gen(instance)
     rules = rule_gen(instance)
-    question="I want answer in single word(Yes or No) are their any security violations in context based on rules? "
+    question=" Answer me that, are there any security violations in context based on rules? "
     data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
     return jsonify(data_prompt)
 
@@ -543,7 +543,7 @@ def fetch_llm_response():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/Huginn-v3-13B-GPTQ"
+    model_id = "TheBloke/OpenOrca-Platypus2-13B-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\
@@ -653,8 +653,12 @@ def upload_rule_file():
 
 @app.route('/get_rules', methods=['GET'])
 def get_rules():
-    pth = ''
-    with open(pth, 'r') as f:
+    directory_path="System_generated_Logs/scripts/uploaded_rules/"
+    file_list = os.listdir(directory_path)
+    for filename in file_list:
+      file = os.path.join(directory_path, filename) 
+    with open(file, 'r') as f:
+        shutil.rmtree("System_generated_Logs/scripts/uploaded_rules/")
         return f.read()
   
 # For Customer

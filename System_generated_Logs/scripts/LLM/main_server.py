@@ -582,8 +582,6 @@ def get_blocked_user():
     for item in temp_list:
       item['_id'] = str(item['_id'])
     return jsonify(temp_list)
-
-
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     uploaded_file = request.files['file']
@@ -611,10 +609,20 @@ def upload_file():
       uploaded_file.save(file_path)
       run_another_script()
       uploadtoDB()
-      return jsonify({'message': f'File {uploaded_file.filename} uploaded successfully'})
+      try:
+        pipeline = [
+          {"$sample": {"size": 1}}
+        ]
+        result_list = list(collection_input.aggregate(pipeline))
+        random_instance = result_list[0]
+        random_instance['_id'] = str(random_instance['_id'])
+        logging.info('random_instance')    
+        return jsonify(random_instance)
+      except Exception as e:
+        return jsonify({"error": str(e)}), 500   
     
 def uploadtoDB():
-  data_directory = 'database_push/'
+  data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/database_push/'
   if collection_input.count_documents({}) > 0:
         collection_input.delete_many({})
         print("Collection emptied.")
@@ -630,7 +638,7 @@ def uploadtoDB():
                     print(f"Inserted {len(json_data)} documents from {filename} into MongoDB.")
                 else:
                     print(f"No data in {filename}")
-                    
+         
 
 def run_another_script():
     script_path = "System_generated_Logs/scripts/log_file_input.py"
@@ -649,17 +657,27 @@ def upload_rule_file():
     uploaded_rule_file = request.files['file']
     file_path = os.path.join(app.config['UPLOAD_FOLDER_RULES'], uploaded_rule_file.filename)
     uploaded_rule_file.save(file_path)
+    
     return jsonify({'message': f'Rule file {uploaded_rule_file.filename} uploaded successfully'})
 
 @app.route('/get_rules', methods=['GET'])
 def get_rules():
-    directory_path="System_generated_Logs/scripts/uploaded_rules/"
+    directory_path = app.config['System_generated_Logs/scripts/uploaded_rules/']
     file_list = os.listdir(directory_path)
+    rule_texts = []
+
     for filename in file_list:
-      file = os.path.join(directory_path, filename) 
-    with open(file, 'r') as f:
-        shutil.rmtree("System_generated_Logs/scripts/uploaded_rules/")
-        return f.read()
+        file_path = os.path.join(directory_path, filename)
+        with open(file_path, 'r') as f:
+            rule_text = f.read()
+            rule_texts.append(rule_text)
+
+    # Remove the directory and its contents after reading the files
+    shutil.rmtree(directory_path)
+
+    return jsonify({'rule_texts': rule_texts})
+    
+    
   
 # For Customer
 # step 1 - fetch customer-cr details 

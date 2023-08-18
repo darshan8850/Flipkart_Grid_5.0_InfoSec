@@ -46,7 +46,7 @@ export const LogInputContext = ({ children }) => {
     const getInputLLMResponse = (entry) => {
         try {
             let temp_prompt = entry + "\n rules: " + inputRule +
-                "\n Question: what are the violation mentioned in accordance to given rules ?"
+                "\n Question: list only violations for the context based on the rules. "
 
             fetch('/fetch_llm_response', {
                 method: 'POST',

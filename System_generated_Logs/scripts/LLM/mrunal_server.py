@@ -359,7 +359,7 @@ def create_prompt():
     # print(instance)
     context = context_gen(instance)
     rules = rule_gen(instance)
-    question="I want answer in single word(Yes or No) are their any security violations in context based on rules? "
+    question="I want answer in single word(Yes or No) are their any security violations in context based on rules and list them? "
     data_prompt='Context: '+context+'\n'+'Rules: '+rules+'\n'+'Question: '+question+'\n'
     return jsonify(data_prompt)
 

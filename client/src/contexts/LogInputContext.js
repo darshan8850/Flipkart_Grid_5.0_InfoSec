@@ -16,11 +16,12 @@ export const LogInputContext = ({ children }) => {
     const [knowMore, setKnowMore] = useState()
     const [showKnowMore, setShowKnowMore] = useState(false)
 
-    const { setShowAlert, setShowButtons, setShowBlockedAlert } = useStateContext()
+    const { setShowAlert, setShowButtons, setShowBlockedAlert, handleCloseUpload } = useStateContext()
 
     const fetchInputLog = () => {
         try {
             setShowAlert(true)
+            handleCloseUpload()
             fetch('/input_random_instance')
                 .then((res) => res.json())
                 .then((entry) => {
@@ -35,11 +36,11 @@ export const LogInputContext = ({ children }) => {
 
     }
 
-    const getInputRules = () => {
-        fetch('/get_rules')
+    const getInputRules = async () => {
+        await fetch('/get_rules')
         .then((res) => res.json())
         .then((entry) => {
-            setInputRule(entry)
+            setInputRule(entry.rule_texts)
         })
     }
     
@@ -48,7 +49,7 @@ export const LogInputContext = ({ children }) => {
             let temp_prompt = entry + "\n rules: " + inputRule +
                 "\n Question: list only violations for the context based on the rules. "
 
-            fetch('/fetch_llm_response', {
+            fetch('/test', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain'
@@ -72,7 +73,7 @@ export const LogInputContext = ({ children }) => {
             let temp_prompt = answer +
                 '\n Give me indepth security redemption measures for the violated policies. '
             setShowAlert(true)
-            fetch('/fetch_llm_response', {
+            fetch('/test', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain'
@@ -120,6 +121,7 @@ export const LogInputContext = ({ children }) => {
         inputLog, showInputLog,
         answer, showAnswer,
         knowMore, showKnowMore, 
+        inputRule,
         fetchInputLog, getInputMoreDetails, blockInputUser
     }}>
         {children}

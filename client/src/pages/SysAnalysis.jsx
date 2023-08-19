@@ -108,6 +108,9 @@ const SysAnalysis = () => {
                     onSubmit={handleRuleFileSubmit}
                   />
                 </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={fetchInputLog}>Start Input Analysis</Button>
+                </Modal.Footer>
               </Modal>
 
               <button

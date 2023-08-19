@@ -13,7 +13,8 @@ const SysInputResponse = () => {
     showKnowMore,
     fetchInputLog,
     getInputMoreDetails,
-    blockInputUser
+    blockInputUser,
+    inputRule,
   } = useLogInputContext()
 
   return (
@@ -27,7 +28,7 @@ const SysInputResponse = () => {
               <ButtonGroup size="sm" className="">
                 <Button onClick={blockInputUser}>Block</Button>
                 <Button onClick={getInputMoreDetails}>Know More</Button>
-                <Button onClick={fetchInputLog}>Next</Button>
+                {/* <Button onClick={fetchInputLog}>Next</Button> */}
               </ButtonGroup>
             </div>
           </div>
@@ -42,8 +43,7 @@ const SysInputResponse = () => {
               <Accordion>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header className="bg-body-tertiary">
-                    Click to view Details !
-                    {console.log(inputLog._id)}
+                    Click to view Details !{console.log(inputLog._id)}
                   </Accordion.Header>
                   <Accordion.Body>
                     <div className="p-4">
@@ -59,10 +59,28 @@ const SysInputResponse = () => {
                         <div>
                           <div className="row">
                             <div className="col-2 border">{key}</div>
-                            <div className="col-10 border">{value}</div>
+                            <div className="col-10 border overflow-auto">
+                              {value}
+                            </div>
                           </div>
                         </div>
                       ))}
+
+                      <div>
+
+                      <div className="row">
+                      
+                        <div className="col-12 border text-primary text-center">
+                          Rules
+                        </div>
+                      </div>
+
+                        <div className="row ">
+                          <div className="col border p-3">
+                            {inputRule}jhkjhkj
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>

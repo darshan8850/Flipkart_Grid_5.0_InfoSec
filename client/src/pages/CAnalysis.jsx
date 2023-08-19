@@ -4,9 +4,11 @@ import { CustomerResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import Modal from 'react-bootstrap/Modal'
 import { useCustomerContext } from '../contexts/CustomerContext'
+import { useCustomerInputContext } from '../contexts/CustomerInputContext'
 const CAnalysis = () => {
 
   const { fetchCustomerLog, showCustomerLog } = useCustomerContext()
+  const {handleCusInputFile, handleCusRuleFile} = useCustomerInputContext()
   const {
     showAlert,
     handleRuleFileSubmit,
@@ -15,6 +17,8 @@ const CAnalysis = () => {
     handleShowUpload,
     handleCloseUpload,
   } = useStateContext()
+
+
 
   return (
     <React.Fragment>
@@ -66,12 +70,12 @@ const CAnalysis = () => {
                   allowedFileTypes={[
                     'audio/mpeg'
                   ]}
-                  onSubmit={handleRegularFileSubmit}
+                  onSubmit={handleCusInputFile}
                 />
                 <UploadFile
                   title="Upload Rules (.TXT )"
                   allowedFileTypes={['text/plain', 'text/csv']}
-                  onSubmit={handleRuleFileSubmit}
+                  onSubmit={handleCusRuleFile}
                 />
               </Modal.Body>
             </Modal>

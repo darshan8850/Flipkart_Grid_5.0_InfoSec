@@ -582,6 +582,8 @@ def get_blocked_user():
     for item in temp_list:
       item['_id'] = str(item['_id'])
     return jsonify(temp_list)
+
+
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     uploaded_file = request.files['file']
@@ -622,7 +624,7 @@ def upload_file():
         return jsonify({"error": str(e)}), 500   
     
 def uploadtoDB():
-  data_directory = 'C:/Users/rovin/Documents/GitHub/Flipkart_Grid_5.0_InfoSec/database_push/'
+  data_directory = 'D:/cleanCode/Flipkart_Grid_5.0_InfoSec/database_push/'
   if collection_input.count_documents({}) > 0:
         collection_input.delete_many({})
         print("Collection emptied.")
@@ -662,7 +664,7 @@ def upload_rule_file():
 
 @app.route('/get_rules', methods=['GET'])
 def get_rules():
-    directory_path = app.config['System_generated_Logs/scripts/uploaded_rules/']
+    directory_path = app.config['UPLOAD_FOLDER_RULES']
     file_list = os.listdir(directory_path)
     rule_texts = []
 
@@ -676,7 +678,20 @@ def get_rules():
     shutil.rmtree(directory_path)
 
     return jsonify({'rule_texts': rule_texts})
-    
+
+@app.route('/input_random_instance', methods=['GET'])
+def input_random_instance():
+    try:
+        pipeline = [
+          {"$sample": {"size": 1}}
+        ]
+        result_list = list(collection_input.aggregate(pipeline))
+        random_instance = result_list[0]
+        random_instance['_id'] = str(random_instance['_id'])
+        logging.info('random_instance')    
+        return jsonify(random_instance)
+    except Exception as e:
+      return jsonify({"error": str(e)}), 500
     
   
 # For Customer

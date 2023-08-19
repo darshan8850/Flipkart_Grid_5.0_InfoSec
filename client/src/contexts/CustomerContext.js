@@ -27,10 +27,6 @@ export const CustomerContext = ({ children }) => {
             })
     }
 
-    const fetchInputCustomerLog = () => {
-        
-    }
-
     const getCustomerPromptAndRes = (entries) => {
         setShowAlert(true)
         let prompt = `convo: ${entries.log_transcript} \n 

@@ -6,10 +6,12 @@ const CustomerLog = createContext();
 
 export const CustomerContext = ({ children }) => {
 
-    const{fetchLlmResponse, setShowAnswer, setShowMoreInfo, setShowAlert, setMoreInfo} = useStateContext()
+    const { fetchLlmResponse, setShowAnswer, setShowMoreInfo, setShowAlert, setMoreInfo } = useStateContext()
 
     const [customerLog, setCustomerLog] = useState({})
     const [showCustomerLog, setShowCustomerLog] = useState(false)
+
+
 
     const fetchCustomerLog = () => {
         setShowAnswer(false)
@@ -32,37 +34,50 @@ export const CustomerContext = ({ children }) => {
         let prompt = `convo: ${entries.log_transcript} \n 
         rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
         in the given conversation for above rules mentioned ?`
-        fetchLlmResponse(prompt)
+        fetch('/fetch_llm_response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: prompt
+        })
+            .then((res) => res.json())
+            .then((analyzedAns) => {
+
+            })
+            .catch((e) => {
+                console.error("fetch LLM Response - " + e)
+            })
     }
 
     const customerKnowMore = () => {
         setShowAlert(true)
-        prompt = customerLog + 
-        "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-        
+        prompt = customerLog +
+            "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
+
         fetch('/fetch_llm_response', {
             method: 'POST',
             headers: {
-              'Content-Type': 'text/plain'
+                'Content-Type': 'text/plain'
             },
             body: prompt
-          })
+        })
             .then((res) => res.json())
             .then((analyzedAns) => {
-              setMoreInfo(analyzedAns.answer)
-              setShowMoreInfo(true)
-              setShowAlert(false)
+                setMoreInfo(analyzedAns.answer)
+                setShowMoreInfo(true)
+                setShowAlert(false)
             })
             .catch((e) => {
-              console.error("fetch LLM Response - " + e)
+                console.error("fetch LLM Response - " + e)
             })
-        
+
     }
 
     return (
         <CustomerLog.Provider value={{
-            customerLog, setCustomerLog, 
-            showCustomerLog, setShowCustomerLog, 
+            customerLog, setCustomerLog,
+            showCustomerLog, setShowCustomerLog,
             fetchCustomerLog, customerKnowMore
         }}>
             {children}

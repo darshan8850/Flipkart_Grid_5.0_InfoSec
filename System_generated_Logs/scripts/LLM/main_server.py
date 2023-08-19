@@ -300,6 +300,7 @@ def detect_user(instance):
 # step 2.3
 def check_policy_violation(instance):
     violations = {}
+
     k=instance["type"]
     desired_users = [user for user in rules["users"] if user["type"] == k]
 
@@ -365,7 +366,7 @@ def create_prompt():
 
 # step 3.1 
 def context_gen(instance):
-    # print(instance)
+    print(instance)
     explanation_paragraph = (
     f"The information displayed in the 'client' field is denoted as '{instance['client']}' and the timestamp is indicated by 'datetime' as '{instance['datetime']}'. The method used was '{instance['method']}' with a link labeled 'request' pointing to '{instance['request']}'.The source that referred the request is captured in 'referer' as '{instance['referer']}' and the originating device is identified by 'user_agent' as '{instance['user_agent']}'."
     f"Categorized as '{instance['type']}', this instance's two-factor authentication is {'enabled' if instance['two_factor_authentication'] else 'disabled'}, and multi-factor authentication is {'enabled' if instance['multi_factor_authentication'] else 'disabled'}. The utilization of 'security_monitoring' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}, along with a data privacy policy that is {'enabled' if instance['data_privacy_policy'] else 'disabled'}. The setting for 'secure_file_uploads' is {'enabled' if instance['secure_file_uploads'] else 'disabled'}. The specified 'secure_file_name' is '{instance['secure_file_uploads_policies__properties__secure_file_name']}' and the malware scan feature is {'enabled' if instance['secure_file_uploads_policies__properties__malware_scan'] else 'disabled'}. The option for 'audit_logging' is {'enabled' if instance['secure_file_uploads_policies__properties__audit_logging'] else 'disabled'}."
@@ -625,7 +626,7 @@ def upload_file():
         return jsonify({"error": str(e)}), 500   
     
 def uploadtoDB():
-  data_directory = 'D:/cleanCode/Flipkart_Grid_5.0_InfoSec/database_push/'
+  data_directory = 'database_push/'
   if collection_input.count_documents({}) > 0:
         collection_input.delete_many({})
         print("Collection emptied.")

@@ -245,7 +245,7 @@ export const ContextProvider = ({ children }) => {
       severityScore,
       showSeverityScore,
       showAlert,
-      answer,
+      answer,setAnswer,
       showAnswer, knowMore,
       moreInfo,setShowAlert,
       showMoreInfo,setShowMoreInfo,

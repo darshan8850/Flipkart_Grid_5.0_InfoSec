@@ -6,10 +6,14 @@ const CustomerLog = createContext();
 
 export const CustomerContext = ({ children }) => {
 
-    const { fetchLlmResponse, setShowAnswer, setShowMoreInfo, setShowAlert, setMoreInfo } = useStateContext()
+    const{fetchLlmResponse, setShowAnswer, setShowMoreInfo, setShowAlert, setMoreInfo,setShowButtons} = useStateContext()
 
     const [customerLog, setCustomerLog] = useState({})
     const [showCustomerLog, setShowCustomerLog] = useState(false)
+    const[cusAns, setCusAns] = useState()
+    
+    const[cusMoreInfo, setCusMoreInfo] = useState()
+    const[cusShowMoreInfo, setCusShowMoreInto] = useState(false);
 
 
 
@@ -34,19 +38,22 @@ export const CustomerContext = ({ children }) => {
         let prompt = `convo: ${entries.log_transcript} \n 
         rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
         in the given conversation for above rules mentioned ?`
-        fetch('/fetch_llm_response', {
+        fetch('/test', {
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain'
+              'Content-Type': 'text/plain'
             },
             body: prompt
-        })
+          })
             .then((res) => res.json())
             .then((analyzedAns) => {
-
+                setShowAlert(false)
+                setShowAnswer(true)
+                setCusAns(analyzedAns.answer)
+                setShowButtons(true)
             })
             .catch((e) => {
-                console.error("fetch LLM Response - " + e)
+              console.error("fetch LLM Response - " + e)
             })
     }
 
@@ -64,9 +71,9 @@ export const CustomerContext = ({ children }) => {
         })
             .then((res) => res.json())
             .then((analyzedAns) => {
-                setMoreInfo(analyzedAns.answer)
-                setShowMoreInfo(true)
                 setShowAlert(false)
+                setCusMoreInfo(analyzedAns.ans)
+                setCusShowMoreInto(true)
             })
             .catch((e) => {
                 console.error("fetch LLM Response - " + e)
@@ -76,9 +83,9 @@ export const CustomerContext = ({ children }) => {
 
     return (
         <CustomerLog.Provider value={{
-            customerLog, setCustomerLog,
-            showCustomerLog, setShowCustomerLog,
-            fetchCustomerLog, customerKnowMore
+            customerLog, setCustomerLog, cusMoreInfo, setCusMoreInfo,
+            showCustomerLog, setShowCustomerLog, cusAns, 
+            fetchCustomerLog, customerKnowMore, cusShowMoreInfo, setCusShowMoreInto
         }}>
             {children}
         </CustomerLog.Provider>

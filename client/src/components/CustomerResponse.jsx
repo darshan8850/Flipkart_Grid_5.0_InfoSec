@@ -17,7 +17,9 @@ const CustomerResponse = () => {
     showButtons,
   } = useStateContext()
 
-  const { fetchCustomerLog, customerLog, customerKnowMore } = useCustomerContext()
+  const { customerLog, setCustomerLog, 
+    showCustomerLog, setShowCustomerLog, cusShowMoreInfo,cusMoreInfo, 
+    fetchCustomerLog, customerKnowMore, cusAns } = useCustomerContext()
   
 
   return (
@@ -93,19 +95,19 @@ const CustomerResponse = () => {
                       </Accordion.Header>
                       <Accordion.Body>
                         <div className="row ">
-                          <div className="col overflow-aut">{answer}</div>
+                          <div className="col overflow-aut">{cusAns}</div>
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
                 </div>
-                {showMoreInfo && (
+                {cusShowMoreInfo && (
                   <Accordion>
                     <Accordion.Item eventKey="0">
                       <Accordion.Header className="bg-body-tertiary">
                         Know More - ( Security Measures )
                       </Accordion.Header>
-                      <Accordion.Body>{moreInfo}</Accordion.Body>
+                      <Accordion.Body>{cusMoreInfo}</Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
                 )}

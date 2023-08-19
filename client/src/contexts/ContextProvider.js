@@ -124,7 +124,7 @@ export const ContextProvider = ({ children }) => {
 
   function fetchLlmResponse(prompt) {
     console.log(prompt)
-    fetch('/test', {
+    fetch('/fetch_llm_response', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
@@ -148,7 +148,7 @@ export const ContextProvider = ({ children }) => {
     if (answer) {
       setShowAlert(true)
       prompt = answer + "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
-      fetch('/test', {
+      fetch('/fetch_llm_response', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'

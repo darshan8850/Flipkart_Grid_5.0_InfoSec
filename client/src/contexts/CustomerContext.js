@@ -40,7 +40,7 @@ export const CustomerContext = ({ children }) => {
         prompt = customerLog + 
         "\n Question: Give me indepth security redemption measures for the violated policies and their probable attacks."
         
-        fetch('/test', {
+        fetch('/fetch_llm_response', {
             method: 'POST',
             headers: {
               'Content-Type': 'text/plain'

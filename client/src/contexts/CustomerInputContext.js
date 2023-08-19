@@ -68,7 +68,7 @@ export const CustomerInputContext = ({ children }) => {
 
     const getLLMResponse = (prompt) => {
         setShowAlert(true)
-        fetch('/test', {
+        fetch('/fetch_llm_response', {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain'

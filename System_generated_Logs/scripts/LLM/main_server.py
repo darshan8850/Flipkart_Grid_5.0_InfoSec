@@ -605,7 +605,8 @@ def upload_file():
         os.mkdir("Human_generated_Logs/data/audio/")
         os.mkdir("Human_generated_Logs/data/input_data/")
         
-        return json.dumps(conversation_text)
+        print(conversation_text)
+        return jsonify(conversation_text)
     else:
       file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
       uploaded_file.save(file_path)
@@ -673,9 +674,11 @@ def get_rules():
         with open(file_path, 'r') as f:
             rule_text = f.read()
             rule_texts.append(rule_text)
+        os.remove(file_path)
 
     # Remove the directory and its contents after reading the files
-    shutil.rmtree(directory_path)
+    # shutil.rmtree(directory_path)
+
 
     return jsonify({'rule_texts': rule_texts})
 

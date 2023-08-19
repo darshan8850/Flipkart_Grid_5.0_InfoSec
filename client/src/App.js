@@ -5,7 +5,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import './App.css';
 
 import { Navbar, Sidebar } from './components/componentIndex'
-import { CAnalysis, CHistory, Dashboard, SysHistory, SysAnalysis, SysBlocked } from './pages/pageIndex'
+import { CAnalysis, Dashboard, SysAnalysis, SysBlocked } from './pages/pageIndex'
 
 
 function App() {
@@ -24,11 +24,10 @@ function App() {
               {/* System */}
               <Route path='/' element={<SysAnalysis />} />
               <Route path='/System_Analysis' element={<SysAnalysis />} />
-              <Route path='/System_History' element={<SysHistory />} />
               <Route path='/Blocked_users' element={<SysBlocked />} />
               {/* Customer */}
               <Route path='/Customer_Analysis' element={<CAnalysis />} />
-              <Route path='/Customer_History' element={<CHistory />} />
+              
             </Routes>
           </div>
         </div>

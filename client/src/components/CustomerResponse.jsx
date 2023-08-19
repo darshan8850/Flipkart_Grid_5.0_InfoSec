@@ -5,6 +5,7 @@ import { useCustomerContext } from '../contexts/CustomerContext'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Accordion from 'react-bootstrap/Accordion'
 
+
 const CustomerResponse = () => {
   const col_className = 'col border text-primary text-center p-1'
   const col_info_className = 'col border text-center p-1'
@@ -13,11 +14,11 @@ const CustomerResponse = () => {
     showAnswer,
     moreInfo,
     showMoreInfo,
-
     showButtons,
   } = useStateContext()
 
   const { fetchCustomerLog, customerLog, customerKnowMore } = useCustomerContext()
+  
 
   return (
     <React.Fragment>

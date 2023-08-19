@@ -1,28 +1,38 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useStateContext } from './ContextProvider';
+import { useCustomerContext } from './CustomerContext';
 
 const CustomerInputLog = createContext();
 
 export const CustomerInputContext = ({ children }) => {
 
 
-    const{fetchLlmResponse, setShowAnswer, setShowMoreInfo, setShowAlert, setMoreInfo} = useStateContext()
-    
-    const [audioText, setAudioText] = useState()
-    const [customerInRules, setCustomerInRules] = useState()
-    const [startFlag, setStartFlag] = useState(false)
+    const {  handleCloseUpload, setShowAlert } = useStateContext()
 
-    const handleCusInputFile =  (file) => {
-        uploadFile(file, '/api/upload')
-        .then((txt) => {
-            setAudioText(txt)
-            console.log(audioText)
-        })
+    const [audioText, setAudioText] = useState('')
+    const [customerInRules, setCustomerInRules] = useState('')
+
+    const[inputAnswer, setInputAnswer] = useState()
+    const[showInputAnswer, setShowInputAnswer ] = useState(false)
+
+    const[showInputLog, setShowInputLog] = useState(false)
+
+    const handleCusInputFile = (file) => {
+        setShowAlert(true)
+        const formData = new FormData()
+        formData.append('file', file)
+        fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        }).then((res) => res.json())
+            .then((txt) => {
+                setShowAlert(false)
+                setAudioText(txt)
+            })
     }
 
-    const handleCusRuleFile =  (file) => {
+    const handleCusRuleFile = (file) => {
         uploadFile(file, '/api/upload/rules')
-        setStartFlag(true)
     }
 
     const uploadFile = async (file, url) => {
@@ -39,32 +49,50 @@ export const CustomerInputContext = ({ children }) => {
         }
     }
 
-    const getRules = () => {
+
+    const getRulesAndAnalysis = () => {
+        handleCloseUpload()
         fetch('/get_rules')
             .then((res) => res.json())
             .then((res) => {
                 setCustomerInRules(JSON.stringify(res))
+                setShowInputLog(true)
+                let prompt = 'Context: ' + audioText +
+                    'Rules: ' + customerInRules +
+                    'Question: what are the violations in the given context for the rules provided ?'
+
+                console.log(prompt)
+                getLLMResponse(prompt)    
             })
     }
 
-    useEffect(() => {
-        if(startFlag) {
-            getRules(); 
-            setShowAlert(true);
-            let prompt = 'Context: ' + audioText + 
-            'Rules: ' + customerInRules + 
-            '\n Question: are there any violations in the given context based on the rules provided ?'
-            fetchLlmResponse(prompt)
-            console.log('done')
-        }
-    },[startFlag])
+    const getLLMResponse = (prompt) => {
+        setShowAlert(true)
+        fetch('/test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: prompt
+        })
+            .then((res) => res.json())
+            .then((analyzedAns) => {
+                setInputAnswer(analyzedAns.answer)
+                setShowInputAnswer(true)
 
+
+                setShowAlert(false)
+            })
+            .catch((e) => {
+                console.error("fetch LLM Response - " + e)
+            })
+    }
     return (
         <CustomerInputLog.Provider value={{
-
-
-
-            handleCusInputFile, handleCusRuleFile
+            audioText, customerInRules, 
+            inputAnswer, showInputAnswer,
+            showInputLog, 
+            handleCusInputFile, handleCusRuleFile, getRulesAndAnalysis
         }}>
             {children}
         </CustomerInputLog.Provider>

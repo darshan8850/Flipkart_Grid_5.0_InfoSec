@@ -1,24 +1,26 @@
 import React from 'react'
 import Alert from '@mui/material/Alert'
+import Button from 'react-bootstrap/Button'
 import { CustomerResponse, UploadFile } from '../components/componentIndex'
 import { useStateContext } from '../contexts/ContextProvider'
 import Modal from 'react-bootstrap/Modal'
 import { useCustomerContext } from '../contexts/CustomerContext'
 import { useCustomerInputContext } from '../contexts/CustomerInputContext'
+import CusInputRes from '../components/CusInputRes'
 const CAnalysis = () => {
-
   const { fetchCustomerLog, showCustomerLog } = useCustomerContext()
-  const {handleCusInputFile, handleCusRuleFile} = useCustomerInputContext()
+  const {
+    handleCusInputFile,
+    handleCusRuleFile,
+    getRulesAndAnalysis,
+    showInputLog,
+  } = useCustomerInputContext()
   const {
     showAlert,
-    handleRuleFileSubmit,
-    handleRegularFileSubmit,
     showUpload,
     handleShowUpload,
     handleCloseUpload,
   } = useStateContext()
-
-
 
   return (
     <React.Fragment>
@@ -28,7 +30,7 @@ const CAnalysis = () => {
         style={{ widht: '90vw', height: '94vh' }}
       >
         {showAlert && (
-        <Alert
+          <Alert
             className=" z-3  position-absolute top-20 start-50 translate-middle"
             severity="info"
           >
@@ -41,7 +43,9 @@ const CAnalysis = () => {
           className="p-4 d-flex justify-content-between"
         >
           <div className="flex flex-col">
-            <span className="fs-2 mb-0">Customer-Customer Representative Analysis</span>
+            <span className="fs-2 mb-0">
+              Customer-Customer Representative Analysis
+            </span>
             <span>
               Customer-Customer Representative generated logs Analysis using LLM
             </span>
@@ -55,11 +59,15 @@ const CAnalysis = () => {
             >
               Get Random Instance
             </button>
-            <button type="button" class="btn btn-primary btn-sm" onClick={handleShowUpload}>
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              onClick={handleShowUpload}
+            >
               Upload Customer-CR log
             </button>
             <Modal
-              className="mt-5 mb-5"
+              className="mt-5 pt-5 mb-5"
               show={showUpload}
               onHide={handleCloseUpload}
             >
@@ -67,9 +75,7 @@ const CAnalysis = () => {
               <Modal.Body>
                 <UploadFile
                   title="Upload Files (AUDIO, MPEG)"
-                  allowedFileTypes={[
-                    'audio/mpeg'
-                  ]}
+                  allowedFileTypes={['audio/mpeg']}
                   onSubmit={handleCusInputFile}
                 />
                 <UploadFile
@@ -78,6 +84,11 @@ const CAnalysis = () => {
                   onSubmit={handleCusRuleFile}
                 />
               </Modal.Body>
+              <Modal.Footer>
+                <Button variant="primary" onClick={getRulesAndAnalysis}>
+                  Start Input Analysis
+                </Button>
+              </Modal.Footer>
             </Modal>
           </div>
         </div>
@@ -93,6 +104,7 @@ const CAnalysis = () => {
             style={{ widht: '90vw', height: '85%' }}
           >
             {showCustomerLog && <CustomerResponse />}
+            {showInputLog && <CusInputRes />}
           </div>
         </div>
       </div>

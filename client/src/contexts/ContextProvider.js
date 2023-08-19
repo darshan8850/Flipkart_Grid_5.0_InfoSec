@@ -27,12 +27,9 @@ export const ContextProvider = ({ children }) => {
 
   const [history, setHistory] = useState({})
   const [showHistory, setShowHistory] = useState(false)
-  const [customerLog, setCustomerLog] = useState({})
-  const [showCustomerLog, setShowCustomerLog] = useState(false)
 
   const [showButtons, setShowButtons] = useState(false)
   const [showBlockedAlert, setShowBlockedAlert] = useState(false)
-
 
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
@@ -41,10 +38,6 @@ export const ContextProvider = ({ children }) => {
   const [showUpload, setShowUpload] = useState(false)
   const handleShowUpload = () => setShowUpload(true)
   const handleCloseUpload = () => setShowUpload(false)
-
-  const [logInput, setLogInput] = useState()
-  const [ruleInput, setRuleInput] = useState()
-  const [promptInput, setPromptInput] = useState()
 
   const [graphValues, setGraphValues] = useState([])
   const [graphTag, setGraphTag] = useState([])
@@ -65,14 +58,14 @@ export const ContextProvider = ({ children }) => {
   function setVal(val) {
     setRangeVal(val)
   }
-  
+
   useEffect(() => {
-    if(flag && autoBlock && severityScore>=rangeVal) {
-      console.log("bada hai sv- " + severityScore + " rg- " + rangeVal) 
+    if (flag && autoBlock && severityScore >= rangeVal) {
+      console.log("bada hai sv- " + severityScore + " rg- " + rangeVal)
       blockUser()
       setFlag(false)
     }
-  },[severityScore, flag])
+  }, [severityScore, flag])
 
   // workflow - 1 ( For system generated log )
   function fetchLog() {
@@ -130,6 +123,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   function fetchLlmResponse(prompt) {
+    console.log(prompt)
     fetch('/test', {
       method: 'POST',
       headers: {
@@ -217,7 +211,7 @@ export const ContextProvider = ({ children }) => {
       })
   }
 
-  // uploads
+  // regular uploads
   const handleRegularFileSubmit = async (file) => {
     await uploadFile(file, '/api/upload')
   }
@@ -243,48 +237,24 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
-
-
-  // workflow - 2 ( For customer log)
-  function fetchCustomerLog() {
-    // setShowAnswer(false)
-    // setShowMoreInfo(false)
-    // fetch('/customer_random_instance')
-    //   .then((res) => res.json())
-    //   .then((entries) => {
-    //     entries.log_rules = JSON.stringify(customer_rules)
-    //     setCustomerLog(entries)
-    //     setShowCustomerLog(true)
-    //     getCustomerPromptAndRes(entries)
-    //   })
-  }
-
-  function getCustomerPromptAndRes(entries) {
-    // setShowAlert(true)
-    // let prompt = `convo: ${entries.log_transcript} \n 
-    // rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
-    // in the given conversation for above rules mentioned ?`
-    // fetchLlmResponse(prompt)
-  }
-
   return (
     <StateContext.Provider value={{
       currentColor, activeMenu,
       showModal, setShowModal,
       log, showLog,
-      severityScore, setSeverityScore,
-      showSeverityScore, setShowSeverityScore,
-      showAlert, setShowAlert,
-      answer, setAnswer,
+      severityScore,
+      showSeverityScore,
+      showAlert,
+      answer,
       showAnswer, knowMore,
-      moreInfo, setMoreInfo,
-      showMoreInfo, setShowMoreInfo,
-      fetchLog,setShowAnswer,fetchLlmResponse,
-      fetchCustomerLog, showCustomerLog, customerLog, showButtons, setShowButtons, blockUser,
-      showBlockedAlert, setShowBlockedAlert, showHistory, history, fetchHistory,
+      moreInfo,
+      showMoreInfo,
+      fetchLog, setShowAnswer, fetchLlmResponse,
+      showButtons, setShowButtons, blockUser,
+      showBlockedAlert, setShowBlockedAlert, history, fetchHistory,
       show, setShow, handleClose, handleShow, uploadFile, handleRuleFileSubmit, handleRegularFileSubmit,
       showUpload, setShowUpload, handleShowUpload, handleCloseUpload,
-      setLogInput, setRuleInput, setPromptInput, graphValues, graphTag, showAutoBlock, setShowAutoBlock,
+      graphValues, graphTag, showAutoBlock, setShowAutoBlock,
       handleShowBlock, handleCloseBlock, rangeVal, setRangeVal, setTrue, setVal
     }}>
       {children}

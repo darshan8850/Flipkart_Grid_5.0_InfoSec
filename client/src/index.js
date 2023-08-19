@@ -13,13 +13,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ContextProvider>
-      <CustomerInputContext>
-        <CustomerContext>
+      <CustomerContext>
+        <CustomerInputContext>
           <LogInputContext>
             <App />
           </LogInputContext>
-        </CustomerContext>
-      </CustomerInputContext>
+        </CustomerInputContext>
+      </CustomerContext>
     </ContextProvider>
   </React.StrictMode>
 );

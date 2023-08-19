@@ -20,13 +20,9 @@ const SysAnalysis = () => {
     handleShowUpload,
     handleCloseUpload,
     showAutoBlock,
-    setShowAutoBlock,
     handleShowBlock,
     handleCloseBlock,
-    autoBlock,
-    setAutoBlock,
     rangeVal,
-    setRangeVal,
     setVal,
     setTrue,
   } = useStateContext()

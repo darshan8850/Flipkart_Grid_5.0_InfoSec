@@ -4,6 +4,7 @@ import { useStateContext } from '../contexts/ContextProvider'
 const SysBlocked = () => {
 
   const { history, fetchHistory } = useStateContext()
+  
   const col_class = 'col border overflow-auto text-primary text-center p-1'
 
   useEffect(() => {

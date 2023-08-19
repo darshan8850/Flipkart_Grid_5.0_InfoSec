@@ -61,8 +61,8 @@ export const CustomerContext = ({ children }) => {
 
     return (
         <CustomerLog.Provider value={{
-            customerLog, showCustomerLog,
-
+            customerLog, setCustomerLog, 
+            showCustomerLog, setShowCustomerLog, 
             fetchCustomerLog, customerKnowMore
         }}>
             {children}

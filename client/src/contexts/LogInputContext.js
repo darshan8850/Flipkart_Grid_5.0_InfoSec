@@ -110,7 +110,7 @@ export const LogInputContext = ({ children }) => {
             .then((res) => {
                 setShowBlockedAlert(true)
                 setTimeout(() => {
-                    setShowBlockedAlert(false)
+                    setShowBlockedAlert(true)
                     fetchInputLog()
                 }, 3000);
             })

@@ -38,7 +38,7 @@ export const CustomerContext = ({ children }) => {
         let prompt = `convo: ${entries.log_transcript} \n 
         rules: ${JSON.stringify(customer_rules)} \n question: Is there any violations 
         in the given conversation for above rules mentioned ?`
-        fetch('/test', {
+        fetch('/fetch_llm_response', {
             method: 'POST',
             headers: {
               'Content-Type': 'text/plain'

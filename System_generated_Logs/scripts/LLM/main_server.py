@@ -544,7 +544,10 @@ def fetch_llm_response():
     )
     retriever = db.as_retriever()
     
-    model_id = "TheBloke/huginnv1.2-GPTQ"
+    # model_id = "TheBloke/OpenOrca-Platypus2-13B-GPTQ"
+    # model_basename = "gptq_model-4bit-128g.safetensors"
+    
+    model_id = "TheBloke/OpenOrca-Platypus2-13B-GPTQ"
     model_basename = "gptq_model-4bit-128g.safetensors"
 
     template = """Use the following pieces of context to answer the question at the end. If you don't know the answer,\

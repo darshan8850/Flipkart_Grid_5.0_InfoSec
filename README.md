@@ -75,6 +75,9 @@ Before running the system, you need to configure it to work with your specific e
 - Actionable insights and alerts for non-compliance.
 - Integration with large language models for natural language understanding.
 
+## Demo
+
+Project demo can be accessed by this link https://drive.google.com/drive/folders/1qH5T3qeO1hrMQ4oSrFR7s3L4soDY1ZJt?usp=drive_link
 
 ## License
 This project is licensed under the MIT License.
